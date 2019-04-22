@@ -1,0 +1,365 @@
+<template>
+    <!-- 医生店铺页 -->
+    <div class="doctorshop dis_f flex_fc">
+         <div class="header">
+            <img @click='Return' src="../../common/img/icon_fh.png" alt="">
+            <span>{{ doctor.true_name }}的店铺</span>
+        </div> 
+        <div class="section flex1">
+            <div >
+                <div class="list">
+                    <ul>
+                        <li>
+                            <img ref='userImg' src="../../common/img/pic_wdys_ystx.png" alt="">
+                            <dl>
+                                <dt>
+                                    <span>{{ doctor.true_name }}的店铺</span>
+                                    <b class="short" v-if='index == 0'>距我最近</b>
+                                    <i>{{ doctor.dis }}km</i>
+                                </dt>
+                                <dd>
+                                    {{ doctor.gname }} | {{ doctor.department_name }}
+                                </dd>
+                            </dl>
+                        </li>
+                        <li class="list_c">{{ doctor.address }}</li>
+                    </ul>
+                    <div class="shop_box">
+                        
+                            <ul v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10" v-if='datalist.length'>
+                                <li class="li" v-for='(val,i) in datalist' :key='i' @click='outDetail(val.id)'>
+                                    <img v-lazy="$http.baseURL+val.pic" alt="">
+                                    <h4>{{ val.name }}</h4>
+                                    <p><span class="price">￥<b>{{ val.price }}</b></span><span>已售{{ val.sales_volume }}件</span></p>
+                                </li>
+                                <div class="drop-up" v-if="dropup">—— 没有数据了 ——</div>
+                            </ul>
+                           
+                        <ol class="ol" v-if='!datalist.length'>
+                            <li class="empty">
+                                无商品
+                            </li>
+                        </ol>
+                    </div>
+                    <!-- <div class="more">
+                        上划查看更多
+                    </div> -->
+                </div>
+            </div>
+             
+            
+        </div>
+        <div style='width:100%;height: 200px; display:none;'  id="container"></div>
+    </div>
+</template>
+
+<script>
+export default {
+    data () {
+        return {
+            datalist: [],       // 数据
+            doctor: {},
+            lng: '116.427343',            // 经度
+            lat: '39.902975',            // 纬度
+            uid: this.$cookie.get('userLogins'),
+            did: this.$route.params.id,
+            page: 1,
+            limit: 10,
+            index: this.$route.params.index,                            // 医生下标
+            busy: true,
+            dropup: false
+        }
+    },
+    mounted () {
+        var _this = this;
+        console.log(this.$route.params)
+        //  var map = new AMap.Map("container", {   // 地图
+        //         resizeEnable: true,
+        //         zoom: 13
+        //     });
+        //     map.on('click', function (e) {
+        //         _this.lng=e.lnglat.getLng();
+        //         _this.lat=e.lnglat.getLat();
+        //         console.log(_this.lng, _this.lat)
+        //     });
+            var map, geolocation;
+            //加载地图，调用浏览器定位服务   高德地图
+            map = new AMap.Map('container', {
+                resizeEnable: true
+            });
+            map.plugin('AMap.Geolocation', function() {
+                geolocation = new AMap.Geolocation({
+                　　　　enableHighAccuracy: true, //是否使用高精度定位，默认:true
+                　　　　timeout: 2000000, //超过10秒后停止定位，默认：无穷大
+                　　　　buttonPosition: 'RB'
+                });
+                geolocation.getCurrentPosition();
+                    AMap.event.addListener(geolocation, 'complete', function onComplete(data) {
+                    var getLongitude = data.position.getLng();
+                    var getLatitude = data.position.getLat();
+                    // alert(getLongitude+'---'+getLatitude+'我的天') //弹出获得的经纬度
+                    _this.lng = getLongitude
+                    _this.lat = getLatitude
+                }); //返回定位信息
+            });
+        this.doctordata()
+    },
+    methods: {
+        loadMore: function() {
+            this.busy = true
+            this.page += 1
+            this.dianList()
+        },
+        outDetail (id) {  // 进入商品详情
+        console.log(id)
+            this.$router.push({ name: 'shopdetail', params: { id:id}})
+        },
+        Return () {
+            this.$router.back()
+        },
+        doctordata () {
+            var _self = this;
+            var obj = { lng: _self.lng, lat: _self.lat, uid: this.uid, did:this.did  }
+            console.log(obj)
+            this.$http.post('/mobile/Wxdoccenter/doccenter', obj).then(res => {     // 医生店铺信息
+                // console.log(res)
+                if (res.code == 1) {
+                    _self.doctor = res.data
+                    if (_self.doctor.picture) {
+                        _self.$refs.userImg.src = _self.$http.baseURL + _self.doctor.picture
+                    }
+                }
+            }).catch(err => {
+                console.log(err)
+            })
+            _self.dianList()
+        },
+        dianList() {
+            var _self = this;
+            if (this.dropup) {
+                return
+            }
+            var obj = {did: this.did , 
+                page:this.page, num: this.limit}
+            this.$http.post('/mobile/Wxdoccenter/docgoods', obj).then(res => {
+                console.log(res)
+                _self.busy = false
+                if (res.code == 1) {
+                    if (_self.page<=1) {
+                        _self.datalist = res.data
+                    } else if (_self.page>1) {
+                        var s = res.data
+                        _self.datalist = _self.datalist.concat(s)
+                        if (_self.datalist.length == res.counts ) {
+                            _self.dropup = true
+                            _self.busy = true
+                        }
+                    }
+                    
+                } else {
+                    if (_self.datalist.length > 9) {
+                        _self.dropup = true
+                    }
+                    _self.busy = true
+                }
+            })
+        }
+    }
+}
+</script>
+
+<style>
+
+</style>
+<style lang="scss" scoped>
+@function rem($px) {
+    @return $px / 50 + rem;
+}
+.doctorshop {
+    width: 100%;
+    height: 100%;
+    display:-webkit-box;
+    display:-webkit-flex; 
+    display:-moz-box; 
+    display:-ms-flexbox; 
+    display:flex;
+    -webkit-flex-direction: column;
+    -moz-flex-direction: column;
+    -ms-flex-direction: column;
+    -o-flex-direction: column;
+    flex-direction: column;
+    background: #FAFAFA;
+    font-size: rem(14);
+    .header {
+        display: -webkit-flex;
+        display: flex;
+        height: rem(40);
+        justify-content: center;
+        color: #212121;
+        position: relative;
+        box-shadow:0px 1px 0px 0px rgba(224,224,224,.5);
+        padding-top: rem(0);
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        font-size: rem(16);
+        background: #fff;
+        > img {
+            font-size: rem(30);
+            position: absolute;
+            left: rem(15);
+            top: rem(10);
+            line-height: 1;
+            font-size: rem(19);
+            width: rem(20);
+        }
+        span {
+            padding-top: rem(15);
+            font-weight:400;
+            color: #212121;
+        }
+    }
+    .section {
+        width: 100%;
+        font-size: rem(14);
+        overflow: auto;
+        .list {
+            width: 100%;
+            font-size: rem(12);
+            padding: 0 rem(15);
+            >ul {
+                padding: rem(15);
+                width: 100%;
+                background:rgba(255,255,255,1);
+                box-shadow:0px 2px 5px 0px rgba(0, 0, 0, 0.1);
+                border-radius:4px;
+                margin-top: rem(5);
+                li:first-child {
+
+                    display: -webkit-flex;
+                    display: flex;
+                    >img {
+                        display: block;
+                        width: rem(49);
+                        height: rem(49);
+                        border-radius: 50%;
+                    }
+                    >dl {
+                        flex: 1;
+                        padding-left: rem(15);
+                        dt {
+                            line-height: rem(30);
+                            span {
+                                margin-right: rem(14);
+                                color:#333;
+                                font-size: rem(16);
+                            }
+                            .short {
+                                color: #4A9CF3;
+                                font-size: rem(12);
+                                background: url('../../common/img/icon_mrk.png') no-repeat;
+                                background-size: 100% 90%;
+                                padding: rem(5);
+                                z-index: 99;
+                                font-size: rem(12);
+                            }
+                            >i {
+                                font-size: rem(13);
+                                color:#333;
+                                float: right;
+                            }
+                        }
+                        dd {
+                            font-size: rem(12);
+                            color: #333;
+                            margin-top: rem(5);
+                        }
+                    }
+                }
+                .list_c {
+                    margin-top: rem(10);
+                    font-size: rem(12);
+                    color: #666;
+                    line-height: rem(17);
+                    padding-top: rem(16);
+                    border-top: 1px solid #e6e6e6;
+                    background: url('../../common/img/icon_dz.png') no-repeat rem(5) rem(8);
+                    background-size: 10%;
+                    padding-left: rem(35);
+                }
+               
+                
+
+            }
+
+        
+        }
+
+
+
+        .shop_box {
+            width: 100%;
+            margin-top: rem(6);
+            .drop-up{
+                width: 100%;
+                height: rem(40);
+                line-height:rem(40);
+                text-align: center;
+                font-size: rem(14);
+                color:#CCC;
+            }
+            ul {
+                width: 100%;
+                display: -webkit-flex;
+                display: flex;
+                flex-wrap: wrap;
+                .li {
+                    width: 47%;
+                    margin: rem(5);
+                    box-shadow:0px 5px 10px 0px rgba(0, 0, 0, 0.1);
+                    > img {
+                        width: 100%;
+                        display: block;
+
+                    }
+                    >h4 {
+                        color: #333;
+                        line-height: rem(20);
+                        font-size: rem(14);
+                        padding: rem(15);
+                    }
+                    >p {
+                        padding: 0 rem(15) rem(15) rem(15);
+                        color: #aaa;
+                        .price {
+                            color: #F09F88;
+                            margin-right: rem(10);
+                            >b {
+                                font-size: rem(14);
+                            }
+                        }
+                    }
+                }
+            }
+            > .ol {
+                width: 100%;
+                line-height: rem(100);
+                margin: rem(10) 0;
+                background: #fff;
+                .empty {
+                    box-shadow:0px 5px 10px 0px rgba(0, 0, 0, 0.1);
+                    text-align: center;
+                }
+            }
+        }
+
+        .more {
+            width: 100%;
+            color: #666;
+            font-size: rem(12);
+            line-height: rem(35);
+            text-align: center;
+        }
+    }
+   
+}
+</style>
