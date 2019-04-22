@@ -31,7 +31,7 @@
             </div>
         </div>
         <div class="footer">
-            <mt-button type="primary" id='btnout' size="large" @click.native="handleClick">立即咨询</mt-button>
+            <mt-button type="primary" id='btnout' size="large" @click.native="initdata">立即咨询</mt-button>
         </div>
     </div>
 </template>
@@ -43,38 +43,39 @@ export default {
     name: 'doctordetail',
     data () {
         return {
-            datalist: {},
-            uid: this.$cookie.get('userLogins'),  // 用户id
+            uid: '',  // 用户id
             did: '',                                // 医生id
-           
+            openid: ''
         }
     },
     mounted() {
-        this.did = this.$route.query.id
+        
+        this.did = this.$route.query.did
+        this.uid = this.$route.query.uid
+        this.openid = this.$route.query.openid
         console.log(this.$route)
-        this.initdata()
     },
     methods: {
-        initdata () {   // 详情
+        initdata () {   // // 立即咨询
             var self = this;
-            this.$http.post('/mobile/wxdoccenter/doctor_detail', {did:this.did, uid: this.uid}).then(res => {
+            this.$http.post('/mobile/wxauth/consult', {did:this.did, uid: this.uid, openid: this.openid}).then(res => {
                 console.log(res)
                 if (res.code == 1) {
-                    self.datalist = res.data
-                    if (self.datalist.picture) {
-                        self.$refs.userImg.src = self.$http.baseURL + self.datalist.picture
-                    }
-                    
-                    
+                   
+                    slef.usermsg()
+                } else {
+                    Toast({
+                        message: res.msg,
+                        position: 'conter',
+                        duration: 2000
+                    });
                 }
             })
         },
         Return () {
             this.$router.back()
         },
-        handleClick () {    // 立即咨询
-            this.usermsg()
-        },
+        
         usermsg () {
             MessageBox.confirm('你已选择该医生，请直接返回聊天', {showCancelButton: false, confirmButtonText: '确定并返回'}).then(action => {
                 self.wx_clocs()

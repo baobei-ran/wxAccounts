@@ -264,6 +264,7 @@ export default {
                                 position: 'center',
                                 duration: 2000
                             });
+                            self.initdata (this.page, this.type)
                         } else {
                             Toast({
                                 message: res.msg,

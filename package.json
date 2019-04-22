@@ -12,6 +12,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "better-scroll": "^1.15.2",
+    "html2canvas": "^1.0.0-rc.1",
     "mint-ui": "^2.2.13",
     "v-distpicker": "^1.2.1",
     "vue": "^2.5.2",

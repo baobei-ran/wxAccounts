@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 // import Index from '@/components/index'
 const Activity = resolve => require(['@/components/user/activity'], resolve);     // 图片活动展示
+const Agreement = resolve => require(['@/components/user/agreement'], resolve);      // 协议
 const Login = resolve => require(['@/components/user/phonelogin'], resolve);      // 绑定手机号
 const Authentication = resolve => require(['@/components/user/authentication'], resolve);  // 添加问诊人信息
 import HealthData from '@/components/user/healthdata'  // 健康数据
@@ -46,6 +47,11 @@ export default new Router({
     //   title: '云医康在线',
     //   component: Index
     // },
+    {
+      path:'/agreement',
+      title: '用户协议',
+      component: Agreement
+    },
     {
       path:'/phone:id?',
       title: '绑定手机号',
@@ -193,13 +199,13 @@ export default new Router({
       component: RecipeList
     },
     {
-      path: '/recipeMsg',
+      path: '/recipeMsg/:id',
       title: '处方信息',
       name: 'recipeMsg',
       component: RecipeMsg
     },
     {
-      path: '/imgdetails',
+      path: '/imgdetails/:id',
       title: '处方详情',
       name: 'imgdetails',
       component: ImgDetails

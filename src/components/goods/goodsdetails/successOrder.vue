@@ -49,14 +49,46 @@
                         <li><span>运费</span><span>￥{{ detaildata.postage }}</span></li>
                         <li><span>总付费(含运费)</span><span>￥{{ detaildata.moneys }}</span></li>
                     </ul>
-                    <div class="usermsg">
+                    <div class="usermsg" v-if='detaildata.status == 6'>
                         <ul>
                             <li>订单编号：<span>{{ detaildata.number }}</span></li>
-                            <li>创建时间：<span>{{ detaildata.addtime }}</span></li>
+                            <li>创建时间：<span>{{ detaildata.addtime | filterTime }}</span></li>
                             <li>配送方式：
                                 <span v-if='detaildata.distribution == 1'>快递配送</span>
                                 <span v-if='detaildata.distribution == 2'>自提</span>
                             </li>
+                        </ul>
+                    </div>
+                    <div class="usermsg" v-if='detaildata.status == 5'>
+                        <ul>
+                            <li>订单编号：<span>{{ detaildata.number }}</span></li>
+                            <li>创建时间：<span>{{ detaildata.addtime | filterTime }}</span></li>
+                            <li>创建时间：<span>{{ detaildata.addtime | filterTime}}</span></li>
+                            <li>付款时间：<span>{{ detaildata.pay_time | filterTime }}</span></li>
+                            <li>配送方式：
+                                <span v-if='detaildata.distribution == 1'>快递配送</span>
+                                <span v-if='detaildata.distribution == 2'>自提</span>
+                            </li>
+                            <li>发货时间：<span>{{ detaildata.kaddtime | filterTime }}</span></li>
+                            <li>发货快递：<span>{{ detaildata.company }}</span></li>
+                            <li>快递单号：<span>{{ detaildata.logistics_number }}</span></li>
+                            <li>发货备注：<span>{{ detaildata.kremark }}</span></li>
+                            <li>收货时间：<span>{{ detaildata.sure_time | filterTime }}</span></li>
+                        </ul>
+                    </div>
+                    <div class="usermsg" v-if='detaildata.status == 2 || detaildata.status == 4'>
+                        <ul>
+                            <li>订单编号：<span>{{ detaildata.number }}</span></li>
+                            <li>创建时间：<span>{{ detaildata.addtime | filterTime}}</span></li>
+                            <li>付款时间：<span>{{ detaildata.pay_time | filterTime }}</span></li>
+                            <li>配送方式：
+                                <span v-if='detaildata.distribution == 1'>快递配送</span>
+                                <span v-if='detaildata.distribution == 2'>自提</span>
+                            </li>
+                            <li>发货时间：<span>{{ detaildata.kaddtime | filterTime }}</span></li>
+                            <li>发货快递：<span>{{ detaildata.company }}</span></li>
+                            <li>快递单号：<span>{{ detaildata.logistics_number }}</span></li>
+                            <li>发货备注：<span>{{ detaildata.kremark }}</span></li>
                         </ul>
                     </div>
                 </div>
@@ -65,7 +97,7 @@
         <div class="footer" v-if='detaildata.status == 6 || detaildata.status == 5'>
             <mt-button class="once" @click.native='createOrder'>再次购买</mt-button>
         </div>
-        <div class="footer" v-if='detaildata.status == 24'>
+        <div class="footer" v-if='detaildata.status == 2|| detaildata.status == 4'>
             <mt-button class="once1" @click.native='createOrder'>再次购买</mt-button>
             <mt-button type="primary" @click.native='orderData'>确认收货</mt-button>
         </div>
@@ -87,7 +119,7 @@ export default {
     },
     methods: {
         Return () {
-            this.$router.back()
+            this.$router.go(-1)
         },
         initdata () {
             var self = this;
@@ -161,10 +193,11 @@ export default {
             font-size: rem(30);
             position: absolute;
             left: rem(15);
-            top: rem(12);
+            top: rem(10);
             line-height: 1;
             font-size: rem(19);
-            height: rem(18);
+            height: rem(28);
+            padding: rem(5);
         }
         span {
             padding-top: rem(15);

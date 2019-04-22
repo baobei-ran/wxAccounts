@@ -1,42 +1,47 @@
 
 <template>
 <!-- 提交认证 -->
-    <div class="login">
+    <div class="login dis_f flex_c">
         <div class="header">
             <!-- <img src="../../common/img/icon_fh.png" alt=""> -->
             <span>添加问诊人信息</span>
         </div>
-    <div class="section">
-         <div class="msgs">
-                <p class="txt">
-                    请先绑定手机号，添加问诊人，成功后即可使用云医康公众号与医生在线沟通！
-                </p>
-                <ul class="dis_f flex_i">
-                    <li><img src="../../common/img/icon_bdsjh.png" alt="">
-                        <p>绑定手机号</p>
-                    </li>
-                    <li class="jian"><img src="../../common/img/icon_jt.png" alt=""></li>
-                    <li><img src="../../common/img/icon_tjjzrl.png" alt="">
-                        <p>添加问诊人</p>
-                    </li>
-                </ul>
-            </div>
-    </div>
-        <div class="user">
-            <input style='background:#fff;' type="text" v-model='relation' maxlength="11" disabled placeholder="本人">
-            <label class="label" for="">问诊人关系</label>
+        <div class="section_box flex1">
+            <div>
+                    <div class="section">
+                    <div class="msgs">
+                            <p class="txt">
+                                请先绑定手机号，添加问诊人，成功后即可使用云医康公众号与医生在线沟通！
+                            </p>
+                            <ul class="dis_f flex_i">
+                                <li><img src="../../common/img/icon_bdsjh.png" alt="">
+                                    <p>绑定手机号</p>
+                                </li>
+                                <li class="jian"><img src="../../common/img/icon_jt.png" alt=""></li>
+                                <li><img src="../../common/img/icon_tjjzrl.png" alt="">
+                                    <p>添加问诊人</p>
+                                </li>
+                            </ul>
+                        </div>
+                </div>
+                    <div class="user">
+                        <input style='background:#fff;' type="text" v-model='relation' maxlength="11" disabled placeholder="本人">
+                        <label class="label" for="">问诊人关系</label>
+                    </div>
+                    <div class="user">
+                        <label for="">姓名</label>
+                        <input type="text" v-model='userName' maxlength="6" placeholder="请输入本人真实姓名">
+                    </div>
+                    <div class="user">
+                        <label for="">身份证号</label>
+                        <input type="text" v-model='IDcard' maxlength="18" placeholder="一经填写无法更改，请谨慎填写">
+                    </div>
+                    <div class="btn" :style="{opacity:(isBtn ? '0.6' : '1')}" >
+                        <mt-button size="large" @click.native="handleClick" type="primary">下一步</mt-button>
+                    </div>
+            </div>    
         </div>
-        <div class="user">
-            <label for="">姓名</label>
-            <input type="text" v-model='userName' maxlength="6" placeholder="请输入本人真实姓名">
-        </div>
-        <div class="user">
-            <label for="">身份证号</label>
-            <input type="text" v-model='IDcard' maxlength="18" placeholder="一经填写无法更改，请谨慎填写">
-        </div>
-        <div class="btn" :style="{opacity:(isBtn ? '0.6' : '1')}" >
-            <mt-button size="large" @click.native="handleClick" type="primary">下一步</mt-button>
-        </div>
+        <p class="footer">点击查看 <span @click="out('/agreement')">《云医康注册使用协议》</span></p>
     </div>
 </template>
 
@@ -150,6 +155,7 @@ export default {
 }
 .login {
     width: 100%;
+    height: 100%;
     font-size: rem(16);
     .header {
         display: -webkit-flex;
@@ -272,6 +278,16 @@ export default {
             font-weight:400;
             color: #fff;
             background-color:#6194F7;
+        }
+    }
+    .footer {
+        width: 100%;
+        text-align: center;
+        color: #666;
+        font-size: rem(11);
+        margin-bottom: rem(20);
+        span {
+            color: #3196FF;
         }
     }
 }

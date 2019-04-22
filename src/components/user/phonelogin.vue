@@ -1,12 +1,12 @@
 
 <template>
 <!-- 绑定手机号 -->
-    <div class="login">
+    <div class="login dis_f flex-v">
         <div class="header dis_f">
             <!-- <img @click='Return' src="../../common/img/icon_fh.png" alt=""> -->
             <span>绑定手机号</span>
         </div>
-        <div class="section">
+        <div class="section flex1">
             <div class="msgs">
                 <p class="txt">
                     请先绑定手机号，添加问诊人，成功后即可使用云医康公众号与医生在线沟通！
@@ -32,6 +32,7 @@
                 <mt-button size="large" @click.native="handleClick" type="primary">下一步</mt-button>
             </div>
         </div>
+        <p class="footer">点击查看 <span @click="out('/agreement')">《云医康注册使用协议》</span></p>
     </div>
 </template>
 
@@ -214,6 +215,7 @@ export default {
 }
 .login {
     width: 100%;
+    height: 100%;
     font-size: rem(16);
     .header {
         display: -webkit-flex;
@@ -341,6 +343,16 @@ export default {
             background-color: #6194F7;
         }
     }
+    }
+    .footer {
+        width: 100%;
+        text-align: center;
+        color: #666;
+        font-size: rem(11);
+        margin-bottom: rem(20);
+        span {
+            color: #3196FF;
+        }
     }
 }
 </style>
