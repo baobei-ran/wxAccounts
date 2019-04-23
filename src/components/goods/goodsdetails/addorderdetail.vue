@@ -28,7 +28,7 @@
                 <div class="orderList">
                     <h4>{{ paydata.sname }}的店铺 <img src="../../../common/img/icon_enter.png" alt=""></h4>
                     <dl class="order_con">
-                        <dt><img src="../../../common/img/pic_sptp.png" alt=""></dt>
+                        <dt><img :src="$http.baseURL+paydata.img" alt=""></dt>
                         <dd>
                             <h5>{{ paydata.gname }}</h5>
                             <span>￥{{ paydata.money }}</span>

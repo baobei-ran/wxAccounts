@@ -73,15 +73,7 @@ export default {
     mounted () {
         var _this = this;
         console.log(this.$route.params)
-        //  var map = new AMap.Map("container", {   // 地图
-        //         resizeEnable: true,
-        //         zoom: 13
-        //     });
-        //     map.on('click', function (e) {
-        //         _this.lng=e.lnglat.getLng();
-        //         _this.lat=e.lnglat.getLat();
-        //         console.log(_this.lng, _this.lat)
-        //     });
+        
             var map, geolocation;
             //加载地图，调用浏览器定位服务   高德地图
             map = new AMap.Map('container', {
@@ -112,7 +104,7 @@ export default {
         },
         outDetail (id) {  // 进入商品详情
         console.log(id)
-            this.$router.push({ name: 'shopdetail', params: { id:id}})
+            this.$router.push({ path: '/shopdetail', query: { id:id}})
         },
         Return () {
             this.$router.back()

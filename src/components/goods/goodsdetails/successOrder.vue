@@ -142,7 +142,7 @@ export default {
                     console.log(res)
                     if (res.code == 1) {
                         Toast({
-                            message: '操作成功！！！',
+                            message: '操作成功',
                             position: 'center',
                             duration: 2000
                         });

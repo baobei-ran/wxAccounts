@@ -288,7 +288,7 @@ export default {
                    
                 }
                 .f_hide {
-                    .p{position: relative; line-height: rem(20); max-height: rem(80);overflow: hidden;}
+                    .p{position: relative; line-height: rem(20); max-height: rem(79);overflow: hidden;}
                     .p::after{content: "..."; position: absolute; bottom: 0; right: 0; padding-left: rem(30);
                     background: -webkit-linear-gradient(left, transparent, #fff 50%);
                     background: -o-linear-gradient(right, transparent, #fff 50%);

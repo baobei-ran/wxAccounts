@@ -32,7 +32,7 @@
                 <mt-button size="large" @click.native="handleClick" type="primary">下一步</mt-button>
             </div>
         </div>
-        <p class="footer">点击查看 <span @click="out('/agreement')">《云医康注册使用协议》</span></p>
+        <p class="footer" v-show="hidShow">点击查看 <span @click="out('/agreement')">《云医康注册使用协议》</span></p>
     </div>
 </template>
 
@@ -47,7 +47,10 @@ export default {
                 title: '获取验证码',
                 noneclick: false,
                 isColor: true,          // 验证码字体颜色
-                isBtn: true
+                isBtn: true,
+                docmHeight: document.documentElement.clientHeight, // 默认屏幕高度
+                showHeight: document.documentElement.clientHeight, // 实时屏幕高度
+                hidShow: true, // 显示或者隐藏footer
             }
         },
         created () {
@@ -65,6 +68,23 @@ export default {
              } else {
                  this.isBtn = true
              }
+        },
+        mounted () {
+            var vm = this
+            window.onresize = () => {
+            return (() => {
+                vm.showHeight = document.body.clientHeight
+            })()
+            }
+        },
+        watch: {
+            showHeight: function () {
+                if (this.docmHeight > this.showHeight) {
+                    this.hidShow = false
+                } else {
+                    this.hidShow = true
+                }
+            },
         },
         methods: {  
             initdata (id) {
@@ -228,6 +248,7 @@ export default {
         padding-top: rem(0);
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
+        background-color: #fff;
         img {
             font-size: rem(30);
             position: absolute;

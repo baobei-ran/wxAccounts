@@ -55,7 +55,7 @@
                     <div class="list" v-for='(val,i) in datalist' :key='i'>
                         <ul @click='Clickdetail(val.did, i)'>
                             <li>
-                                <img v-lazy="$http.baseURL+val.picture" alt="">
+                                <img :src="$http.baseURL+val.picture" alt="">
                                 <dl>
                                     <dt>
                                         <span>{{ val.true_name }}</span>
@@ -157,17 +157,17 @@ export default {
                     // 添加地图全局定位事件
                     AMap.event.addListener(geolocation, 'complete', onComplete); //返回定位信息
                     AMap.event.addListener(geolocation, 'error', onError); //返回定位出错信息
-                        function onComplete(data) {
+                        function onComplete(data) {     // 获取成功
                             // data是具体的定位信息
-                            const latitude = data.position.getLat() // 纬度
-                            const longitude = data.position.getLng() // 经度
+                            var latitude = data.position.getLat() // 纬度
+                            var longitude = data.position.getLng() // 经度
                             console.log('latitude', latitude, 'longitude', longitude)
                             self.lon = longitude
                             self.lat = latitude
                         }
                 
-                        function onError(data) {
-                            
+                        function onError(data) {    // 获取失败
+                            console.log(data)
                         }
                     })
 
@@ -271,8 +271,37 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang='scss' >
+@function rem($px) {
+    @return $px / 50 + rem;
+}
+  
+            .mint-searchbar-core {
+                font-size: rem(14);
+                line-height: normal;
+                height: rem(28);
+            }
+    .mint-searchbar-core::-webkit-input-placeholder {
+                line-height: rem(20);
+                font-size: rem(13);
+                margin-bottom: rem(5);
+        }
+            
+    .mint-searchbar-core:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+        font-size: rem(13);
+        line-height: rem(20);
+        margin-bottom: rem(5);
+    }
+    .mint-searchbar-core::-moz-placeholder { /* Mozilla Firefox 19+ */
+        font-size: rem(13);
+        line-height: rem(20);
+        margin-bottom: rem(5);
+    }
+    .mint-searchbar-core:-ms-input-placeholder { /* Internet Explorer 10-11 */
+        font-size: rem(13);
+        line-height: rem(20);
+        margin-bottom: rem(5);
+    }
 </style>
 <style lang="scss" scoped>
 @function rem($px) {
@@ -302,13 +331,14 @@ export default {
                 font-size: rem(30);
                 position: absolute;
                 left: rem(15);
-                top: rem(12);
+                top: rem(7);
                 line-height: 1;
                 font-size: rem(19);
-                width: rem(18);
+                width: rem(28);
+                padding: rem(5);
             }
             span {
-                padding-top: rem(15);
+                padding-top: rem(13);
                 font-weight:400;
                 color: #212121;
             }
@@ -326,6 +356,19 @@ export default {
                 }
             }
             input[type=search]::-webkit-input-placeholder {
+                line-height: rem(44);
+            }
+            
+            input[type=search]:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+           
+                line-height: rem(44);
+            }
+            input[type=search]::-moz-placeholder { /* Mozilla Firefox 19+ */
+            
+                line-height: rem(44);
+            }
+            input[type=search]:-ms-input-placeholder { /* Internet Explorer 10-11 */
+            
                 line-height: rem(44);
             }
             .mint-searchbar-core {

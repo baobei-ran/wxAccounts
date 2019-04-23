@@ -7,6 +7,9 @@
         <div class="flex1 section_box">
             <div class="section">
                 <div class="box">
+                    <div class="msg" v-if='recipedata.status == 1'>
+                        处方开具成功
+                    </div>
                     <div class="msg" v-if='recipedata.status == 2'>
                         处方已开具24小时，已失效
                     </div>
@@ -187,6 +190,7 @@ export default {
             padding-left: rem(15);
             color: #4A9CF3;
             font-size: rem(12);
+            margin-bottom: rem(5);
         }
         .box {
             width: 100%;

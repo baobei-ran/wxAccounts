@@ -1,9 +1,10 @@
 import axios from 'axios';
-
+import { Indicator } from 'mint-ui';
 // import { Indicator } from 'mint-ui';
-var baseURL = 'http://test99.yunyikang.cn';
+var baseURL = 'http://test99.yunyikang.cn'; // 测试
 // var baseURL="https://www.yunyikang.cn";
-
+axios.defaults.retry = 2;           //  发起请求次数
+axios.defaults.retryDelay = 2000;   //  每次请求时间
 let http = axios.create({
   baseURL: baseURL,
   withCredentials: true,
@@ -23,10 +24,10 @@ let http = axios.create({
 });
 
 http.interceptors.request.use(function (config) {
-  // Indicator.open({
-  //   text: '',
-  //   spinnerType: 'fading-circle'
-  // });
+  Indicator.open({
+    text: '',
+    spinnerType: 'fading-circle'
+  });
   return config;
 }, function (error) {
   // 对请求错误做些什么
@@ -35,9 +36,24 @@ http.interceptors.request.use(function (config) {
 
 // 添加响应拦截器
 http.interceptors.response.use(function (response) {
-  // Indicator.close();
+  Indicator.close();
   return response;
 }, function (error) {
+  // var config = error.config;
+  // if(!config || !config.retry) return Promise.reject(error);
+  // config.__retryCount = config.__retryCount || 0;
+  //   if(config.__retryCount >= config.retry) {
+  //       return Promise.reject(error);
+  //   }
+  //   config.__retryCount += 1;
+  //   var backoff = new Promise(function(resolve) {
+  //       setTimeout(function() {
+  //           resolve();
+  //       }, config.retryDelay || 1);
+  //   });
+  //   return backoff.then(function() {
+  //     return http(config);
+  //   })
   if(error && error.response){
     switch (error.response.status){
         case 400:

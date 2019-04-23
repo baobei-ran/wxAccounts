@@ -172,15 +172,14 @@ export default {
     },
         data () {
             return {
-                selected: '2',      // nav 默认选中
                 alllist: [],
                 page: 1,
                 limit: 10,
-                type: '1',
-                tabId: 2,
+                type: '',
+                tabId: 1,
             }
         },
-        mounted () {
+        activated () {
             this.initdata (this.page, this.type)
         },
         methods: {
@@ -231,7 +230,7 @@ export default {
                         console.log(res)
                         if (res.code == 1) {
                             Toast({
-                                message: '删除成功！！！',
+                                message: '删除成功!',
                                 position: 'center',
                                 duration: 2000
                             });
@@ -260,7 +259,7 @@ export default {
                         console.log(res)
                         if (res.code == 1) {
                             Toast({
-                                message: '操作成功！！！',
+                                message: '操作成功',
                                 position: 'center',
                                 duration: 2000
                             });

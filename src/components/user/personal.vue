@@ -135,7 +135,7 @@ export default {
                     display: inline-block;
                     width: rem(61);
                 img {
-                    border-radius: 50%;
+                    border-radius: 100%;
                     width: 100%;
                     margin-bottom: rem(12);
                 }

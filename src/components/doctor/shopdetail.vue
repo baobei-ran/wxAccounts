@@ -101,7 +101,8 @@ export default {
     },
     mounted () {
         var _this = this;
-        var id = this.$route.params.id
+        var id = this.$route.query.id
+        console.log(this.$route)
         this.$http.post('/mobile/doch5/doc_goods_detail', { id: id}).then(res => {
             console.log(res)
             if (res.code == 1) {
@@ -127,7 +128,7 @@ export default {
             this.$router.back()
         },
         cerateOrder () {            // 购买
-            this.$router.push({ name: 'doctororder', params: { id: this.$route.params.id}})
+            this.$router.push({ name: 'doctororder', params: { id: this.$route.query.id}})
         }
     }
 }

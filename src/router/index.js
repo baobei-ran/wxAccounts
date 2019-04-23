@@ -5,11 +5,12 @@ const Activity = resolve => require(['@/components/user/activity'], resolve);   
 const Agreement = resolve => require(['@/components/user/agreement'], resolve);      // 协议
 const Login = resolve => require(['@/components/user/phonelogin'], resolve);      // 绑定手机号
 const Authentication = resolve => require(['@/components/user/authentication'], resolve);  // 添加问诊人信息
-import HealthData from '@/components/user/healthdata'  // 健康数据
-import AuthenticationYes from '@/components/user/authenticationYes'  // 问诊信息确认
-import Personal from '@/components/user/personal'  // 个人中心
-import Userdata from '@/components/user/userdata'  // 个人中心,点击头像进入的
 
+const Personal = resolve => require(['@/components/user/personal'], resolve);  // 个人中心
+import Userdata from '@/components/user/userdata'  // 个人中心,点击头像进入的
+import HealthData from '@/components/user/healthdata'  // 健康数据
+
+import AuthenticationYes from '@/components/user/authenticationYes'  // 问诊信息确认
 import RecipeMsg from '@/components/doctor/recipeDetail/recipeMsg'  // 处方信息
 import ImgDetails from '@/components/doctor/recipeDetail/imgDetails'  // 处方详情
 import Finddoctor from '@/components/doctor/finddoctor'  // 我的医生
@@ -38,7 +39,7 @@ import DoctorShopList from '@/components/doctor/doctorshoplist'     // 更多医
 
 Vue.use(Router) 
 
-export default new Router({
+const router = new Router({
   mode: 'history',
   // base: 'wechat',
   routes: [
@@ -86,18 +87,16 @@ export default new Router({
       path: '/doctordetail/:id',
       title: '医生详情',
       name: 'doctordetail',
-      meta: { keeepAlive: true },
       component: DoctorDetail
     },
     {
       path: '/doctorshop/:id',
       title: '医生店铺',
       name: 'doctorshop',
-      meta: { keeepAlive: true },
       component: DoctorShop
     },
     {
-      path: '/shopdetail/:id',
+      path: '/shopdetail:id?',
       title: '商品详情',
       name: 'shopdetail',
       component: ShopDetail
@@ -122,7 +121,6 @@ export default new Router({
       path: '/searchdoctor:id?',
       title: '更多医生',
       name: 'searchdoctor',
-      meta: { keeepAlive: true },
       component: SearchDoctor
     },
     {
@@ -133,6 +131,7 @@ export default new Router({
     {
       path: '/consultdoctor:id?',
       title: '咨询医生详情',
+      name: 'consultdoctor',
       component: Consultdoctor
     },
 
@@ -213,3 +212,16 @@ export default new Router({
     
   ]
 })
+
+
+router.onError((error) => {
+  console.log(error)
+  const pattern = /Loading chunk (\d)+ failed/g;
+  const isChunkLoadFailed = error.message.match(pattern);
+  const targetPath = router.history.pending.fullPath;
+  if(isChunkLoadFailed){
+      router.replace(targetPath);
+  }
+})
+
+export default router

@@ -5,7 +5,7 @@
             <img @click='Return' src="../../common/img/icon_fh.png" alt="">
             <span>新增收货地址</span>
         </div>
-        <div class="content">
+        <div class="content flex1">
             <div class="content_box">
                 <mt-field label="收货人" placeholder="请输入用户名" v-model="username"></mt-field>
                 <mt-field label="手机号码" placeholder="请输入手机号" type="tel" v-model="phone"></mt-field>
@@ -99,18 +99,17 @@ export default {
         },
        
         mounted () {
-             // window.onresize监听页面高度的变化
-             var self = this;
+            var self = this;
             window.onresize = function () {
-                return(function () {
-                    self.showHeight = document.body.clientHeight;
+                return (function () {
+                    self.showHeight = document.documentElement.clientHeight
                 })()
             }
             this.shengs()
         },
         watch: {
-            showHeight: function () {
-                if (this.docmHeight > this.showHeight) {
+            showHeight: function (val) {
+                if (this.docmHeight > val+ 100) {
                     this.hidShow = false
                 } else {
                     this.hidShow = true
@@ -192,8 +191,6 @@ export default {
                 this.show = !this.show
                 if (this.show) {
                     this.hidshow = false
-                } else {
-                    this.hidshow = true
                 }
             },
 

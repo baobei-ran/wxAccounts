@@ -6,7 +6,7 @@
         </div>
         <div class="section_box flex1">
             <div class="section"> 
-                <div class="img_box">
+                <div class="img_box" id='imgs'>
                      <div class='html_content' ref='html_content' id='html'>
                         <div class="canvas_head">
                             <ul>
@@ -62,8 +62,10 @@
                 <div class="btn">
                     <a href="javascript:" @click='canvasImg'><img src="../../../common/img/icon_bc.png" alt="" />保存处方到相册</a>
                 </div>
+                
             </div>
         </div>
+        
     </div>
 </template>
 
@@ -127,21 +129,12 @@ export default {
             };
 
             html2canvas(shareContent, opts).then(function (canvas) {
-
-                var context = canvas.getContext('2d');
-                // 【重要】关闭抗锯齿
-                context.mozImageSmoothingEnabled = false;
-                context.webkitImageSmoothingEnabled = false;
-                context.msImageSmoothingEnabled = false;
-                context.imageSmoothingEnabled = false;
                 var urls = canvas.toDataURL("image/png");
-                // 【重要】默认转化的格式为png,也可设置为其他格式
-                // var img = Canvas2Image.convertToPNG(urls, width, height);
                 _this.imgUrl = urls
                 // cntElem.style['-webkit-transform'] = 'scale(0.5)';
                 // document.getElementById('canvas_box').style['background'] = '#000';
-                
                 _this.dataURIToBlob(urls);
+                
             });
     
         },
@@ -215,7 +208,7 @@ export default {
     }
     .section {
         width: 100%;
-        padding: rem(10);
+        padding: rem(10 ) 0;
         background-color: #000;
         font-size: rem(14);
         height: 100%;
@@ -253,7 +246,7 @@ export default {
         }
         .img_box {
             width: 100%;
-
+            height: 100%;
             .html_content {
                 background: #fff;
                 width: 200%;
@@ -282,6 +275,7 @@ export default {
                             width: 100%;
                             font-size: rem(10);
                             line-height: rem(30);
+                            letter-spacing: rem(0.5);
                         }
                     }
                 }
@@ -289,6 +283,8 @@ export default {
                     font-size: rem(18);
                     padding: rem(20);
                     text-align: center;
+                    font-weight: 550;
+                    letter-spacing: rem(2);
                 }
                 .canvas_user {
                     width: 100%;
@@ -312,6 +308,8 @@ export default {
                             width: 33%;
                             height: rem(30);
                             line-height: rem(30);
+                            font-size: rem(14);
+                            letter-spacing: rem(1);
                         }
                     }
                 }
@@ -328,6 +326,7 @@ export default {
                         font-size: rem(11);
                         li {
                             line-height: rem(30);
+                            font-size: rem(14);
                             span {
                                 margin-left: rem(14);
                             }
@@ -350,9 +349,10 @@ export default {
                 }
                 .msg {
                     text-align: center;
-                    font-size: rem(12);
+                    font-size: rem(14);
                     line-height: rem(14);
-                    padding-bottom: rem(30);
+                    padding-bottom: rem(30);    
+                    letter-spacing: rem(1);
                 }
                 .check {
                     margin-top: rem(30);
@@ -379,12 +379,13 @@ export default {
                             -moz-align-items: center;
                             -ms-align-items: center;
                             -o-align-items: center;
+                            font-size: rem(14);
                             > img {
-                                max-width: rem(50);
-                                height: rem(35);
+                                max-width: rem(100);
+                                max-height: rem(70);
                                 display: block;
                                 vertical-align: middle;
-                                margin-left: rem(5);
+                                margin-left: rem(10);
                             }
                         }
                     }

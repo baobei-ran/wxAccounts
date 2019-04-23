@@ -23,7 +23,7 @@
                         </li>
                         <li class="list_c">擅长：<span>{{ datalist.title }}</span></li>
                         <li class="list_intro ">
-                            谢永强医生想与你继续沟通
+                            {{ datalist.true_name }}医生想与你继续沟通
                         </li>
                     </ul>
                     
@@ -45,7 +45,8 @@ export default {
         return {
             uid: '',  // 用户id
             did: '',                                // 医生id
-            openid: ''
+            openid: '',
+            datalist: {},
         }
     },
     mounted() {
@@ -54,15 +55,27 @@ export default {
         this.uid = this.$route.query.uid
         this.openid = this.$route.query.openid
         console.log(this.$route)
+        this.inituser()
     },
     methods: {
+        inituser () {
+            var self = this;
+            this.$http.post('/mobile/wxdoccenter/doctor_detail', {did:this.did, uid: this.uid}).then(res => {
+                console.log(res)
+                if (res.code == 1) {
+                    self.datalist = res.data
+                    if (self.datalist.picture) {
+                        self.$refs.userImg.src = self.$http.baseURL + self.datalist.picture
+                    }
+                }
+            })
+        },
         initdata () {   // // 立即咨询
             var self = this;
             this.$http.post('/mobile/wxauth/consult', {did:this.did, uid: this.uid, openid: this.openid}).then(res => {
                 console.log(res)
                 if (res.code == 1) {
-                   
-                    slef.usermsg()
+                    self.usermsg()
                 } else {
                     Toast({
                         message: res.msg,
@@ -77,6 +90,7 @@ export default {
         },
         
         usermsg () {
+            var self = this;
             MessageBox.confirm('你已选择该医生，请直接返回聊天', {showCancelButton: false, confirmButtonText: '确定并返回'}).then(action => {
                 self.wx_clocs()
             });

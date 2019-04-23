@@ -41,7 +41,7 @@
                     </div>
             </div>    
         </div>
-        <p class="footer">点击查看 <span @click="out('/agreement')">《云医康注册使用协议》</span></p>
+        <p class="footer" v-show="hidShow">点击查看 <span @click="out('/agreement')">《云医康注册使用协议》</span></p>
     </div>
 </template>
 
@@ -55,7 +55,10 @@ export default {
                 relation: '本人',           // 关系
                 userName: '',           // 姓名
                 IDcard: '',             // 身份证
-                isBtn: true             // 按钮颜色控制
+                isBtn: true,             // 按钮颜色控制
+                docmHeight: document.documentElement.clientHeight, // 默认屏幕高度
+                showHeight: document.documentElement.clientHeight, // 实时屏幕高度
+                hidShow: true, // 显示或者隐藏footer
             }
         },
         updated() {
@@ -64,6 +67,23 @@ export default {
             } else {
                 this.isBtn = true
             }
+        },
+        mounted () {
+            var vm = this
+            window.onresize = function () {
+            return (function () {
+                vm.showHeight = document.body.clientHeight
+            })()
+            }
+        },
+        watch: {
+            showHeight: function () {
+                if (this.docmHeight > this.showHeight) {
+                    this.hidShow = false
+                } else {
+                    this.hidShow = true
+                }
+            },
         },
         methods: {
             handleClick () {    // 提交
@@ -124,23 +144,36 @@ export default {
                 //     // IOS 
                 //     WeixinJSBridge.call('closeWindow');
                 // }
-                if(typeof(WeixinJSBridge)!="undefined"){
+                if(typeof WeixinJSBridge !== "undefined"){
                     WeixinJSBridge.call('closeWindow');
-                    parent.WeixinJSBridge.call('closeWindow');
+                    // parent.WeixinJSBridge.call('closeWindow');
                     // setTimeout('WeixinJSBridge.call("closeWindow")', 300);
                 }else{
-                    if (navigator.userAgent.indexOf("MSIE") > 0) {  
-                    if (navigator.userAgent.indexOf("MSIE 6.0") > 0) {  
-                        window.opener = null; window.close();  
-                    } else {  
-                        window.open('', '_top'); window.top.close();  
-                    }  
+
+                    if (document.addEventListener) {
+                        document.addEventListener('WeixinJSBridgeReady', function () {
+                            WeixinJSBridge.call('closeWindow');
+                        }, false)
+                    } else if (document.attachEvent) {
+                        document.attachEvent('WeixinJSBridgeReady', function () {
+                            WeixinJSBridge.call('closeWindow');
+                        })
+                        document.attachEvent('onWeixinJSBridgeReady', function () {
+                            WeixinJSBridge.call('closeWindow');
+                        })
+                    }
+                   else if (navigator.userAgent.indexOf("MSIE") > 0) {  
+                        if (navigator.userAgent.indexOf("MSIE 6.0") > 0) {  
+                            window.opener = null; window.close();  
+                        } else {  
+                            window.open('', '_top'); window.top.close();  
+                        }  
                     } else if (navigator.userAgent.indexOf("Firefox") > 0) {  
-                    window.location.href = 'about:blank ';  
+                        window.location.href = 'about:blank ';  
                     } else {  
-                    window.opener = null;   
-                    window.open('', '_self', '');  
-                    window.close();  
+                        window.opener = null;   
+                        window.open('', '_self', '');  
+                        window.close();  
                     }
                 }
             }
@@ -168,6 +201,7 @@ export default {
         padding-top: rem(0);
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
+        background-color: #fff;
         img {
             font-size: rem(30);
             position: absolute;
@@ -184,6 +218,7 @@ export default {
         }
     }
     .section {
+        background-color: #fff;
         .msgs {
             width: 100%;
             padding: rem(6) rem(15);
