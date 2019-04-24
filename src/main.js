@@ -10,6 +10,7 @@ import '@/common/css/flex.css'
 import '@/common/css/Size.css'
 import '@/common/js/rem.js'
 import '@/common/js/filter'
+import "@/common/js/ios.js"
 import api from '@/api'
 import VueLazyload from 'vue-lazyload'
 import infiniteScroll from 'vue-infinite-scroll'

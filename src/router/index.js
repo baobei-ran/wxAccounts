@@ -5,6 +5,7 @@ const Activity = resolve => require(['@/components/user/activity'], resolve);   
 const Agreement = resolve => require(['@/components/user/agreement'], resolve);      // 协议
 const Login = resolve => require(['@/components/user/phonelogin'], resolve);      // 绑定手机号
 const Authentication = resolve => require(['@/components/user/authentication'], resolve);  // 添加问诊人信息
+const UserMsg = resolve => require(['@/components/user/usermsg'], resolve);  // 认证提示
 
 const Personal = resolve => require(['@/components/user/personal'], resolve);  // 个人中心
 const Userdata = resolve => require(['@/components/user/userdata'], resolve);  // 个人中心,点击头像进入的
@@ -35,13 +36,13 @@ import RecipeMsg from '@/components/doctor/recipeDetail/recipeMsg';  // 处方�
 import ImgDetails from '@/components/doctor/recipeDetail/imgdetails';  // 处方详情
 const SearchDoctor = resolve => require(['@/components/doctor/searchdoctor'], resolve);        //  更多医生
 const DoctorShopList = resolve => require(['@/components/doctor/doctorshoplist'], resolve);     // 更多医生店铺
-
+import Error404 from '@/components/Errors/err404'
 
 Vue.use(Router) 
 
 const router = new Router({
   mode: 'history',
-  // base: 'wechat',
+  base: 'wechat',
   routes: [
     // {
     //   path: '/',
@@ -54,6 +55,11 @@ const router = new Router({
       component: Agreement
     },
     {
+      path:'/err404',
+      title: '错误页面',
+      component: Error404
+    },
+    {
       path:'/phone:id?',
       title: '绑定手机号',
       component: Login
@@ -62,6 +68,11 @@ const router = new Router({
       path: '/authentication',
       title: '添加问诊人信息',
       component: Authentication
+    },
+    {
+      path: '/usermsg',
+      title: '认证成功',
+      component: UserMsg
     },
     {
       path: '/activity',

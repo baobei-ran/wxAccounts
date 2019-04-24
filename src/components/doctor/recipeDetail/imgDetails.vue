@@ -345,6 +345,7 @@ export default {
                     width: 100%;
                     font-size: rem(12);
                     overflow: hidden;
+                    margin-bottom: rem(30);
                 > ul {
                         display: box;              
                         display: -webkit-box;      
@@ -370,7 +371,7 @@ export default {
                                 max-width: rem(100);
                                 max-height: rem(70);
                                 display: block;
-                                vertical-align: middle;
+                                vertical-align: bottom;
                                 margin-left: rem(10);
                             }
                         }

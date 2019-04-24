@@ -67,12 +67,15 @@ export default {
             } else {
                 this.isBtn = true
             }
+            
         },
         mounted () {
             var vm = this
+            console.log(window.history.state)
             window.onresize = function () {
             return (function () {
                 vm.showHeight = document.body.clientHeight
+                window.scrollTo(0, scroll);
             })()
             }
         },
@@ -88,6 +91,8 @@ export default {
         methods: {
             handleClick () {    // 提交
                 var self = this;
+                // window.history.state.key = null;
+                // console.log(window.history)
                 var idcardReg = /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/;   // 正则身份证
                 if (!this.relation) {
                     Toast({
@@ -120,11 +125,11 @@ export default {
                     console.log(res)
                     Indicator.close();  // 关闭加载框
                     if (res.code == 1) {
-                        MessageBox.confirm(res.msg, {showCancelButton: false,  confirmButtonText: '确定并返回'}).then(action => {
-                            self.wx_clocs()
-                            WeixinJSBridge.call('closeWindow');
-                        });
-                      
+                        self.$router.replace('/usermsg')    // 跳转认证成功页
+                        
+                    //     MessageBox.confirm(res.msg, {showCancelButton: false,  confirmButtonText: '确定并返回'}).then(action => {
+                    //         self.wx_clocs()
+                    //     });
                     } else {
                         Toast({
                             message: res.msg,
@@ -145,15 +150,9 @@ export default {
                 //     // IOS 
                 //     WeixinJSBridge.call('closeWindow');
                 // }
-                if(typeof WeixinJSBridge !== "undefined"){
-                    // WeixinJSBridge.call('closeWindow');
-                        window.close();
-                        //这个可以关闭ios系统的手机
-                        // WeixinJSBridge.call('closeWindow');
-                        parent.WeixinJSBridge.call('closeWindow');
-                    
-
-                    setTimeout('WeixinJSBridge.call("closeWindow")', 300);
+                if(typeof WeixinJSBridge !== "undefined") {
+                        WeixinJSBridge.call('closeWindow');
+                        // parent.WeixinJSBridge.call('closeWindow');
                 }else{
 
                     if (document.addEventListener) {

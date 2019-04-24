@@ -106,6 +106,7 @@ export default {
             },
             handleClick () {    // 提交
                 var self = this;
+                // self.out('/authentication')
                 var isphone = /^1[3456789]\d{9}$/;
                 if (!this.phones && !isphone.test(this.phones)) {
                     Toast({
@@ -134,7 +135,7 @@ export default {
                             iconClass: 'icon icon-success'
                         });
                         if (res.auth == 1) {
-                            MessageBox.confirm('已认证用户信息，返回公众号后点击左下方“我的医生”即可与医生在线沟通!', {showCancelButton: false, confirmButtonText: '确定并返回'}).then(action => {
+                            MessageBox.confirm('已认证用户信息，返回公众号后点击左下方“我的医生”即可与医生在线沟通!', {showCancelButton: false, closeOnClickModal: true, confirmButtonText: '确定并返回'}).then(action => {
                                 self.wx_clocs()
                             });
                         } else {

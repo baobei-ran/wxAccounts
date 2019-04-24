@@ -1,8 +1,7 @@
 import axios from 'axios';
 import { Indicator } from 'mint-ui';
-// import { Indicator } from 'mint-ui';
-var baseURL = 'http://test99.yunyikang.cn'; // 测试
-// var baseURL="https://www.yunyikang.cn";
+// var baseURL = 'http://test99.yunyikang.cn'; // 测试
+var baseURL="https://www.yunyikang.cn";       // 正式
 axios.defaults.retry = 2;           //  发起请求次数
 axios.defaults.retryDelay = 1000;   //  每次请求时间
 let http = axios.create({
@@ -37,6 +36,9 @@ http.interceptors.request.use(function (config) {
 // 添加响应拦截器
 http.interceptors.response.use(function (response) {
   // Indicator.close();
+  if (!response.data.code && response.data.code != 0) {
+      window.location.href = '/wechat/err404'
+  }
   return response;
 }, function (error) {
   var config = error.config;
