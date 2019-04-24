@@ -52,6 +52,7 @@ export default {
 }
 .userdata {
     width: 100%;
+    height: 100%;
     font-size: rem(16);
     .header {
         -webkit-display: flex;
@@ -84,6 +85,8 @@ export default {
     }
     .section {
         width: 100%;
+        background: #fff;
+        padding-bottom: rem(5);
         ul {
             width: 100%;
             font-size: rem(14);

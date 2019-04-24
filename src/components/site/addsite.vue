@@ -102,14 +102,14 @@ export default {
             var self = this;
             window.onresize = function () {
                 return (function () {
-                    self.showHeight = document.documentElement.clientHeight
+                    self.showHeight = document.body.clientHeight
                 })()
             }
             this.shengs()
         },
         watch: {
-            showHeight: function (val) {
-                if (this.docmHeight > val+ 100) {
+            showHeight: function () {
+                if (this.showHeight < this.docmHeight ) {
                     this.hidShow = false
                 } else {
                     this.hidShow = true

@@ -7,12 +7,13 @@
                 <span>更多医生</span>
             </div>
             <div class="header_search">
-                    <mt-search
+                    <!-- <mt-search
                         v-model="searchVal"
                         cancel-text=""
                         @keyup.enter.native="searchs" 
                         placeholder="搜索医生、科室、疾病">
-                    </mt-search>
+                    </mt-search> -->
+                <input class="search_txt" type="search" v-model="searchVal" @keyup.enter="searchs"   placeholder="搜索医生、科室、疾病">
             </div>
                 <!-- <div class="sortList">
                     <ul id='tabul' class="dis_f dis_sb flex_i">
@@ -278,7 +279,7 @@ export default {
   
             .mint-searchbar-core {
                 font-size: rem(14);
-                line-height: normal;
+                line-height: rem(28);
                 height: rem(28);
             }
     .mint-searchbar-core::-webkit-input-placeholder {
@@ -344,7 +345,20 @@ export default {
             }
         }
     .header_search {
-        height: rem(46);
+        height: rem(46);    
+        padding: rem(10);
+        .search_txt {
+            width: 100%;
+            height: rem(30);
+            border-radius: rem(10);
+            border:1px solid #f5f6f6;
+            background: #F5F6F6;
+            color: #333;
+            padding: 0 rem(20);
+            font-size: rem(14);
+        }
+
+
         .mint-search {
         height: rem(46);
             .mint-searchbar {
@@ -356,20 +370,21 @@ export default {
                 }
             }
             input[type=search]::-webkit-input-placeholder {
-                line-height: rem(44);
+                line-height: rem(28);
+                color: #808080;
             }
             
             input[type=search]:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-           
-                line-height: rem(44);
+                color: #808080;
+                line-height: rem(28);
             }
             input[type=search]::-moz-placeholder { /* Mozilla Firefox 19+ */
-            
-                line-height: rem(44);
+                color: #808080;
+                line-height: rem(28);
             }
             input[type=search]:-ms-input-placeholder { /* Internet Explorer 10-11 */
-            
-                line-height: rem(44);
+                color: #808080;
+                line-height: rem(28);
             }
             .mint-searchbar-core {
                 font-size: rem(14);

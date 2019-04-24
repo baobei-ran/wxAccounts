@@ -106,7 +106,7 @@ export default {
             },
             handleClick () {    // 提交
                 var self = this;
-                var isphone = /^1[345789]\d{9}$/;
+                var isphone = /^1[3456789]\d{9}$/;
                 if (!this.phones && !isphone.test(this.phones)) {
                     Toast({
                         message: '请输入正确手机号',
@@ -152,7 +152,7 @@ export default {
                 })
             },
             timer () { // 获取验证码
-                var isphone = /^1[345789]\d{9}$/;
+                var isphone = /^1[3456789]\d{9}$/;
                 if (!isphone.test(this.phones)) {
                     Toast({
                         message: '请输入正确的手机号',

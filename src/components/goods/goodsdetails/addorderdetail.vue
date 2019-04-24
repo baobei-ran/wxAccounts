@@ -55,7 +55,7 @@
         </main>
         <div class="footer" v-if='paydata.status == 1'>
             <div>总计：<span>￥{{ paydata.moneys }}</span></div>
-            <mt-button type="primary" :disabled='disabled' @click.native='orderData'>提交订单</mt-button>
+            <mt-button type="primary" :disabled='disabled' @click.native='orderData'>立即支付</mt-button>
         </div>
         <div class="footer1" v-if='paydata.status == 6'>
             <mt-button type="primary" @click.native='createOrder'>再次购买</mt-button>

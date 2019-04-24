@@ -133,17 +133,19 @@ export default {
             padding-bottom: rem(52);
             > p {
                     display: inline-block;
-                    width: rem(61);
-                img {
-                    border-radius: 100%;
                     width: 100%;
-                    margin-bottom: rem(12);
+                    text-align: center;
+                img {
+                    width: rem(61);
+                    height: rem(61);
+                    border-radius: 100%;
+                    margin-bottom: rem(10);
                 }
                > span {
                     font-size: rem(16);
+                    display: block;
                     font-weight:400;
                     color: #333;
-                    padding-top: rem(12);
                 }
             }
             >span {

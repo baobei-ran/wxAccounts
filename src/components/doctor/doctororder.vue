@@ -51,7 +51,7 @@
                 </div>
             </div>
         </main>
-        <div class="footer" v-show="hidShow">
+        <div class="footer" >
             <div>总计：<span>￥{{ orderdata.price }}</span></div>
             <mt-button type="primary" :disabled='disabled' @click.native='orderData'>提交订单</mt-button>
         </div>
@@ -87,7 +87,7 @@ export default {
     },
     watch: {
         showHeight: function () {
-        if (this.docmHeight > this.showHeight) {
+        if (this.docmHeight > this.showHeight ) {
             this.hidShow = false
         } else {
             this.hidShow = true
@@ -200,14 +200,10 @@ export default {
                     if(res.err_msg == "get_brand_wcpay_request:ok"){
                     // 使用以上方式判断前端返回,微信团队郑重提示：
                             // res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
-                            Toast({
-                                message: '支付成功！',
-                                position: 'center',
-                                duration: 2000
-                            });
-                            self.ordertime = setInterval(function () {
+                            
+                            self.ordertime = setTimeout(function () {
                                 self.offorder(data)
-                            }, 2000)
+                            }, 1500)
                             
                     } else {
                         Toast({
@@ -228,8 +224,13 @@ export default {
         var self = this;
             self.$http.post('/mobile/Wxorder/pay_result', {order_code: data.order_code }).then(res => {
                 if (res.code == 1) {
+                    Toast({
+                        message: '支付成功！',
+                        position: 'center',
+                        duration: 2000
+                    });
                     self.$router.replace({ name: 'successOrder', params: { id: data.number }})
-                    cleraInterval(self.ordertime)
+                    clearTimeout(self.ordertime)
                 }
             })
         },
@@ -246,7 +247,7 @@ export default {
     },
     beforeDestroy () {
         if (this.ordertime) {
-            cleraInterval(this.ordertime)
+            clearTimeout(this.ordertime)
         }
     }
 }

@@ -1,4 +1,6 @@
 <template>
+
+    <!-- 已 废弃，暂时无用 -->
     <div class="recipe dis_f flex_d">
         <div class="header dis_f flex-hc">
             <img @click='Return' src="../../../common/img/icon_fh.png" alt="">
@@ -13,8 +15,8 @@
                     <div class="msg" v-if='recipedata.status == 2'>
                         处方已开具24小时，已失效
                     </div>
-                    <div class="img">
-                        <div class="img_box">
+                    <div class="img" >
+                        <div class="img_box" >
                              <div class='html_content' id='htmls'>
                                     <div class="canvas_head">
                                         <ul class="dis_sa">
@@ -23,9 +25,9 @@
                                             <li>处方有效时间：<span>{{ canvasdata.undue_time | filterTime }}</span></li>
                                         </ul>
                                     </div>
-                                    <h2>云医康互联网医院电子处方</h2>
+                                    <h2>云医康互联网药店电子处方</h2>
                                     <div class="canvas_user">
-                                        <ul>
+                                        <ul >
                                             <li>姓名：<span>{{ canvasdata.name }}</span></li>
                                             <li>性别：
                                                 <span v-show='canvasdata.sex == 0'>男</span>
@@ -62,12 +64,13 @@
                                     <div class="check">
                                         <ul>
                                             <li><span>处方医师：</span><img ref='doctorImg' :src="$http.baseURL+canvasdata.signpic" alt=""></li>
-                                            <!-- <li><span>审核药师：</span><img src="../common/img/img_dtzs.png" alt=""></li> -->
+                                            
                                         </ul>
                                     </div>
                             </div>
                         </div>
-                        <router-link class="danClick" :to="{ path: '/chufdetails', query : { id: this.$route.params.id }}">查看完整处方</router-link>
+                        <mt-button size="small" class="danClick" @click.native='outdetails' >查看完整处方</mt-button>
+                        <span class="danClick" @click='outdetails' >查看完整处方</span>
                     </div>
                     <ul>
                         <li><span>处方单号：</span><span>{{ recipedata.number }}</span></li>
@@ -106,7 +109,6 @@
 
 <script>
 export default {
-    name: 'recipeMsg',
     data () {
         return {
             recipedata: '',
@@ -116,7 +118,7 @@ export default {
         }
     },
     watch: {
-        '$route': 'getdetails'
+        '$route': 'outdetails'
     },
     mounted() {
         console.log(this.$route.params)
@@ -140,7 +142,17 @@ export default {
         Return () {
             this.$router.back()
         },
-       
+        outdetails () {
+            var self = this;
+            console.log(self.$router)
+            var id = this.$route.params.id
+            if (self.$router) {
+                self.$router.replace('/chufdetails?id='+id )
+            } else {
+                window.location.href = '/chufdetails?id='+ id
+            }
+            
+        }
     }
 }
 </script>
@@ -207,17 +219,17 @@ export default {
                 // background: #000;
                 // opacity: .1;
                 overflow: hidden;
+                z-index: 0;
                 .img_box {
                     width: 100%;
                     background: rgba(0, 0, 0, 0.2);
                       .html_content {
-                        width: 200%;
+                        width: 100%;
                         height: 100%;
-                        overflow: hidden;
+                        // overflow: hidden;
                         font-size: rem(14);
-                        padding: 0 rem(10);
+                        padding: rem(15) rem(10);
                         zoom: 1;
-                        z-index: -1;
                         -webkit-transform-origin-x: 0;    /*定义元素被置于x轴的何处*/
                         -webkit-transform: scale(0.5, 0.8);   /*定义元素被缩放*/
                         .canvas_head {
@@ -232,7 +244,7 @@ export default {
                                 li {
                                     
                                     font-size: rem(10);
-                                    letter-spacing: rem(1);
+                                    
                                 }
                             }
                         }
@@ -247,7 +259,6 @@ export default {
                             width: 100%;
                             border-bottom:1px dashed #ccc;
                             padding: rem(10) 0;
-                            margin-top: rem(10);
                             ul {
                                 display: box;              
                                 display: -webkit-box;      
@@ -268,6 +279,7 @@ export default {
                             width: 100%;
                             padding: rem(20) 0;
                             position: relative;
+                            z-index: 0;
                             >p {
                                 font-weight: 550;
                                 font-size: rem(12);
@@ -283,7 +295,7 @@ export default {
                                 }
                             }
                             .tshi {
-                                position: absolute;
+                                // position: absolute;
                                 right: rem(30);
                                 bottom: rem(10);
                                 font-size: rem(5);
@@ -336,7 +348,7 @@ export default {
                     bottom: rem(15);
                     left: 33%;
                     padding: rem(10) rem(16) rem(10) rem(24);
-                    opacity: .4;
+                    opacity: .5;
                     color: #fff;
                     display: block;
                     border-radius: rem(15);
@@ -344,8 +356,12 @@ export default {
                     background: #000 url(../../../common/img/icon_ckcf.png)
                         no-repeat rem(5);
                     font-size: rem(14);
+                    line-height: rem(10);
                     background-size:15%;
-                    z-index: 1000;
+                    
+                }
+                span {
+                   z-index: 10000;
                 }
             }
             >ul {
@@ -430,6 +446,7 @@ export default {
                             width: 26%;
                         }
                     }
+
                 }
             }
            
@@ -439,3 +456,4 @@ export default {
     
 }
 </style>
+

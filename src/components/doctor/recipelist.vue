@@ -38,7 +38,7 @@
                 </div>
             </div>
         </div>
-        <div class="footer">
+        <div class="footer" v-if='!datalist.length'>
             <mt-button type="primary" size="large" @click.native="handleClick">找医生</mt-button>
             <!-- <mt-button type="primary" v-if='datalist.length' size="large" @click.native="handleClick2">找医生</mt-button> -->
         </div>

@@ -17,8 +17,8 @@ Vue.use(infiniteScroll)
 Vue.use(VueLazyload)
 Vue.use(VueLazyload, {
   preLoad: 1.3,
-  error: '../static/image/timg.jpg',
-  loading: '../static/image/timg.jpg',
+  error: '',
+  loading: './common/img/5-121204193R0-50.gif',
   attempt: 1
 })
 

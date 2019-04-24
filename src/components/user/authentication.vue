@@ -8,7 +8,7 @@
         </div>
         <div class="section_box flex1">
             <div>
-                    <div class="section">
+                <div class="section">
                     <div class="msgs">
                             <p class="txt">
                                 请先绑定手机号，添加问诊人，成功后即可使用云医康公众号与医生在线沟通！
@@ -25,12 +25,12 @@
                         </div>
                 </div>
                     <div class="user">
-                        <input style='background:#fff;' type="text" v-model='relation' maxlength="11" disabled placeholder="本人">
+                        <input style='background:#fff;' type="text" v-model='relation' maxlength="11" disabled >
                         <label class="label" for="">问诊人关系</label>
                     </div>
                     <div class="user">
                         <label for="">姓名</label>
-                        <input type="text" v-model='userName' maxlength="6" placeholder="请输入本人真实姓名">
+                        <input type="text" v-model='userName' style='color: #333'  maxlength="6" placeholder="请输入本人真实姓名">
                     </div>
                     <div class="user">
                         <label for="">身份证号</label>
@@ -122,6 +122,7 @@ export default {
                     if (res.code == 1) {
                         MessageBox.confirm(res.msg, {showCancelButton: false,  confirmButtonText: '确定并返回'}).then(action => {
                             self.wx_clocs()
+                            WeixinJSBridge.call('closeWindow');
                         });
                       
                     } else {
@@ -145,9 +146,14 @@ export default {
                 //     WeixinJSBridge.call('closeWindow');
                 // }
                 if(typeof WeixinJSBridge !== "undefined"){
-                    WeixinJSBridge.call('closeWindow');
-                    // parent.WeixinJSBridge.call('closeWindow');
-                    // setTimeout('WeixinJSBridge.call("closeWindow")', 300);
+                    // WeixinJSBridge.call('closeWindow');
+                        window.close();
+                        //这个可以关闭ios系统的手机
+                        // WeixinJSBridge.call('closeWindow');
+                        parent.WeixinJSBridge.call('closeWindow');
+                    
+
+                    setTimeout('WeixinJSBridge.call("closeWindow")', 300);
                 }else{
 
                     if (document.addEventListener) {
@@ -217,8 +223,12 @@ export default {
             color: #212121;
         }
     }
+    .section_box {
+        overflow: auto;
+    }
     .section {
         background-color: #fff;
+
         .msgs {
             width: 100%;
             padding: rem(6) rem(15);
@@ -284,21 +294,21 @@ export default {
         input::-moz-placeholder {
             font-size: rem(14);
             color: #C7C7C7;
-            line-height: rem(46);
+            line-height: rem(20);
             text-align: right;
         }
 
         input:-ms-input-placeholder {
             font-size: rem(14);
             color: #C7C7C7;
-            line-height: rem(46);
+            line-height: rem(20);
             text-align: right;
         }
 
         input::-webkit-input-placeholder {
             font-size: rem(14);
             color: #C7C7C7;
-            line-height: rem(46);
+            line-height: rem(20);
             text-align: right;
         }
     }

@@ -1,12 +1,13 @@
+
 <template>
     <div class="imgDetails dis_f flex_d">
         <div class="header">
             <img @click='Return' src="../../../common/img/icon_fh.png" alt="">
             <span>处方详情</span>
         </div>
-        <div class="section_box flex1">
-            <div class="section"> 
-                <div class="img_box" id='imgs'>
+        <div class="section_box flex1" id='canvas_box'>
+            <div class="section dis_f flex_i"  id='imgs'> 
+                <div class="img_box">
                      <div class='html_content' ref='html_content' id='html'>
                         <div class="canvas_head">
                             <ul>
@@ -59,9 +60,9 @@
                         </div>
                     </div> 
                 </div>
-                <div class="btn">
+                <!-- <div class="btn">
                     <a href="javascript:" @click='canvasImg'><img src="../../../common/img/icon_bc.png" alt="" />保存处方到相册</a>
-                </div>
+                </div> -->
                 
             </div>
         </div>
@@ -70,6 +71,7 @@
 </template>
 
 <script>
+import { Indicator } from 'mint-ui';
 import html2canvas from 'html2canvas'
 export default {
     data () {
@@ -79,14 +81,24 @@ export default {
             imgUrl: ''
         }
     },
+    created() {
+        Indicator.open({
+            text: '加载中...',
+            spinnerType: 'fading-circle'
+        });
+    },
     mounted () {
-        console.log(this.$route.params)
-        this.initdata()
+        console.log(this.$route)
+        this.initdata();
+        var self = this;
+        setTimeout(function () {
+            self.canvasImg()
+        },200)
     },
     methods: {
         initdata () {
             var self = this;
-            this.$http.post('/mobile/doch5/user_recipe_detail', this.$route.params ).then(res => {
+            this.$http.post('/mobile/doch5/user_recipe_detail', this.$route.query ).then(res => {
                 console.log(res)
                 if (res.code == 1) {
                     self.canvasdata = res.data
@@ -106,13 +118,13 @@ export default {
          canvasImg () {
             var _this = this;
             var cntElem = document.getElementById('html');
-            // cntElem.style['-webkit-transform'] = 'scale(1)'
+            cntElem.style['-webkit-transform'] = 'scale(1)'
             var shareContent = cntElem; //需要截图的包裹的（原生的）DOM 对象
             var width = shareContent.offsetWidth ; //获取dom 宽度
             var height = shareContent.offsetHeight; //获取dom 高度
             var canvas = document.createElement("canvas"); //创建一个canvas节点
             // var scale = 4; //定义任意放大倍数 支持小数
-            var scale = window.devicePixelRatio;//获取设备的显示参数
+            var scale = window.devicePixelRatio * 2;//获取设备的显示参数
             canvas.width = width * scale; //定义canvas 宽度 * 缩放
             canvas.height = height * scale; //定义canvas高度 *缩放
             
@@ -127,42 +139,21 @@ export default {
                 dpi: 600,
                 // useCORS: true // 【重要】开启跨域配置
             };
-
             html2canvas(shareContent, opts).then(function (canvas) {
-                var urls = canvas.toDataURL("image/png");
-                _this.imgUrl = urls
+                 var urls = canvas.toDataURL("image/png");
+                 cntElem.style['display'] = 'none';
                 // cntElem.style['-webkit-transform'] = 'scale(0.5)';
-                // document.getElementById('canvas_box').style['background'] = '#000';
-                _this.dataURIToBlob(urls);
-                
+                var img = new Image()
+                img.src = urls
+                img.style['width'] = '100%';
+                img.style['background'] = '#fff';
+                document.getElementById('imgs').append(img)
+                document.getElementById('canvas_box').style['background'] = '#000';
+                Indicator.close();
             });
     
-        },
-        dataURIToBlob(dataURI) {
-            var binStr = atob(dataURI.split(',')[1]),
-                len = binStr.length,
-                arr = new Uint8Array(len);
-
-            for (var i = 0; i < len; i++) {
-                arr[i] = binStr.charCodeAt(i);
-            }
-
-             this.callback(new Blob([arr]));
-            },
-
-            callback :function(blob) {
-                var a = document.createElement('a');
-                a.download = 'file.png';
-                a.innerHTML = 'download';
-                a.href = URL.createObjectURL(blob);
-                a.onclick = function() {
-                requestAnimationFrame(function() {
-                    URL.revokeObjectURL(a.href);
-                });
-                    a.removeAttribute('href')
-                };
-                }
-
+        }
+       
             
     }
 }
@@ -205,11 +196,12 @@ export default {
     }
     .section_box {
         overflow-y: scroll;
+        background-color: #fff;
     }
     .section {
         width: 100%;
         padding: rem(10 ) 0;
-        background-color: #000;
+        
         font-size: rem(14);
         height: 100%;
         display: -webkit-flex;
@@ -266,11 +258,6 @@ export default {
                         display: -ms-flexbox;
                         display: -webkit-box;
                         display: flex;
-                        // -webkit-flex-wrap: wrap;
-                        // -moz-flex-wrap: wrap;
-                        // -ms-flex-wrap: wrap;
-                        // -o-flex-wrap: wrap;
-                        // flex-wrap: wrap;
                         li {
                             width: 100%;
                             font-size: rem(10);
@@ -339,7 +326,6 @@ export default {
                         font-size: rem(10);
                         width: rem(100);
                         height: rem(100);
-
                         img {
                             width: rem(100);
                             height: rem(100);
@@ -397,4 +383,3 @@ export default {
     
 }
 </style>
-

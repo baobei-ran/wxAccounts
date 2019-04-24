@@ -7,19 +7,17 @@ const Login = resolve => require(['@/components/user/phonelogin'], resolve);    
 const Authentication = resolve => require(['@/components/user/authentication'], resolve);  // 添加问诊人信息
 
 const Personal = resolve => require(['@/components/user/personal'], resolve);  // 个人中心
-import Userdata from '@/components/user/userdata'  // 个人中心,点击头像进入的
-import HealthData from '@/components/user/healthdata'  // 健康数据
+const Userdata = resolve => require(['@/components/user/userdata'], resolve);  // 个人中心,点击头像进入的
+const HealthData = resolve => require(['@/components/user/healthdata'], resolve);  // 健康数据
+const AuthenticationYes = resolve => require(['@/components/user/authenticationYes'], resolve);  // 问诊信息确认
 
-import AuthenticationYes from '@/components/user/authenticationYes'  // 问诊信息确认
-import RecipeMsg from '@/components/doctor/recipeDetail/recipeMsg'  // 处方信息
-import ImgDetails from '@/components/doctor/recipeDetail/imgDetails'  // 处方详情
 import Finddoctor from '@/components/doctor/finddoctor'  // 我的医生
 import DoctorDetail from '@/components/doctor/doctordetail'  // 医生详情
 import DoctorShop from '@/components/doctor/doctorshop'  // 医生店铺
 import ShopDetail from '@/components/doctor/shopdetail'  // 医生店铺商品详情
 import Doctororder from '@/components/doctor/doctororder'  // 商品下单
 
-import Consultdoctor from '@/components/doctor/consultdoctor'  // 咨询页 医生详情的工作室
+var Consultdoctor = resolve => require(['@/components/doctor/consultdoctor'], resolve);  // 咨询页 医生详情的工作室
 
 const Dingdan = resolve => require(['@/components/goods/dingdan'], resolve);   // 商品订单
 import AddorderDetail from '@/components/goods/goodsdetails/addorderdetail'   // 待支付订单详情
@@ -32,9 +30,11 @@ const SiteList = resolve => require(['@/components/site/sitelist'],resolve);    
 const AddSite  = resolve => require(['@/components/site/addsite'],resolve);                 // 添加地址
 const EditSite = resolve => require(['@/components/site/editsite'],resolve);                 // 编辑地址
 
-import RecipeList from '@/components/doctor/recipelist'        //  处方订单
-import SearchDoctor from '@/components/doctor/searchdoctor'        //  更多医生
-import DoctorShopList from '@/components/doctor/doctorshoplist'     // 更多医生店铺
+import RecipeList from '@/components/doctor/recipelist';        //  处方订单
+import RecipeMsg from '@/components/doctor/recipeDetail/recipeMsg';  // 处方信息
+import ImgDetails from '@/components/doctor/recipeDetail/imgdetails';  // 处方详情
+const SearchDoctor = resolve => require(['@/components/doctor/searchdoctor'], resolve);        //  更多医生
+const DoctorShopList = resolve => require(['@/components/doctor/doctorshoplist'], resolve);     // 更多医生店铺
 
 
 Vue.use(Router) 
@@ -204,9 +204,9 @@ const router = new Router({
       component: RecipeMsg
     },
     {
-      path: '/imgdetails/:id',
+      path: '/chufdetails:id?',
       title: '处方详情',
-      name: 'imgdetails',
+      name: 'chufdetails',
       component: ImgDetails
     },
     
@@ -214,14 +214,14 @@ const router = new Router({
 })
 
 
-router.onError((error) => {
-  console.log(error)
-  const pattern = /Loading chunk (\d)+ failed/g;
-  const isChunkLoadFailed = error.message.match(pattern);
-  const targetPath = router.history.pending.fullPath;
-  if(isChunkLoadFailed){
-      router.replace(targetPath);
-  }
-})
+// router.onError((error) => {
+//   console.log(error)
+//   const pattern = /Loading chunk (\d)+ failed/g;
+//   const isChunkLoadFailed = error.message.match(pattern);
+//   const targetPath = router.history.pending.fullPath;
+//   if(isChunkLoadFailed){
+//       router.replace(targetPath);
+//   }
+// })
 
 export default router
