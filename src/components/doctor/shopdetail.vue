@@ -4,9 +4,16 @@
             <img class="backs" @click='Return' src="../../common/img/icon_return.png" alt="">
             <!-- <div><img src="../../common/img/icon_tj.png" alt="">推荐</div> -->
         </div>
-       <div class="content">
-            <div class="bg_f">
-                <img ref='imgs' src="../../common/img/img_dtzs.png" alt="">
+       <div class="content flex1">
+            <div class="bg_f imgarr">
+                <div class="swiper-container">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide" v-for='(val,i) in pics' :key='i'>
+                            <img :src="$http.baseURL+val.img" alt="">
+                        </div>
+                    </div>
+                    <div class="swiper-pagination"></div>
+                </div>
             </div>
             <div class="title bg_f">
                 <span class="price" >￥<span style='font-size: .28rem;'>{{ datalist.price }}</span></span>
@@ -63,9 +70,6 @@
             <div class="cont_img">
                 <img v-for='(val,i) in imgs' :key='i' :src="$http.baseURL+val.img" alt="">
             </div>
-            <div  class="cont_img">
-            <img v-for='(val,i) in pics' :key='i' :src="val.img" alt="">
-            </div>
        </div>
         <div class="footer">
                 <mt-button class="btnback" type="default"  @click.native='doctorShop'>店铺首页</mt-button>
@@ -74,6 +78,7 @@
     </div>
 </template>
 <script>
+import Swiper from 'swiper';
 export default {
     data () {
         return {
@@ -112,7 +117,17 @@ export default {
                     _this.datalist.recipe = res.data.recipe == 0? '非处方':'处方'
                     _this.imgs = res.img
                     _this.pics = res.pic
-                    _this.$refs.imgs.src = _this.$http.baseURL + _this.datalist.pic // 主图
+                    _this.$nextTick(() => {
+                        if (_this.pics.length > 1) {
+                            new Swiper ('.swiper-container', {
+                                loop: true,
+                                autoplay: true,
+                                pagination: {
+                                    el: '.swiper-pagination',
+                                },
+                            }) 
+                        }
+                    })
                 })
             } else {
 
@@ -133,6 +148,26 @@ export default {
     }
 }
 </script>
+
+
+<style lang='scss'>
+.imgarr {
+    width: 100%;
+    height: auto;
+    .swiper-container {
+        .swiper-wrapper {
+            .swiper-slide {
+                img {
+                    width:100%;
+                }
+            }
+        }
+    }
+}
+
+</style>
+
+
 <style lang='scss' scoped>
 @function rem($px) {
     @return $px / 50 + rem;
@@ -153,12 +188,27 @@ $color: #333;
     background-color: #f4f4f4;
     position: relative;
     font-size: rem(16);
+    display: -webkit-box; 
+    display: -moz-box; 
+    display: -webkit-flex; 
+    display: -moz-flex; 
+    display: -ms-flexbox; 
     display: flex;
+    -webkit-flex-direction: column;
+    -moz-flex-direction: column;
+    -ms-flex-direction: column;
+    -o-flex-direction: column;
     flex-direction: column;
     .fiexd {
         width: 100%;
         position: absolute;
+        display: -webkit-box; 
+        display: -moz-box; 
+        display: -webkit-flex; 
+        display: -moz-flex; 
+        display: -ms-flexbox; 
         display: flex;
+        z-index: 10;
         top: rem(23);
         left: 0;
         padding: 0 rem(11);
@@ -240,6 +290,7 @@ $color: #333;
     .cont_img {
         width: 100%;
         font-size: 0.28rem;
+        padding-bottom: rem(5);
         img {
             display: block;
             width: 100%;

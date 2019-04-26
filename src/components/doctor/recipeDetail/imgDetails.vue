@@ -122,6 +122,7 @@ export default {
             var shareContent = cntElem; //需要截图的包裹的（原生的）DOM 对象
             var width = shareContent.offsetWidth ; //获取dom 宽度
             var height = shareContent.offsetHeight; //获取dom 高度
+                height = Number(height) + 30
             var canvas = document.createElement("canvas"); //创建一个canvas节点
             // var scale = 4; //定义任意放大倍数 支持小数
             var scale = window.devicePixelRatio * 2;//获取设备的显示参数
@@ -200,7 +201,7 @@ export default {
     }
     .section {
         width: 100%;
-        padding: rem(10 ) 0;
+        padding: rem(10) 0;
         
         font-size: rem(14);
         height: 100%;

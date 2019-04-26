@@ -19,7 +19,10 @@
                                 <!-- <li class="right"><img src="../../common/img/icon_enter.png" alt=""></li> -->
                             </ul>
                         </div>
-                        <div class="addbtn dis_f"><span>已售<span>{{ val.count }}</span>件</span><mt-button class="yes" @click.native='getDoctor(val.did)'>查看更多</mt-button></div>
+                        <div class="addbtn dis_f dis_sb">
+                            <div class="keep"><span v-if='val.relevance == 1'><img src='../../common/img/icon_bq.png' alt=''>关注的医生</span></div>
+                            <div class='btn_more'><span>已售<span>{{ val.count }}</span>件</span><mt-button class="yes" @click.native='getDoctor(val.did)'>查看更多</mt-button></div>
+                        </div>
                     </div>
                     
                 </div>
@@ -41,13 +44,15 @@ export default {
             show: true,           // 返回按钮显示
             busy: true,
             dropup: false,
-            count: 0
+            count: 0,
+            uid: ''
         }
     },
     created() {
         var urldata = this.$route.query
         if(urldata.uid) {
             this.show = false
+            this.uid = urldata.uid
         } else {
             this.show = true
         }
@@ -77,7 +82,7 @@ export default {
             if (this.dropup) {
                 return
             }
-            this.$http.post('/mobile/Wxdoccenter/doc_goods', {page: this.page, num: this.limit}).then(res => {
+            this.$http.post('/mobile/Wxdoccenter/doc_goods', {page: this.page, num: this.limit, uid: this.uid }).then(res => {
                 console.log(res)
                 
                 if (res.code == 1) {
@@ -238,27 +243,37 @@ export default {
             
                 .addbtn {
                     width: 100%;
-                    text-align: right;
-                    line-height: rem(25);
-                    -webkit-justify-content: flex-end;
-                    -moz-justify-content: flex-end;
-                    -ms-justify-content: flex-end;
-                    -o-justify-content: flex-end;
-                    justify-content: flex-end;
-                    >span {
-                        color: #808080;
-                        font-size: rem(12);
+                    height: rem(25);
+                    .keep {
+                        line-height: rem(25);
+                        span {
+                            color: #F09F88;
+                            font-size: rem(11);
+                            vertical-align: middle;
+                            img {
+                                width: rem(11);
+                                vertical-align: middle;
+                                margin-right: rem(1);
+                            }
+                        }
                     }
-                    >button {
-                        height: rem(25);
-                        border-radius: rem(13);
-                        font-size: rem(13);
-                        border:1px solid rgba(74,156,243,1);
-                        color: #4A9CF3;
-                    }
-                    .yes {
-                        margin-left: rem(15);
-                    }
+                   .btn_more {
+                        >span {
+                            color: #808080;
+                            font-size: rem(12);
+                        }
+                        >button {
+                            height: rem(25);
+                            border-radius: rem(13);
+                            font-size: rem(13);
+                            border:1px solid rgba(74,156,243,1);
+                            color: #4A9CF3;
+                        }
+                        .yes {
+                            margin-left: rem(15);
+                        }
+                   }
+                   
                 }
         }
     }

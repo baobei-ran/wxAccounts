@@ -42,7 +42,7 @@ Vue.use(Router)
 
 const router = new Router({
   mode: 'history',
-  base: 'wechat',
+  // base: 'wechat',
   routes: [
     // {
     //   path: '/',

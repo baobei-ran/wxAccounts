@@ -25,12 +25,12 @@
                         </div>
                 </div>
                     <div class="user">
-                        <input style='background:#fff;' type="text" v-model='relation' maxlength="11" disabled >
+                        <input style='background:#fff;color: #333;' type="text" value='本人' v-model='relation' maxlength="11" disabled >
                         <label class="label" for="">问诊人关系</label>
                     </div>
                     <div class="user">
                         <label for="">姓名</label>
-                        <input type="text" v-model='userName' style='color: #333'  maxlength="6" placeholder="请输入本人真实姓名">
+                        <input type="text" v-model='userName'  maxlength="6" placeholder="请输入本人真实姓名">
                     </div>
                     <div class="user">
                         <label for="">身份证号</label>
