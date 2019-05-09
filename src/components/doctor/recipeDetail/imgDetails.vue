@@ -138,7 +138,7 @@ export default {
                 width: width, //dom 原始宽度
                 height: height,
                 dpi: 600,
-                // useCORS: true // 【重要】开启跨域配置
+                useCORS: true // 【重要】开启跨域配置
             };
             html2canvas(shareContent, opts).then(function (canvas) {
                  var urls = canvas.toDataURL("image/png");

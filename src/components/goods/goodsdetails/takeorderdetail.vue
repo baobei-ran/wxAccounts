@@ -129,8 +129,6 @@ export default {
             setTimeout(() => {
                 if (self.huan.length > 0) {
                     var userSite = JSON.parse(this.$cookie.get('userSite'))
-                        // console.log(userSite)
-                        // console.log(self.huan)
                         self.huan.map(val => {
                             if (userSite && userSite.id == val.id && userSite.uid == uid ) {
                                 this.site = userSite 
@@ -140,7 +138,7 @@ export default {
                         })
                     
                }
-            }, 200)
+            }, 300)
            
         },
         Return () {

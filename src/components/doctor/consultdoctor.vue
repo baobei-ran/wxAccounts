@@ -10,7 +10,7 @@
                 <div class="list">
                     <ul>
                         <li>
-                            <img ref='userImg' src="../../common/img/pic_wdys_ystx.png" alt="">
+                            <img ref='userImg' class="userImg" src="../../common/img/pic_wdys_ystx.png" alt="">
                             <dl>
                                 <dt>
                                     <span>{{ datalist.true_name }}</span>
@@ -28,6 +28,50 @@
                     </ul>
                     
                 </div>
+                <div class="docContent">
+                    <div class='content'>
+                        <div class="time"><span>{{ time }}</span></div>
+                        <div class="userMsg_box">
+                            <div class="user" v-if='type == 1'>
+                                <ul>
+                                    <li class="head_portrait">
+                                        <img class="userImg" :src="$http.baseURL + datalist.picture" alt="">
+                                    </li>
+                                    <li class="txt">
+                                        {{ con }}
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="user" v-if='type == 2'>
+                                <ul>
+                                    <li class="head_portrait">
+                                        <img class="userImg" :src="$http.baseURL + datalist.picture" alt="">
+                                    </li>
+                                    <li class="file_img">
+                                        <img :src="$http.baseURL+ con" alt="">
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="user" v-if="type == 3">
+                                <ul>
+                                    <li class="head_portrait">
+                                        <img class="userImg" :src="$http.baseURL + datalist.picture" alt="">
+                                    </li>
+                                    <li class="audios">
+                                        <!-- <audio hidden='true' id="player" :src='$http.baseURL + con' controls="controls" >
+                                            <source :src='$http.baseURL + con'/>
+                                        </audio> -->
+                                        
+                                        <div>
+                                            <span class="audio" id='Audio' @click='playAudio'><img ref='hron' src="../../common/img/dian3.png" alt="" ></span>
+                                            <span>{{ playTime }}</span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="footer">
@@ -39,6 +83,7 @@
 <script>
 import { Toast } from 'mint-ui';
 import { MessageBox } from 'mint-ui';
+var BenzAMRRecorder = require('benz-amr-recorder');
 export default {
     name: 'doctordetail',
     data () {
@@ -47,17 +92,79 @@ export default {
             did: '',                                // 医生id
             openid: '',
             datalist: {},
+            type: '',
+            con: '',
+            time: '',
+            playTime: '',
+            flag: false,
+            amr: '',
+            Interval: '',    // 定时器
         }
     },
     mounted() {
-        
+        this.type = this.$route.query.type  // 1、文本 2、图片 3、音频
+        this.con = this.$route.query.con    // 内容
+        this.time = this.$route.query.time  // 时间
         this.did = this.$route.query.did
         this.uid = this.$route.query.uid
         this.openid = this.$route.query.openid
-        console.log(this.$route)
+        if (this.type == 3) {
+            setTimeout(() => {
+                var _self = this;
+                this.amr = new BenzAMRRecorder();
+                var url = this.$http.baseURL + this.con
+                this.amr.initWithUrl(url).then(function() {
+                    _self.playTime = _self.amr.getDuration().toFixed(0) + '\"';
+                })
+                this.amr.onPlay(function () {
+                    console.log('开始播放');
+                });
+                this.amr.onEnded(function() {
+                    console.log('播放完毕');
+                })
+                this.amr.onStop(function() {
+                    console.log('停止播放');
+                })
+                this.amr.onAutoEnded(function () {
+                    console.log('Event: autoEnded');
+                });
+                this.amr.onStartRecord(function () {
+                    console.log('Event: startRecord');
+                });
+                this.amr.onFinishRecord(function () {
+                    console.log('Event: finishRecord');
+                });
+                this.amr.onCancelRecord(function () {
+                    console.log('Event: cancelRecord');
+                });
+                var Audio = document.getElementById('Audio');
+                console.log(this.amr)
+                Audio.onclick = function () {
+                    if (_self.amr.isPlaying()) {
+                        console.log('停止播放');
+                        _self.amr.stop();
+                    } else {
+                        console.log('播放');
+                        _self.amr.play();
+                    }
+                }
+            }, 300)
+            // this.playTime = Math.floor(Math.random() * 199)
+        }
+        // console.log(this.$route)
         this.inituser()
+        
     },
     methods: {
+        playAudio () {
+            console.log('test')
+            // var player = document.getElementById('player');
+            // if (player.paused) {
+            //     player.play();
+            // } else {
+            //     player.pause();
+            // }
+        },
         inituser () {
             var self = this;
             this.$http.post('/mobile/wxdoccenter/doctor_detail', {did:this.did, uid: this.uid}).then(res => {
@@ -130,7 +237,12 @@ export default {
                     }
                 }
             }
-    }
+    },
+    beforeDestroy () {
+          if (this.Interval)  {
+              clearInterval(this.Interval)
+          }
+    },
 }
 </script>
 
@@ -141,6 +253,22 @@ export default {
 @function rem($px) {
     @return $px / 50 + rem;
 }
+
+@mixin rounded ($l, $r, $t, $b, $color) {
+    -webkit-box-shadow: $l $r $t $b $color;  
+    -moz-box-shadow: $l $r $t $b $color;
+    box-shadow: $l $r $t $b $color;
+}
+
+@mixin radius ($v1, $v2, $v3, $v4) {
+    -webkit-appearance:none;
+    -webkit-border-radius: $v1 $v2 $v3 $v4;
+    -moz-border-radius: $v1 $v2 $v3 $v4;
+    -ms-border-radius: $v1 $v2 $v3 $v4;
+    -o-border-radius: $v1 $v2 $v3 $v4;
+    border-radius: $v1 $v2 $v3 $v4;
+}
+
 .doctor {
     width: 100%;
     height: 100%;
@@ -153,7 +281,7 @@ export default {
         justify-content: center;
         color: #212121;
         position: relative;
-        box-shadow:0px 1px 0px 0px rgba(224,224,224,.5);
+        @include rounded(0px,1px,0px,0px, rgba(224,224,224,.5));
         padding-top: rem(0);
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
@@ -187,7 +315,7 @@ export default {
                 padding: rem(15);
                 width: 100%;
                 background:rgba(255,255,255,1);
-                box-shadow:0px 2px 5px 0px rgba(0, 0, 0, 0.1);
+                @include rounded(0px,2px,5px,0px, rgba(0,0,0,0.1));
                 border-radius:4px;
                 margin-top: rem(5);
                 li:first-child {
@@ -295,6 +423,109 @@ export default {
                 }
             }
         }
+
+
+        .docContent {
+            width: 100%;
+        .content {
+          width: 100%;
+          padding: rem(15);
+          .time {
+              width: 100%;
+              text-align: center;
+              > span {
+                  padding: rem(1) rem(2);
+                text-align: center;
+                background: #fff;
+                color: #666;
+                font-size: rem(13);
+                @include radius(rem(4), rem(4), rem(4), rem(4));
+              }
+          }
+          .userMsg_box {
+              width: 100%;
+              .user {
+                width: 100%;
+                margin-top: rem(15);
+                ul {
+                    display: flex;
+                    color: #181818;
+                  .head_portrait {
+                      width: rem(33);
+                      height:rem(33);
+                      background: #fff;
+                      -webkit-appearance:none;
+                      -webkit-border-radius:50%;
+                      -moz-border-radius:50%;
+                      -ms-border-radius:50%;
+                      -o-border-radius:50%;
+                      border-radius:50%;
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        -webkit-appearance:none;
+                        -webkit-border-radius:50%;
+                        -moz-border-radius:50%;
+                        -ms-border-radius:50%;
+                        -o-border-radius:50%;
+                        border-radius:50%;
+                    }
+                  }
+                  .txt {
+                    margin-left: rem(10);
+                    max-width: 80%;
+                    background: #eee;
+                    padding: rem(10) rem(15);
+                    line-height: rem(20);
+                    position: relative;
+                    font-size: rem(13);
+                    @include radius(0, 10px, 10px, 10px);
+                    
+                  }
+                  .file_img {
+                       margin-left: rem(10);
+                        max-width: 70%;
+                        background: #eee;
+                        padding: rem(10);
+                        line-height: rem(20);
+                        position: relative;
+                        font-size: rem(13);
+                        @include radius(0, 10px, 10px, 10px);
+                      >img {
+                        width: rem(110);
+                        height: rem(110);
+                    }
+                    
+                  }
+                  .audios {
+                      margin-left: rem(10);
+                      > div {
+                        display: flex;
+                        align-items: center; 
+                        .audio {
+                            display: block;
+                            width: rem(110);
+                            padding: rem(5) rem(16);
+                            margin-right: rem(5);
+                            @include radius(0, 10px, 10px, 10px);
+                            background-color: #EEE;
+                            >img {
+                                width: rem(20);
+                            }
+                        }
+
+                    }
+                  }
+                  
+                }
+            }
+
+          }
+          
+        }
+        }
+
+
     }
     .footer {
         width: 100%;

@@ -350,6 +350,11 @@ export default {
         .search_txt {
             width: 100%;
             height: rem(30);
+            -webkit-appearance:none;
+            -webkit-border-radius: rem(10);
+            -moz-border-radius:rem(10);
+            -ms-border-radius:rem(10);
+            -o-border-radius:rem(10);
             border-radius: rem(10);
             border:1px solid #f5f6f6;
             background: #F5F6F6;

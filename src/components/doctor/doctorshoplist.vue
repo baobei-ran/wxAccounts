@@ -53,20 +53,22 @@ export default {
         if(urldata.uid) {
             this.show = false
             this.uid = urldata.uid
-        } else {
-            this.show = true
-        }
-         var uids = this.$cookie.get('userLogins') 
+            var uids = this.$cookie.get('userLogins') 
             if (!uids || urldata.uid) {
                 this.$cookie.set('userLogins', urldata.uid, 365)
             }
-        if (urldata) {
-            if (urldata.auth == 0 || urldata.auth == 3) {
-                this.$router.replace('/phone?uid='+urldata.uid+"&auth="+ urldata.auth)
-            } else if (urldata.auth == 2) {
-                this.$router.replace('/authentication')
+            if (urldata) {
+                if (urldata.auth == 0 || urldata.auth == 3) {
+                    this.$router.replace('/phone?uid='+urldata.uid+"&auth="+ urldata.auth)
+                } else if (urldata.auth == 2) {
+                    this.$router.replace('/authentication')
+                }
             }
+        } else {
+            this.show = true
+            this.uid = this.$cookie.get('userLogins');
         }
+         
     },
     mounted () {
         this.initdata()

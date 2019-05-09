@@ -156,7 +156,7 @@ export default {
                 background: #fff;
             >ul {
                 
-                width: 80%;
+                width: 97%;
                 li {
                     width: 100%;
                     color: #333;

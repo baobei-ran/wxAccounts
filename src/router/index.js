@@ -18,7 +18,7 @@ import DoctorShop from '@/components/doctor/doctorshop'  // 医生店铺
 import ShopDetail from '@/components/doctor/shopdetail'  // 医生店铺商品详情
 import Doctororder from '@/components/doctor/doctororder'  // 商品下单
 
-var Consultdoctor = resolve => require(['@/components/doctor/consultdoctor'], resolve);  // 咨询页 医生详情的工作室
+const Consultdoctor = resolve => require(['@/components/doctor/consultdoctor'], resolve);  // 咨询页 医生详情的工作室
 
 const Dingdan = resolve => require(['@/components/goods/dingdan'], resolve);   // 商品订单
 import AddorderDetail from '@/components/goods/goodsdetails/addorderdetail'   // 待支付订单详情
@@ -31,12 +31,13 @@ const SiteList = resolve => require(['@/components/site/sitelist'],resolve);    
 const AddSite  = resolve => require(['@/components/site/addsite'],resolve);                 // 添加地址
 const EditSite = resolve => require(['@/components/site/editsite'],resolve);                 // 编辑地址
 
-import RecipeList from '@/components/doctor/recipelist';        //  处方订单
-import RecipeMsg from '@/components/doctor/recipeDetail/recipeMsg';  // 处方信息
-import ImgDetails from '@/components/doctor/recipeDetail/imgdetails';  // 处方详情
+const RecipeList = r => require.ensure([], () => r(require('@/components/doctor/recipelist')), 'fang');        //  处方订单
+const RecipeMsg = r => require.ensure([], () => r(require('@/components/doctor/recipeDetail/recipeMsg')), 'fang');  // 处方信息
+const ImgDetails = r => require.ensure([], () => r(require('@/components/doctor/recipeDetail/imgdetails')), 'fang');  // 处方详情
+
 const SearchDoctor = resolve => require(['@/components/doctor/searchdoctor'], resolve);        //  更多医生
 const DoctorShopList = resolve => require(['@/components/doctor/doctorshoplist'], resolve);     // 更多医生店铺
-import Error404 from '@/components/Errors/err404'
+const Error404 = resolve => require(['@/components/Errors/err404'], resolve);
 
 Vue.use(Router) 
 

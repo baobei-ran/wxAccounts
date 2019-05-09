@@ -114,6 +114,7 @@ export default {
                 console.log(res)
                 if (res.code == 1) {
                     self.huan = res.data
+                    
                 }
             })  
 
@@ -122,16 +123,15 @@ export default {
                     var userSite = JSON.parse(this.$cookie.get('userSite'))
                         console.log(userSite)
                         console.log(self.huan)
-                        self.huan.map(val => {
-                            if (userSite && userSite.id == val.id && userSite.uid == uid ) {
-                                this.site = userSite 
-                            } else if (val.status == 2) {
-                                this.site = val
-                            }
-                        })
-                    
-               }
-            }, 200)
+                    self.huan.map(val => {
+                        if (userSite && userSite.id == val.id && userSite.uid == uid ) {
+                            this.site = userSite 
+                        } else if (val.status == 2) {
+                            this.site = val
+                        }
+                    })
+                }
+            }, 300)
            
         },
         Return () {
