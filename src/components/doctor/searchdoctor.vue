@@ -52,7 +52,7 @@
             </div>
         
             <div class="doctor_list" v-if='datalist.length'>
-                 <div v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
+                 <div v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="20">
                     <div class="list" v-for='(val,i) in datalist' :key='i'>
                         <ul @click='Clickdetail(val.did, i)'>
                             <li>

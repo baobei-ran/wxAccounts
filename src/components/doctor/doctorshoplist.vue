@@ -9,9 +9,22 @@
             <div class="content_box">
                 <div v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
                     <div class="take Mg-T"  v-for='(val,i) in alllist' :key='i'>
-                        <h4>{{ val.true_name }}医生的店铺 <span>{{ val.hospital_name }}</span></h4>
+                        <div class="doctor_box dis_f dis_sb flex_i">
+                            <div class="doctor_title dis_f dis_sb flex_i">
+                                <img :src="$http.baseURL+val.picture" alt="">
+                                <div class="keep">
+                                    <h4>{{ val.true_name }}医生的店铺 
+                                        <span v-if='val.relevance == 1'><img src='../../common/img/icon_bq.png' alt=''>关注的医生</span></h4>
+                                    <div class="soldOut">
+                                        <span>{{ val.hospital_name }}</span> | <span>已售<span>{{ val.count }}</span>件</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class='btn_more'><mt-button @click.native='getDoctor(val.did)'>进店</mt-button></div>
+                        </div>
+                        
                         <div class="order_list" @click='getDoctor(val.did)'>
-                            <ul>
+                            <ul class="dis_f">
                                 <li v-for='item in val.goods_pic' >
                                     <img v-lazy="$http.baseURL+item" alt="">
                                 </li>
@@ -19,10 +32,10 @@
                                 <!-- <li class="right"><img src="../../common/img/icon_enter.png" alt=""></li> -->
                             </ul>
                         </div>
-                        <div class="addbtn dis_f dis_sb">
-                            <div class="keep"><span v-if='val.relevance == 1'><img src='../../common/img/icon_bq.png' alt=''>关注的医生</span></div>
-                            <div class='btn_more'><span>已售<span>{{ val.count }}</span>件</span><mt-button class="yes" @click.native='getDoctor(val.did)'>查看更多</mt-button></div>
-                        </div>
+                        
+                            
+                            
+                       
                     </div>
                     
                 </div>
@@ -93,8 +106,8 @@ export default {
                      res.data.forEach(val => {
                             var pic = val
                             var arr = pic.goods_pic.split(',')
-                            if (arr.length > 4) {
-                                arr.length = 4
+                            if (arr.length > 3) {
+                                arr.length = 3
                                 val.goods_pic = arr
                             } else {
                                 val.goods_pic = arr
@@ -143,11 +156,18 @@ export default {
 @function rem($px) {
     @return $px / 50 + rem;
 }
-
+@mixin borderRaduis($v) {
+    -webkit-border-radius: $v;
+    -moz-border-radius: $v;
+    -ms-border-radius: $v;
+    -o-border-radius: $v;
+    border-radius: $v;
+}
 .doctorshoplist {
     width: 100%;
     height: 100%;
     font-size: rem(16);
+    background-color: #f9f9f9;
     .header {
         display: -webkit-flex;
         display: flex;
@@ -179,12 +199,12 @@ export default {
         }
     }
     .Mg-T {
-        margin-top: rem(5);
+        margin-top: rem(10);
     }
    
     .content {
         width: 100%;
-        padding: 0 rem(15);
+        padding: 0 rem(10);
         overflow: auto;
        .content_box {
            width:100%;
@@ -199,45 +219,80 @@ export default {
         .take {
             width: 100%;
             box-shadow:0px rem(5) rem(10) 0px rgba(0, 0, 0, 0.1);
-            padding: rem(15);
+            padding: rem(10);
             font-weight:400;
             background: #fff;
-             h4 {
-                background: url('../../common/img/icon_dpu.png') no-repeat 0;
-                background-size: 8%;
-                padding-left: rem(28);
-                line-height: rem(30);
-                font-size: rem(14);
-                color:#333;
-                >span {
-                    margin-left: rem(15);
-                    color:#808080;
-                    font-size: rem(12);
-                }
-            }
-            .order_list {
+            @include borderRaduis(rem(6));
+            .doctor_box {
                 width: 100%;
-                padding: rem(7.5) 0;
-                >ul {
-                    -webkit-display: flex;
-                    display: flex;
-                    margin: rem(7.5) 0;
-                    position: relative;
-                        li {
-                            margin-right: rem(15);
-                            >img {
-                                display: block;
-                                width: rem(64);
-                                margin-bottom: rem(2);
+                .doctor_title {
+                    >img {
+                        width: rem(44);
+                        height: rem(44);
+                        @include borderRaduis(100%);
+                    }
+                 .keep {
+                     padding-left: rem(10);
+                     margin-right: rem(3);
+                        >h4 {
+                            line-height: rem(20);
+                            font-size: rem(13);
+                            color:#333;
+                            font-weight:500;
+                            >span {
+                                color: #F09F88;
+                                font-size: rem(10);
+                                margin-left: rem(10);
+                                img {
+                                    width: rem(11);
+                                    margin-right: rem(1);
+                                    vertical-align: middle;
+                                    
+                                }
                             }
                         }
-                        .right {
-                            position: absolute;
-                            right: 0;
-                            top: 0;
+                        .soldOut {
+                            font-size: rem(11);
+                            color: #808080;
+                            padding-top: rem(7);
+                        }
+                    }
+               
+            }
+            .btn_more {
+                >button {
+                    height: rem(25);
+                    border-radius: rem(5);
+                    font-size: rem(13);
+                    border:1px solid rgba(74,156,243,1);
+                    color: #3196FF;
+                    width:rem(42);
+                    padding: 0;
+                    background-color: #fff;
+                }
+            }
+        }
+            
+             
+            .order_list {
+                width: 100%;
+                margin-top: rem(10);
+                >ul {
+                    display: -webkit-flex;
+                    display: flex;
+                    position: relative;
+                        li {
+                            width: 32%;
                             >img {
-                                width: rem(20);
+                                display: block;
+                                width: 100%;
+                                height: auto;
+                                border: 1px solid #eee;
+                                @include borderRaduis(rem(4));
                             }
+                        }
+                        li:nth-child(2) {
+                            margin: 0 2%;
                         }
                 }
                
@@ -246,35 +301,8 @@ export default {
                 .addbtn {
                     width: 100%;
                     height: rem(25);
-                    .keep {
-                        line-height: rem(25);
-                        span {
-                            color: #F09F88;
-                            font-size: rem(11);
-                            vertical-align: middle;
-                            img {
-                                width: rem(11);
-                                vertical-align: middle;
-                                margin-right: rem(1);
-                            }
-                        }
-                    }
-                   .btn_more {
-                        >span {
-                            color: #808080;
-                            font-size: rem(12);
-                        }
-                        >button {
-                            height: rem(25);
-                            border-radius: rem(13);
-                            font-size: rem(13);
-                            border:1px solid rgba(74,156,243,1);
-                            color: #4A9CF3;
-                        }
-                        .yes {
-                            margin-left: rem(15);
-                        }
-                   }
+                   
+                   
                    
                 }
         }

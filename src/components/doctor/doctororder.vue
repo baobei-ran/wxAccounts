@@ -2,7 +2,7 @@
 <!-- 下单 -->
     <div class="doctororder">
         <div class="header">
-            <img @click='Return' src="../../common/img/icon_fh.png" alt="">
+            <img @click='Returns' src="../../common/img/icon_fh.png" alt="">
             <span>下单详情</span>
         </div>
         <main class="content flex1">
@@ -109,32 +109,49 @@ export default {
                     }
                 }).catch(err => { console.log(err)})
                 
-           
-            this.$http.post('/mobile/Wxuser/useraddress_list', { uid: uid}).then(res => {
-                console.log(res)
-                if (res.code == 1) {
-                    self.huan = res.data
-                    
-                }
-            })  
+           var userSite = JSON.parse(this.$cookie.get('userSite'))
+           if (userSite && userSite.uid == uid) {
+               this.site = userSite 
+           } else {
+               this.$http.post('/mobile/Wxuser/useraddress_list', { uid: uid}).then(res => {
+                    console.log(res)
+                    if (res.code == 1) {
+                        res.data.map(val => {
+                            if (val.status == 2) {
+                                self.site = val
+                            }
+                        })
+                    }
+                })  
+           }
+            
 
-            setTimeout(() => {
-                if (self.huan.length > 0) {
-                    var userSite = JSON.parse(this.$cookie.get('userSite'))
-                        console.log(userSite)
-                        console.log(self.huan)
-                    self.huan.map(val => {
-                        if (userSite && userSite.id == val.id && userSite.uid == uid ) {
-                            this.site = userSite 
-                        } else if (val.status == 2) {
-                            this.site = val
-                        }
-                    })
-                }
-            }, 300)
+
+            // 以下为 板本1 的方式
+            // this.$http.post('/mobile/Wxuser/useraddress_list', { uid: uid}).then(res => {
+            //         console.log(res)
+            //         if (res.code == 1) {
+            //             self.huan = res.data
+            //         }
+            //     })  
+
+            // setTimeout(() => {
+            //     if (self.huan.length > 0) {
+            //         var userSite = JSON.parse(this.$cookie.get('userSite'))
+            //             console.log(userSite)
+            //             console.log(self.huan)
+            //         self.huan.map(val => {
+            //             if (userSite && userSite.id == val.id && userSite.uid == uid ) {
+            //                 this.site = userSite 
+            //             } else if (val.status == 2) {
+            //                 this.site = val
+            //             }
+            //         })
+            //     }
+            // }, 300)
            
         },
-        Return () {
+        Returns () {
             this.$router.back()
         },
         getLength () {
@@ -288,6 +305,7 @@ export default {
             font-size: rem(19);
             width: rem(28);
             padding: rem(5);
+            z-index: 99;
         }
         span {
             padding-top: rem(15);

@@ -91,9 +91,6 @@ export default {
         console.log(this.$route)
         this.initdata();
         var self = this;
-        setTimeout(function () {
-            self.canvasImg()
-        },200)
     },
     methods: {
         initdata () {
@@ -109,6 +106,11 @@ export default {
                     if (self.canvasdata.seal) {
                         self.$refs.chapter.src = self.$http.baseURL+self.canvasdata.seal
                     }
+                    setTimeout(function () {
+                        self.canvasImg()
+                    },300)
+                } else {
+
                 }
             })
         },
@@ -134,11 +136,11 @@ export default {
                 background:null,
                 scale: scale, // 添加的scale 参数
                 canvas: canvas, //自定义 canvas
-                // logging: true, //日志开关，便于查看html2canvas的内部执行流程
+                logging: true, //日志开关，便于查看html2canvas的内部执行流程
                 width: width, //dom 原始宽度
                 height: height,
-                dpi: 600,
-                useCORS: true // 【重要】开启跨域配置
+                allowTaint: true // (如果图片不出来就加上这句)是否允许跨源图像污染画布
+                // useCORS: true // 【重要】开启跨域配置
             };
             html2canvas(shareContent, opts).then(function (canvas) {
                  var urls = canvas.toDataURL("image/png");
@@ -156,6 +158,9 @@ export default {
         }
        
             
+    },
+    beforeDestroy () {
+        Indicator.close();
     }
 }
 </script>
@@ -167,7 +172,7 @@ export default {
 .imgDetails {
     width: 100%;
     height: 100%;
-    font-size: rem(16);
+    font-size: 16px;
     .header {
         display: -webkit-flex;
         display: flex;
@@ -369,11 +374,11 @@ export default {
                             -o-align-items: center;
                             font-size: rem(14);
                             > img {
-                                max-width: rem(100);
-                                max-height: rem(70);
+                                max-width: 100px;
+                                max-height: 70px;
                                 display: block;
                                 vertical-align: bottom;
-                                margin-left: rem(10);
+                                margin-left: 10px;
                             }
                         }
                     }

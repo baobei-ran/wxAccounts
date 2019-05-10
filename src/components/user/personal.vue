@@ -6,7 +6,7 @@
         </div>
         <div class="section">
             <div class="portrait">
-                <p><img ref='userImg' src="../../common/img/pic_txxq.png" alt="">
+                <p class="dis_f flex_i"><img ref='userImg' src="../../common/img/pic_txxq.png" alt="">
                     <span>{{ userInfor.real_name }}</span>
                 </p>
                 <span @click='getUser'><img src="../../common/img/icon_enter.png" alt=""></span>
@@ -96,95 +96,97 @@ export default {
     font-size: rem(14);
     height: 100vh;
     .header {
-        -webkit-display: flex;
-        display: flex;
         height: rem(40);
         justify-content: center;
         color: #212121;
-        position: relative;
-        box-shadow:0px 1px 0px 0px rgba(224,224,224,1);
-        padding-top: rem(0);
+        text-align: center;
         -webkit-box-sizing: border-box;
         box-sizing: border-box;
         font-size: rem(16);
-        background: #fff;
-        img {
-            font-size: rem(30);
-            position: absolute;
-            left: rem(15);
-            top: rem(10);
-            line-height: 1;
-            font-size: rem(19);
-            width: rem(20);
-        }
+        background-color: #fff;
+        border-bottom: 1px solid #E6E6E6;
+        line-height: rem(40);
         span {
-            padding-top: rem(15);
             font-weight:400;
             color: #212121;
         }
     }
     .section {
-        background-color: #fff;
         font-size: rem(14);
         .portrait {
-            padding-top: rem(34);
-            text-align: center;
+            height: rem(94);
+            margin-bottom: rem(10);
             position: relative;
-            padding-bottom: rem(52);
+            background-color: #fff;
             > p {
-                    display: inline-block;
                     width: 100%;
-                    text-align: center;
+                    height: rem(94);
+                    padding-left: rem(19);
                 img {
-                    width: rem(61);
-                    height: rem(61);
+                    display: block;
+                    width: rem(64);
+                    height: rem(64);
                     border-radius: 100%;
-                    margin-bottom: rem(10);
+                    vertical-align: middle;
                 }
                > span {
+                   display: block;
+                    margin-left: rem(15);
                     font-size: rem(16);
-                    display: block;
                     font-weight:400;
                     color: #333;
                 }
             }
             >span {
                 position: absolute;
-                right: rem(20);
-                top: rem(58);
+                right: rem(21);
+                top: rem(39);
                 img {
-                    width: rem(30);
-                    
+                    width: rem(26);
                 }
             }
         }
         .ul {
             width: 100%;
+            background-color: #fff;
+            padding-left: rem(20);
             li {
                 -webkit-display: flex;
                 display: flex;
-                padding: rem(16) rem(21);
-                line-height: rem(30);
+                -webkit-align-items:center;
+                box-align:center;
+                -moz-box-align:center;
+                -webkit-box-align:center;
+                align-items:center;
+                line-height: rem(49);
                 position: relative;
+                border-bottom: 1px solid #E6E6E6;
                 img {
                     font-size: rem(13);
                     width: rem(20);
                     height:rem(20);
                     vertical-align: middle;
-                    margin-top: rem(5);
                 }
                 span {
                     color: #333;
-                    vertical-align: middle;
                     padding-left: rem(21);
                     font-size: rem(14);
                 }
                 .Right {
-                    width: rem(30);
+                    width: rem(26);
+                    height: auto;
                     position: absolute;
-                    right: rem(15);
-                    top: rem(16);
+                    right: rem(21);
+                    top: 50%;
+                    transform: translate(0, -50%);
+                    -ms-transform: translate(0,-50%);
+                    -moz-transform: translate(0,-50%);
+                    -webkit-transform: translate(0,-50%);
+                    -o-transform: translate(0,-50%);
                 }
+            }
+            li:last-child {
+                border:0;
             }
         }
     }

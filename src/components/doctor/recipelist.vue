@@ -247,6 +247,7 @@ export default {
                         font-size: rem(13);
                         border:1px solid #4A9CF3;
                         color: #4A9CF3;
+                        background-color: #fff;
                     }
                 }
             }

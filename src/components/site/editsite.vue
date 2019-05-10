@@ -193,6 +193,10 @@ export default {
                             message: '修改成功！！！',
                             duration: 1000
                         });
+                        var userSite = JSON.parse(_self.$cookie.get('userSite'))
+                        if (userSite && userSite.uid == _self.userId && userSite.id == _self.$route.query.id) {
+                            _self.$cookie.set('userSite', obj);
+                        }
                         setTimeout(function () {
                             _self.$router.back()
                         }, 1000)
@@ -298,6 +302,10 @@ export default {
                                 position: 'middle',
                                 duration: 1000
                             });
+                            var userSite = JSON.parse(_self.$cookie.get('userSite'))
+                            if (userSite && userSite.uid == _self.userId && userSite.id == _self.$route.query.id) {
+                                _self.$cookie.delete('userSite');
+                            }
                            var time = setTimeout(function () {
                                clearTimeout(time)
                                 _self.$router.back()

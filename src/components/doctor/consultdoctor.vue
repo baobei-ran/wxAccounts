@@ -63,7 +63,9 @@
                                         </audio> -->
                                         
                                         <div>
-                                            <span class="audio" id='Audio' @click='playAudio'><img ref='hron' src="../../common/img/dian3.png" alt="" ></span>
+                                            <span class="audio" id='Audio' @click='playAudio'>
+                                                <b :class="{'honr':flag}"></b>
+                                            </span>
                                             <span>{{ playTime }}</span>
                                         </div>
                                     </li>
@@ -118,12 +120,15 @@ export default {
                 })
                 this.amr.onPlay(function () {
                     console.log('开始播放');
+                    _self.flag = true
                 });
                 this.amr.onEnded(function() {
                     console.log('播放完毕');
+                    _self.flag = false
                 })
                 this.amr.onStop(function() {
                     console.log('停止播放');
+                    _self.flag = false
                 })
                 this.amr.onAutoEnded(function () {
                     console.log('Event: autoEnded');
@@ -158,6 +163,7 @@ export default {
     methods: {
         playAudio () {
             console.log('test')
+            // this.flag = !this.flag
             // var player = document.getElementById('player');
             // if (player.paused) {
             //     player.play();
@@ -509,8 +515,18 @@ export default {
                             margin-right: rem(5);
                             @include radius(0, 10px, 10px, 10px);
                             background-color: #EEE;
-                            >img {
-                                width: rem(20);
+                            >b {
+                                display: block;
+                                width: rem(22);
+                                height: rem(22);
+                                background: url('../../common/img/dian3.png') no-repeat center center;
+                                background-size: 100% 100%;
+                            }
+                            .honr {
+                                -webkit-animation: Backgrounds 1s infinite step-start;
+                                -moz-animation: Backgrounds 1s infinite step-start;
+                                -o-animation: Backgrounds 1s infinite step-start;
+                                animation: Backgrounds 1s infinite step-start;
                             }
                         }
 
@@ -539,5 +555,10 @@ export default {
             background-size: 7%;
         }
     }
+}
+@keyframes Backgrounds {
+    33.33% {background: url('../../common/img/dian.png') no-repeat center center; background-size: 100% 100%; }
+    66.66% { background: url('../../common/img/dian2.png') no-repeat center center; background-size: 100% 100%;}
+    100% {background: url('../../common/img/dian3.png') no-repeat center center;background-size: 100% 100%;}
 }
 </style>

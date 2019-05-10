@@ -118,27 +118,48 @@ export default {
                         self.orderdata = res.data
                     }
                 })
-                
-                this.$http.post('/mobile/Wxuser/useraddress_list', { uid: uid}).then(res => {
-                console.log(res)
-                if (res.code == 1) {
-                    self.huan = res.data
-                }
-            })  
+             
 
-            setTimeout(() => {
-                if (self.huan.length > 0) {
-                    var userSite = JSON.parse(this.$cookie.get('userSite'))
-                        self.huan.map(val => {
-                            if (userSite && userSite.id == val.id && userSite.uid == uid ) {
-                                this.site = userSite 
-                            } else if (val.status == 2) {
-                                this.site = val
+
+            var userSite = JSON.parse(this.$cookie.get('userSite'))
+            console.log(uid)
+           if (userSite && userSite.uid == uid ) {
+               this.site = userSite 
+           } else {
+               this.$http.post('/mobile/Wxuser/useraddress_list', { uid: uid}).then(res => {
+                    console.log(res)
+                    if (res.code == 1) {
+                        res.data.map(val => {
+                            if (val.status == 2) {
+                                self.site = val
                             }
                         })
+                    }
+                })  
+           }
+
+
+
+            // this.$http.post('/mobile/Wxuser/useraddress_list', { uid: uid}).then(res => {
+            //     console.log(res)
+            //     if (res.code == 1) {
+            //         self.huan = res.data
+            //     }
+            // })  
+
+            // setTimeout(() => {
+            //     if (self.huan.length > 0) {
+            //         var userSite = JSON.parse(this.$cookie.get('userSite'))
+            //             self.huan.map(val => {
+            //                 if (userSite && userSite.id == val.id && userSite.uid == uid ) {
+            //                     this.site = userSite 
+            //                 } else if (val.status == 2) {
+            //                     this.site = val
+            //                 }
+            //             })
                     
-               }
-            }, 300)
+            //    }
+            // }, 300)
            
         },
         Return () {

@@ -33,7 +33,7 @@
                 </div>
 
                 <div class="orderList">
-                    <h4>谢永明的店铺 
+                    <h4>{{ detaildata.sname }}的店铺 
                         <!-- <img src="../../../common/img/icon_enter.png" alt=""> -->
                     </h4>
                     <dl class="order_con">
