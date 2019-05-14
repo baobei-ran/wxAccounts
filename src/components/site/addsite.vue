@@ -237,8 +237,8 @@ export default {
                 } else {
                     a = 1
                 }
-                var id = _self.$route.query.uid
-                var obj = { uid:id, name: _self.username,phone:_self.phone, province: _self.htmlsId, city: _self.htmlhId, county: _self.htmlqId, address: _self.txt, status: a }
+                var uid = _self.$route.query.uid
+                var obj = { uid:uid, name: _self.username,phone:_self.phone, province: _self.htmlsId, city: _self.htmlhId, county: _self.htmlqId, address: _self.txt, status: a }
                 _self.$http.post('/mobile/Wxuser/useraddress_add', obj).then(res => {
                     console.log(res)
                     if(res.code == 1) {
@@ -246,6 +246,10 @@ export default {
                             message: '添加成功！！！',
                             duration: 1000
                         });
+                        var userSite = JSON.parse(_self.$cookie.get('userSite'));
+                        if (userSite) {
+                            _self.$cookie.delete('userSite');
+                        }
                         setTimeout(function () {
                             _self.$router.back()
                         }, 1000)

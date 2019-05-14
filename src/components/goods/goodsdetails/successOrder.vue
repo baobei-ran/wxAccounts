@@ -1,9 +1,9 @@
 <template>
 <!-- 订单详情 -->
-<!-- 已完成 和 已取消 和 待收货的 -->
+<!-- 已完成 和 已取消 和 待收货的 和 待发货-->
     <div class="addorderdetail">
         <div class="header">
-            <img @click='Return' src="../../../common/img/icon_fh.png" alt="">
+            <img v-show='flag' @click='Return' src="../../../common/img/icon_fh.png" alt="">
             <span>订单详情</span>
         </div>
         <main class="content">
@@ -18,9 +18,13 @@
                         <p>订单状态：<span>已完成</span></p>
                         <p>快递编号：{{ detaildata.company }} {{ detaildata.logistics_number }}</p>
                     </div>
-                    <div class="addOrder" v-if='detaildata.status == 2 || detaildata.status == 4'>
+                    <div class="addOrder" v-if='detaildata.status == 4'>
                         <p>订单状态：<span>待收货</span></p>
                         <p>快递编号：{{ detaildata.company }} {{ detaildata.logistics_number }}</p>
+                    </div>
+
+                    <div class="addOrder" v-if='detaildata.status == 2 || detaildata.status == 3'>
+                        <p>订单状态：<span>待发货</span></p>
                     </div>
                     <ul>
                         <li class="user">
@@ -32,7 +36,7 @@
                     </ul>
                 </div>
 
-                <div class="orderList">
+                <div class="orderList Mg-T5">
                     <h4>{{ detaildata.sname }}的店铺 
                         <!-- <img src="../../../common/img/icon_enter.png" alt=""> -->
                     </h4>
@@ -49,6 +53,7 @@
                         <li><span>运费</span><span>￥{{ detaildata.postage }}</span></li>
                         <li><span>总付费(含运费)</span><span>￥{{ detaildata.moneys }}</span></li>
                     </ul>
+                    <!-- 6 已取消 -->
                     <div class="usermsg" v-if='detaildata.status == 6'>
                         <ul>
                             <li>订单编号：<span>{{ detaildata.number }}</span></li>
@@ -59,6 +64,7 @@
                             </li>
                         </ul>
                     </div>
+                    <!--5 已完成 -->
                     <div class="usermsg" v-if='detaildata.status == 5'>
                         <ul>
                             <li>订单编号：<span>{{ detaildata.number }}</span></li>
@@ -76,7 +82,8 @@
                             <li>收货时间：<span>{{ detaildata.sure_time | filterTime }}</span></li>
                         </ul>
                     </div>
-                    <div class="usermsg" v-if='detaildata.status == 2 || detaildata.status == 4'>
+                    <!--4 待收货 -->
+                    <div class="usermsg" v-if='detaildata.status == 4'>
                         <ul>
                             <li>订单编号：<span>{{ detaildata.number }}</span></li>
                             <li>创建时间：<span>{{ detaildata.addtime | filterTime}}</span></li>
@@ -91,13 +98,32 @@
                             <li>发货备注：<span>{{ detaildata.kremark }}</span></li>
                         </ul>
                     </div>
+                    <!--2或3 待发货 -->
+                    <div class="usermsg" v-if='detaildata.status == 2 || detaildata.status == 3'>
+                        <ul>
+                            <li>订单编号：<span>{{ detaildata.number }}</span></li>
+                            <li>创建时间：<span>{{ detaildata.addtime | filterTime}}</span></li>
+                            <li>付款时间：<span>{{ detaildata.pay_time | filterTime }}</span></li>
+                            <li>配送方式：
+                                <span v-if='detaildata.distribution == 1'>快递配送</span>
+                                <span v-if='detaildata.distribution == 2'>自提</span>
+                            </li>
+                            <li>发货时间：<span>等待发货</span></li>
+                            <!-- <li>发货快递：<span>{{ detaildata.company }}</span></li>
+                            <li>快递单号：<span>{{ detaildata.logistics_number }}</span></li> -->
+                            <li>发货备注：<span>{{ detaildata.kremark }}</span></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
         </main>
         <div class="footer" v-if='detaildata.status == 6 || detaildata.status == 5'>
             <mt-button class="once" @click.native='createOrder'>再次购买</mt-button>
         </div>
-        <div class="footer" v-if='detaildata.status == 2|| detaildata.status == 4'>
+        <div class="footer" v-if='detaildata.status == 2 || detaildata.status == 3'>
+            <mt-button class="once" @click.native='createOrder'>再次购买</mt-button>
+        </div>
+        <div class="footer" v-if='detaildata.status == 4'>
             <mt-button class="once1" @click.native='createOrder'>再次购买</mt-button>
             <mt-button type="primary" @click.native='orderData'>确认收货</mt-button>
         </div>
@@ -111,10 +137,17 @@ export default {
     data () {
         return {
             length: 0,  // 留言的数量
-            detaildata: {}
+            detaildata: {},
+            flag: true
         }
     },
     mounted () {
+        console.log(this.$route.query)
+        var uid = this.$route.query.uid
+        if (uid) {
+            this.$cookie.set('userLogins', uid, 365)
+            this.flag = false
+        }
         this.initdata()
     },
     methods: {
@@ -123,7 +156,7 @@ export default {
         },
         initdata () {
             var self = this;
-            var id = this.$route.params.id
+            var id = this.$route.query.id
             self.$http.post('/mobile/Wxorder/order_data', {number:id}).then(res => {
                 console.log(res)
                 if (res.code == 1) {
@@ -166,6 +199,9 @@ export default {
 <style lang="scss" scoped>
 @function rem($px) {
     @return $px/ 50 + rem;
+}
+.Mg-T5 {
+    margin-top: rem(5);
 }
 .addorderdetail {
     width: 100%;

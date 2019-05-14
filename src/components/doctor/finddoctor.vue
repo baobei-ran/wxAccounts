@@ -47,7 +47,7 @@ export default {
             datalist: [],
             uid: this.$cookie.get('userLogins'),
             page: 1,
-            limit: 10
+            limit: 15
         }
     },
    

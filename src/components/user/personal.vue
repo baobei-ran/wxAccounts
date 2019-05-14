@@ -5,11 +5,11 @@
             <span>个人中心</span>
         </div>
         <div class="section">
-            <div class="portrait">
+            <div class="portrait" @click='getUser'>
                 <p class="dis_f flex_i"><img ref='userImg' src="../../common/img/pic_txxq.png" alt="">
                     <span>{{ userInfor.real_name }}</span>
                 </p>
-                <span @click='getUser'><img src="../../common/img/icon_enter.png" alt=""></span>
+                <span ><img src="../../common/img/icon_enter.png" alt=""></span>
             </div>
             <ul class="ul">
                 <li @click='getDoutor'><img src="../../common/img/icon_wdys.png" alt=""> <span>我的医生</span> <img class="Right" src="../../common/img/icon_enter.png" alt=""></li>

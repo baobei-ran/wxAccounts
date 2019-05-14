@@ -99,7 +99,7 @@ export default {
         initsite () {
             var self = this,
                 uid = this.$cookie.get('userLogins');
-                var id = this.$route.params.id
+                var id = this.$route.query.id
                 this.$http.post('/mobile/Wxorder/look_order', { id: id}).then(res => {
                     console.log(res)
                     if (res.code == 1) {
@@ -108,7 +108,8 @@ export default {
 
                     }
                 }).catch(err => { console.log(err)})
-                
+            
+            // 更改后
            var userSite = JSON.parse(this.$cookie.get('userSite'))
            if (userSite && userSite.uid == uid) {
                this.site = userSite 
@@ -152,7 +153,8 @@ export default {
            
         },
         Returns () {
-            this.$router.back()
+            console.log('aaa')
+            this.$router.go(-1);
         },
         getLength () {
             this.length = this.txt.length 
@@ -246,7 +248,7 @@ export default {
                         position: 'center',
                         duration: 2000
                     });
-                    self.$router.replace({ name: 'successOrder', params: { id: data.number }})
+                    self.$router.replace({ path: '/successOrder', query: { id: data.number }})
                     clearTimeout(self.ordertime)
                 }
             })
@@ -463,6 +465,7 @@ export default {
                     label {
                         display: block;
                         color: #666;
+                        margin-left: rem(3);
                     }
                     textarea {
                         resize: none;width: 100%;

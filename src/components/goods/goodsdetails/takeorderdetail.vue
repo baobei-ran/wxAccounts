@@ -88,7 +88,7 @@ export default {
     mounted () {
         console.log(this.$route)
         this.initsite()
-        let vm = this
+        var vm = this
         // window.resize监听页面高度的变化
         window.onresize = () => {
         return (() => {
@@ -122,7 +122,7 @@ export default {
 
 
             var userSite = JSON.parse(this.$cookie.get('userSite'))
-            console.log(uid)
+            console.log(userSite)
            if (userSite && userSite.uid == uid ) {
                this.site = userSite 
            } else {
@@ -215,14 +215,14 @@ export default {
                     // 使用以上方式判断前端返回,微信团队郑重提示：
                             //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
                             Toast({
-                                message: '支付失败！',
+                                message: '支付成功！',
                                 position: 'center',
                                 duration: 2000
                             });
                         setTimeout(function () {
                             self.$http.post('/mobile/Wxorder/pay_result', {order_code: data.order_code }).then(res => { // 查询是否支付成功
                                 if (res.code == 1) {
-                                    self.$router.replace({name: 'successOrder', params: { id: data.number }})
+                                    self.$router.replace({path: '/successOrder', query: { id: data.number }})
                                 }
                             })
                         }, 1500)

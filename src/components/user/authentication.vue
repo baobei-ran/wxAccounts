@@ -27,6 +27,9 @@
                     <div class="user">
                         <input style='background:#fff;color: #333;' type="text" value='本人' v-model='relation' maxlength="11" disabled >
                         <label class="label" for="">问诊人关系</label>
+                        <!-- <select name="" id="">
+                            <option value="" v-for='(val,i) in relation' :key='i'>{{ val }}</option>
+                        </select> -->
                     </div>
                     <div class="user">
                         <label for="">姓名</label>
@@ -59,6 +62,7 @@ export default {
                 docmHeight: document.documentElement.clientHeight, // 默认屏幕高度
                 showHeight: document.documentElement.clientHeight, // 实时屏幕高度
                 hidShow: true, // 显示或者隐藏footer
+                relation: ['父母', '兄弟姐妹', '子女', '配偶', '其他']
             }
         },
         updated() {

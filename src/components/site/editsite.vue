@@ -193,10 +193,11 @@ export default {
                             message: '修改成功！！！',
                             duration: 1000
                         });
-                        var userSite = JSON.parse(_self.$cookie.get('userSite'))
-                        if (userSite && userSite.uid == _self.userId && userSite.id == _self.$route.query.id) {
-                            _self.$cookie.set('userSite', obj);
-                        }
+                        // var userSite = JSON.parse(_self.$cookie.get('userSite'))
+                        var objs = { uid: _self.userId, id: _self.$route.query.id, name: _self.username, phone:_self.phone, 
+                                    province: _self.htmls, city: _self.htmlh, county: _self.htmlq, address: _self.txt, status: a }
+                        _self.$cookie.set('userSite', JSON.stringify(objs));
+                        
                         setTimeout(function () {
                             _self.$router.back()
                         }, 1000)

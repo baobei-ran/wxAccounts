@@ -43,6 +43,7 @@ Vue.prototype.out = function (url) {
 }
 
 
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',

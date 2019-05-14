@@ -76,6 +76,7 @@
 
 <script>
 import { Toast } from 'mint-ui';
+import { MessageBox } from 'mint-ui';
 export default {
     name: 'doctordetail',
     data () {
@@ -112,10 +113,10 @@ export default {
                     }
                     self.$nextTick(() => {
                         var p = document.getElementById('introduce').offsetHeight
-                        if (p < 80) {
-                            self.isTxt = false
-                        } else {
+                        if (p > 80) {
                             self.isTxt = true
+                        } else {
+                            self.isTxt = false
                         }
                     })
                 }
@@ -135,11 +136,14 @@ export default {
             this.$http.post('/mobile/wxdoccenter/relevance_doctor', obj).then(res => {
                 console.log(res)
                 if (res.code == 1) {
-                    Toast({
-                        message: '关注成功',
-                        position: 'ceneter',
-                        duration: 2000
+                     MessageBox.confirm('你已成功关注了此医生，返回后点击我的医生，即可向医生咨询问题', {showCancelButton: false, confirmButtonText: '确定'}).then(action => {
+                        
                     });
+                    // Toast({
+                    //     message: '',
+                    //     position: 'ceneter',
+                    //     duration: 3000
+                    // });
                     this.isClose = false
                 } else {
                     Toast({

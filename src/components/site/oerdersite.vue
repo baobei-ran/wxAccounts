@@ -45,6 +45,10 @@ export default {
         mounted () {
             console.log(this.$route.query.id)
             this.userId = this.$cookie.get('userLogins');
+            // this.listdata()
+        },
+        activated () {
+            console.log('test')
             this.listdata()
         },
         methods: {
@@ -76,7 +80,8 @@ export default {
                 })
                 var a = JSON.stringify(location)
                 this.$cookie.set('userSite', a, 365)
-                this.$router.replace({ name: 'doctororder', params: { id: gid} })
+                // this.$router.replace({ name: 'doctororder', params: { id: gid} })
+                this.$router.back()
             }
         }
 }

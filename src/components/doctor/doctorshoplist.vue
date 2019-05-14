@@ -136,9 +136,9 @@ export default {
             })
         },
         Return () {
-            this.$router.back()
+            this.$router.go(-1)
         },
-        getDoctor (id) {    // 查看更多
+        getDoctor (id) {    // 进店
         console.log(id)
             this.$router.push({name: 'doctorshop', params: { id: id}})
         },
@@ -189,8 +189,8 @@ export default {
             top: rem(13);
             line-height: 1;
             font-size: rem(19);
-            width: rem(20);
-            padding: rem(1);
+            width: rem(30);
+            padding: rem(5);
         }
         span {
             padding-top: rem(15);

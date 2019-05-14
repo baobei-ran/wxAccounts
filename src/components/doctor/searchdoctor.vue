@@ -14,6 +14,7 @@
                         placeholder="搜索医生、科室、疾病">
                     </mt-search> -->
                 <input class="search_txt" type="search" v-model="searchVal" @keyup.enter="searchs"   placeholder="搜索医生、科室、疾病">
+                <label for="" @click='searchs'>搜索</label>
             </div>
                 <!-- <div class="sortList">
                     <ul id='tabul' class="dis_f dis_sb flex_i">
@@ -52,7 +53,7 @@
             </div>
         
             <div class="doctor_list" v-if='datalist.length'>
-                 <div v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="20">
+                 <div v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
                     <div class="list" v-for='(val,i) in datalist' :key='i'>
                         <ul @click='Clickdetail(val.did, i)'>
                             <li>
@@ -67,22 +68,23 @@
                                     </dd>
                                 </dl>
                             </li>
-                            <li class="dw_r" v-if='i == 0'>距我最近</li>
+                            <li class="dw_r" v-if='i == 0'></li>
                             <!-- <li class="juli" v-if='i !== 0'>{{ val.distince }}km</li> -->
                             <li class="beadeptat ">擅长：<span> {{ val.title }}</span></li>
                         </ul>
-                        <!-- <dl class="dls dis_f flex_i dis_sb">
+                        <dl class="dls dis_f flex_i dis_sb">
                             <dt>
-                                咨询量：<span>2122</span>
+                                处方数量 <span>2122</span>
                             </dt>
                             <dt>
-                                30分钟内回复率 <span>70%</span> 
+                                患者数量 <span>50</span>
                             </dt>
                             <dd>
-                                问诊费用 <span>¥50/次</span>
+                                平均回复时长 <span>70min</span> 
                             </dd>
-                        </dl> -->
+                        </dl>
                     </div>
+                <!-- <div class="drop-up" v-if="!dropup">—— 加载中 ——</div> -->
                 <div class="drop-up" v-if="dropup">—— 没有数据了 ——</div>
             </div>
                
@@ -95,6 +97,14 @@
 </template>
 
 <script>
+// 节流函数
+const delay = (function() {
+  let timer = 0;
+  return function(callback, ms) {
+    clearTimeout(timer);
+    timer = setTimeout(callback, ms);
+  };
+})();
 
 export default {
     data () {
@@ -107,9 +117,9 @@ export default {
                 {id: 1, name: '默认排序'},{id: 2, name: '按咨询量从高到低'},{id: 3, name: '按回复率从高到低'}
             ],
             page: 1,
-            limit: 10,
-            lon: '116.406568',  // 经度
-            lat: '39.917591',    // 纬度
+            limit: 15,
+            lon: '116.297176',  // 经度
+            lat: '39.825233',    // 纬度
             loading: false,
             allLoaded: false,
             bottomStatus: '',
@@ -119,9 +129,42 @@ export default {
             busy: false
         }
     },
+     watch: {
+    //watch title change
+        searchVal() {
+            delay(() => {
+                console.log('test')
+                this.searchs();
+            }, 500);
+        },
+    },
      created () {
+         　var map, geolocation;
+        //加载地图，调用浏览器定位服务   高德地图
+        map = new AMap.Map('container', {
+            resizeEnable: true
+        });
+        map.plugin('AMap.Geolocation', function() {
+            geolocation = new AMap.Geolocation({
+            　　　　enableHighAccuracy: true, //是否使用高精度定位，默认:true
+            　　　　timeout: 20000, //超过10秒后停止定位，默认：无穷大
+            　　　　buttonPosition: 'RB'
+            });
+            geolocation.getCurrentPosition();
+                AMap.event.addListener(geolocation, 'complete', function onComplete(data) {
+                var getLongitude = data.position.getLng();
+                var getLatitude = data.position.getLat();
+                // alert(getLongitude+'---'+getLatitude+'我的天') //弹出获得的经纬度
+            }); //返回定位信息
+             AMap.event.addListener(geolocation, 'error', function onError(err) {  //返回定位出错信息
+                    console.log(err)
+             }); 
+        });
+
+
          var self = this;
-         var getLocation = (onComplete=function(){},onError=function(){})=>{
+        //  onComplete=function(){},onError=function(){}
+         var getLocation = function (){
                 var map = new AMap.Map('aMap', {
                     resizeEnable: true,
                     zoom: 16
@@ -141,7 +184,7 @@ export default {
                     // 初始化定位插件
                     geolocation = new AMap.Geolocation({
                     enableHighAccuracy: true, //是否使用高精度定位，默认:true
-                    timeout: 10000, //超过10秒后停止定位，默认：无穷大
+                    timeout: 1000000, //超过10秒后停止定位，默认：无穷大
                     maximumAge: 0, //定位结果缓存0毫秒，默认：0
                     convert: true, //自动偏移坐标，偏移后的坐标为高德坐标，默认：true
                     showButton: true, //显示定位按钮，默认：true
@@ -154,7 +197,8 @@ export default {
                     });
                     // 把定位插件加入地图实例
                     map.addControl(geolocation);
-
+                    // 调用定位
+                    geolocation.getCurrentPosition();
                     // 添加地图全局定位事件
                     AMap.event.addListener(geolocation, 'complete', onComplete); //返回定位信息
                     AMap.event.addListener(geolocation, 'error', onError); //返回定位出错信息
@@ -169,14 +213,15 @@ export default {
                 
                         function onError(data) {    // 获取失败
                             console.log(data)
+                            console.log('error')
                         }
                     })
 
-                    // 调用定位
-                    geolocation.getCurrentPosition();
+                    
                 
             }
        getLocation()    // 执行
+    
         var urldata = this.$route.query
         if (urldata.uid) {
             this.fanhui = false
@@ -197,9 +242,69 @@ export default {
     },
     mounted () {
        this.initdata()
+       this.getLocations()
     },
     methods: {
+       
+         getLocations() {
+            const that = this;
+            AMap.plugin("AMap.Geolocation", function() {
+                var geolocation = new AMap.Geolocation({
+                // 是否使用高精度定位，默认：true
+                enableHighAccuracy: true,
+                // 设置定位超时时间，默认：无穷大
+                timeout: 100000,
+                // 定位按钮的停靠位置的偏移量，默认：Pixel(10, 20)
+                buttonOffset: new AMap.Pixel(10, 20),
+                //  定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+                zoomToAccuracy: true,
+                //  定位按钮的排放位置,  RB表示右下
+                buttonPosition: "RB"
+                });
 
+                geolocation.getCurrentPosition();
+                AMap.event.addListener(geolocation, "complete", onComplete);
+                AMap.event.addListener(geolocation, "error", onError);
+
+                function onComplete(data) {
+                // data是具体的定位信息
+                console.log(data);
+                    var latitude = data.position.getLat() // 纬度
+                    var longitude = data.position.getLng() // 经度
+                    console.log('latitude', latitude, 'longitude', longitude)
+                    that.lon = longitude
+                    that.lat = latitude
+                }
+
+                function onError(data) {
+                // 定位出错
+                console.log(data);
+                // 失败之后调用这个方法，使用IP定位获取当前城市信息
+                that.getLngLatLocation();
+                }
+            });
+    },
+    // IP定位获取当前城市信息
+    getLngLatLocation() {
+        var that = this;
+      AMap.plugin("AMap.CitySearch", function() {
+        var citySearch = new AMap.CitySearch();
+        citySearch.getLocalCity(function(status, result) {
+          if (status === "complete" && result.info === "OK") {
+            // 查询成功，result即为当前所在城市信息
+            console.log(result)
+            var ar = result.rectangle.split(';')[0];
+            var ar2 = ar.split(',')
+            console.log(ar2[0])
+            that.lon = ar2[0]
+            that.lat = ar2[1]
+            
+          }
+        });
+      });
+      
+    },
+  
         loadMore: function() {
             this.busy = true
             this.page += 1
@@ -207,6 +312,7 @@ export default {
         },
         searchs () {
             // 搜索
+            console.log(this.lon, this.lat)
             var self = this;
              var obj = {page: 1, num: 15, lon: this.lon,lat: this.lat,  name: this.searchVal}
             self.$http.post('/mobile/Wxorder/doc_more', obj).then(res => {
@@ -224,7 +330,6 @@ export default {
             if (this.dropup) {
                 return
             }
-            console.log(this.page)
             var obj = {page: this.page, num: this.limit, lon: this.lon,lat: this.lat,  name: this.searchVal}
             self.$http.post('/mobile/Wxorder/doc_more', obj).then(res => {
                 console.log(res)
@@ -345,25 +450,33 @@ export default {
             }
         }
     .header_search {
-        height: rem(46);    
-        padding: rem(10);
+         
+        padding: rem(15);
         .search_txt {
-            width: 100%;
+            width: 87%;
             height: rem(30);
             -webkit-appearance:none;
-            -webkit-border-radius: rem(10);
-            -moz-border-radius:rem(10);
-            -ms-border-radius:rem(10);
-            -o-border-radius:rem(10);
-            border-radius: rem(10);
+            -webkit-border-radius: rem(20);
+            -moz-border-radius:rem(20);
+            -ms-border-radius:rem(20);
+            -o-border-radius:rem(20);
+            border-radius: rem(20);
             border:1px solid #f5f6f6;
-            background: #F5F6F6;
+            background: #F5F6F6 url('../../common/img/icon_ss.png') no-repeat left center;
+            background-size: 8%;
             color: #333;
-            padding: 0 rem(20);
+            padding: 0 rem(35);
+            background-position: rem(8) rem(3);
             font-size: rem(14);
+            
         }
+        
 
-
+        >label {
+            margin-left: rem(10);
+            font-size: rem(14);
+            color: #666;
+        }
         .mint-search {
         height: rem(46);
             .mint-searchbar {
@@ -503,7 +616,7 @@ export default {
                 width: 100%;
                 border-radius:4px;
                 box-shadow:0px 2px 5px 0px rgba(0, 0, 0, 0.1);
-                margin-top: rem(5);
+                margin-top: rem(10);
             >ul {
                 width: 100%;
                 padding: rem(15);
@@ -560,7 +673,8 @@ export default {
                     font-size: rem(12);
                     padding-top: rem(1);
                     z-index: 99;
-                    background: url('../../common/img/icon_jwzjk.png') no-repeat 0;
+                    background: url('../../common/img/bq_jwzj.png') no-repeat 0;
+                    background-size: cover;
                 }
                 li:last-child {
                     margin-top: rem(10);

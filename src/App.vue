@@ -52,7 +52,7 @@ select {
 // ::-webkit-scrollbar{ display: none; }
 // 改变滚动条
 ::-webkit-scrollbar{width:0;height:1px}
-::-webkit-scrollbar-thumb{border-radius:5px;-webkit-box-shadow:inset 0 0 5px rgba(0,0,0,.2);background:rgba(0,0,0,.2)}
+::-webkit-scrollbar-thumb{border-radius:5px;-webkit-box-shadow:inset 0 0 5px rgba(0,0,0,.2);box-shadow:inset 0 0 5px rgba(0,0,0,.2);background:rgba(0,0,0,.2)}
 button:active{
   -webkit-tap-highlight-color: transparent;
 }

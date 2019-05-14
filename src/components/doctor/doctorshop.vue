@@ -36,8 +36,9 @@
                             </ul>
                            
                         <ol class="ol" v-if='!datalist.length'>
-                            <li class="empty">
-                                无商品
+                            <li class="empty2">
+                                <img src="../../common/img/pic_zwsp.png" alt="">
+                                <p>暂无商品</p>
                             </li>
                         </ol>
                     </div>
@@ -54,13 +55,14 @@
 </template>
 
 <script>
+import { Indicator } from 'mint-ui';
 export default {
     data () {
         return {
             datalist: [],       // 数据
             doctor: {},
-            lng: '116.427343',            // 经度
-            lat: '39.902975',            // 纬度
+            lng: '116.297176',            // 经度
+            lat: '39.825233',            // 纬度
             uid: this.$cookie.get('userLogins'),
             did: this.$route.params.id,
             page: 1,
@@ -70,10 +72,22 @@ export default {
             dropup: false
         }
     },
+    beforeCreate () {
+        Indicator.open({
+            text: '',
+            spinnerType: 'fading-circle'
+        });
+    },
+    created () {
+        
+    },
+    beforeDestroy () {
+        Indicator.close();
+    },
     mounted () {
         var _this = this;
         console.log(this.$route.params)
-        
+            
             var map, geolocation;
             //加载地图，调用浏览器定位服务   高德地图
             map = new AMap.Map('container', {
@@ -93,10 +107,71 @@ export default {
                     _this.lng = getLongitude
                     _this.lat = getLatitude
                 }); //返回定位信息
+                AMap.event.addListener(geolocation, 'error', function onError(err) {  //返回定位出错信息
+                    console.log(err)
+             });
             });
+        this.getLocations()
         this.doctordata()
     },
     methods: {
+        getLocations() {
+            const that = this;
+            AMap.plugin("AMap.Geolocation", function() {
+                var geolocation = new AMap.Geolocation({
+                // 是否使用高精度定位，默认：true
+                enableHighAccuracy: true,
+                // 设置定位超时时间，默认：无穷大
+                timeout: 100000,
+                // 定位按钮的停靠位置的偏移量，默认：Pixel(10, 20)
+                buttonOffset: new AMap.Pixel(10, 20),
+                //  定位成功后调整地图视野范围使定位位置及精度范围视野内可见，默认：false
+                zoomToAccuracy: true,
+                //  定位按钮的排放位置,  RB表示右下
+                buttonPosition: "RB"
+                });
+
+                geolocation.getCurrentPosition();
+                AMap.event.addListener(geolocation, "complete", onComplete);
+                AMap.event.addListener(geolocation, "error", onError);
+
+                function onComplete(data) {
+                // data是具体的定位信息
+                console.log(data);
+                    var latitude = data.position.getLat() // 纬度
+                    var longitude = data.position.getLng() // 经度
+                    console.log('latitude', latitude, 'longitude', longitude)
+                    that.lng = longitude
+                    that.lat = latitude
+                }
+
+                function onError(data) {
+                // 定位出错
+                console.log(data);
+                // 失败之后调用这个方法，使用IP定位获取当前城市信息
+                that.getLngLatLocation();
+                }
+            });
+    },
+    // IP定位获取当前城市信息
+    getLngLatLocation() {
+        var that = this;
+      AMap.plugin("AMap.CitySearch", function() {
+        var citySearch = new AMap.CitySearch();
+        citySearch.getLocalCity(function(status, result) {
+          if (status === "complete" && result.info === "OK") {
+            // 查询成功，result即为当前所在城市信息
+            console.log(result)
+            var ar = result.rectangle.split(';')[0];
+            var ar2 = ar.split(',')
+            that.lng = ar2[0]
+            that.lat = ar2[1]
+        
+          }
+        });
+      });
+      
+    },
         loadMore: function() {
             this.busy = true
             this.page += 1
@@ -115,6 +190,9 @@ export default {
             console.log(obj)
             this.$http.post('/mobile/Wxdoccenter/doccenter', obj).then(res => {     // 医生店铺信息
                 // console.log(res)
+                setTimeout(() => {
+                    Indicator.close();
+                }, 300)
                 if (res.code == 1) {
                     _self.doctor = res.data
                     if (_self.doctor.picture) {
@@ -160,8 +238,11 @@ export default {
 }
 </script>
 
-<style>
-
+<style lang='scss'>
+    .mint-indicator-mask {
+        opacity: .3;
+        background: #000;
+    }
 </style>
 <style lang="scss" scoped>
 @function rem($px) {
@@ -184,6 +265,9 @@ export default {
     font-size: rem(14);
     .header {
         display: -webkit-flex;
+        display:-webkit-box;
+        display:-moz-box; 
+        display:-ms-flexbox; 
         display: flex;
         height: rem(40);
         justify-content: center;
@@ -223,6 +307,7 @@ export default {
                 width: 100%;
                 background:rgba(255,255,255,1);
                 box-shadow:0px 2px 5px 0px rgba(0, 0, 0, 0.1);
+                -webkit-border-radius: 4px;
                 border-radius:4px;
                 margin-top: rem(5);
                 li:first-child {
@@ -233,6 +318,7 @@ export default {
                         display: block;
                         width: rem(49);
                         height: rem(49);
+                        -webkit-border-radius: 50%;
                         border-radius: 50%;
                     }
                     >dl {
@@ -334,12 +420,27 @@ export default {
             }
             > .ol {
                 width: 100%;
-                line-height: rem(100);
-                margin: rem(10) 0;
-                background: #fff;
-                .empty {
-                    box-shadow:0px 5px 10px 0px rgba(0, 0, 0, 0.1);
+                height: rem(170);
+                margin-top: rem(39);
+                // background: #fff;
+                .empty2 {
+                    // box-shadow:0px 5px 10px 0px rgba(0, 0, 0, 0.1);
+                    width: 100%;
                     text-align: center;
+                    > img {
+                        width: rem(120);
+                        height: rem(120);
+                        display: block;
+                        margin: 0 auto;
+                        background: url('../../common/img/pic_zwsp.png') no-repeat;
+                        background-size: cover;
+                    }
+                   > p {
+                        margin-top: rem(20);
+                        text-align: center;
+                        color: #333;
+                        font-size: rem(15);
+                    }
                 }
             }
         }

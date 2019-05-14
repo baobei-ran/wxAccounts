@@ -9,8 +9,8 @@
             <ul class="dis_f dis_sb flex-vc">
                 <li @click='tabs(1)' :class="{'action': tabId == 1}" >全部</li>
                 <li @click='tabs(2)' :class="{'action': tabId == 2}">待付款</li>
-                <li @click='tabs(3)' :class="{'action': tabId == 3}">待收货</li>
-                <li @click='tabs(4)' :class="{'action': tabId == 4}">已完成</li>
+                <li @click='tabs(3)' :class="{'action': tabId == 3}">待发货</li>
+                <li @click='tabs(4)' :class="{'action': tabId == 4}">待收货</li>
                 <li @click='tabs(5)' :class="{'action': tabId == 5}">已取消</li>
             </ul>
         </div>
@@ -23,7 +23,7 @@
             <empty></empty>
         </div>
         <div class="content_box">
-            <div>
+            <div class="Pd-B10">
         <div class="content" v-if='alllist.length'>   
             <!-- 待付款 -->
             <div class="add Mg-T" v-for='(val,i) in alllist' :key='i' v-if='val.status == 1'>
@@ -46,11 +46,11 @@
                 <div class="addbtn"><mt-button type="primary" @click.native='paydetail(val)'>去支付</mt-button></div>
             </div>
 
-            <!-- 待收货 -->
-            <div class="take Mg-T" v-for='(val,i) in alllist' :key='i' v-if='val.status == 2 || val.status == 4'>
+            <!-- 待发货 -->
+            <div class="take Mg-T" v-for='(val,i) in alllist' :key='i' v-if='val.status == 2 || val.status == 3'>
                 <h4>{{ val.sname }}医生的店铺
                     <!-- <img src="../../../common/img/icon_enter.png" alt=""> -->
-                    <span>等待收货</span></h4>
+                    <span>等待发货</span></h4>
                 <div class="order_list" @click='outdetails(val)'>
                     <dl>
                         <dt>
@@ -74,7 +74,9 @@
                     </dl> -->
                 </div>
                 <p>共{{ val.num }}件商品 实付款 <span>{{ val.money }}</span></p>
-                <div class="addbtn"><mt-button @click.native='buy(val)'>再次购买</mt-button><mt-button class="yes" @click.native='take(val)'>确认收货</mt-button></div>
+                <div class="addbtn"><mt-button @click.native='buy(val)'>再次购买</mt-button>
+                    <!-- <mt-button class="yes" @click.native='take(val)'>确认收货</mt-button> -->
+                </div>
             </div>
 
             <!-- 等待发货 -->
@@ -98,8 +100,30 @@
             </div> -->
 
 
-            <!-- 已完成 -->
+            <!-- 待收货 -->
 
+            <div class="take Mg-T" v-for='(val,i) in alllist' :key='i' v-if='val.status == 4'>
+                <h4>{{ val.sname }}医生的店铺
+                    <!-- <img src="../../../common/img/icon_enter.png" alt=""> -->
+                    <span>待收货</span></h4>
+                <div class="order_list" @click='outdetails(val)'>
+                    <dl>
+                        <dt>
+                            <img :src="$http.baseURL+val.img" alt="">
+                        </dt>
+                        <dd>
+                            <h5>{{ val.name }}</h5>
+                            <span>￥{{ val.money }}</span>
+                            <p>x{{ val.num }}</p>
+                        </dd>
+                    </dl>
+                </div>
+                <p>共{{ val.num }}件商品 实付款 <span>{{ val.money }}</span></p>
+                <div class="addbtn"><mt-button @click.native='buy(val)'>再次购买</mt-button><mt-button class="yes" @click.native='take(val)'>确认收货</mt-button></div>
+                <!-- <div class="addbtn"><mt-button @click.native='del(val)'>删除订单</mt-button><mt-button class="yes" @click.native='buy(val)'>再次购买</mt-button></div> -->
+            </div>
+
+    <!-- 已完成 -->
             <div class="take Mg-T" v-for='(val,i) in alllist' :key='i' v-if='val.status == 5'>
                 <h4>{{ val.sname }}医生的店铺
                     <!-- <img src="../../../common/img/icon_enter.png" alt=""> -->
@@ -117,6 +141,7 @@
                     </dl>
                 </div>
                 <p>共{{ val.num }}件商品 实付款 <span>{{ val.money }}</span></p>
+                <!-- <div class="addbtn"><mt-button @click.native='buy(val)'>再次购买</mt-button><mt-button class="yes" @click.native='take(val)'>确认收货</mt-button></div> -->
                 <div class="addbtn"><mt-button @click.native='del(val)'>删除订单</mt-button><mt-button class="yes" @click.native='buy(val)'>再次购买</mt-button></div>
             </div>
 
@@ -184,7 +209,7 @@ export default {
         },
         methods: {
             tabs (val) {
-                console.log(val)
+                // console.log(val)
                 this.tabId = val
                 if (val == 1) {
                     this.type = ''
@@ -193,10 +218,10 @@ export default {
                     this.type = '1'
                     this.initdata(this.page, this.type)
                 } else if (val == 3) {
-                    this.type = '24'
+                    this.type = '23'
                     this.initdata(this.page, this.type)
                 } else if (val == 4) {
-                    this.type = '5'
+                    this.type = '4'
                     this.initdata(this.page, this.type)
                 } else if (val == 5) {
                     this.type = '6'
@@ -212,6 +237,7 @@ export default {
             initdata (page, type) {   // 数据
                 var self = this;
                 var uid = this.$cookie.get('userLogins')
+                console.log(type)
                 var obj = { uid: uid, type: type, page: page, num: this.limit }
                 self.$http.post('/mobile/Wxorder/order_list', obj).then(res => {
                     console.log(res)
@@ -281,7 +307,7 @@ export default {
                 this.$router.push({ name: 'addorderdetail', params: { id: val.number}})
             },
             outdetails (val) {    // 取消和已完成、待收货的查看详情
-                this.$router.push({ name: 'successOrder', params: { id: val.number}})
+                this.$router.push({ path: '/successOrder', query: { id: val.number}})
             }
         }
 }
@@ -354,8 +380,12 @@ export default {
         .orderall {
     width: 100%;
     font-size: rem(16);
+    
     .Mg-T {
-        margin-top: rem(5);
+        margin-top: rem(10);
+    }
+    .Pd-B10 {
+        padding-bottom: rem(20);
     }
     .content {
         width: 100%;
@@ -434,7 +464,7 @@ export default {
 
         .take {
             width: 100%;
-            box-shadow:0px rem(5) rem(10) 0px rgba(0, 0, 0, 0.1);
+            box-shadow:0px 5px 10px 0px rgba(0, 0, 0, 0.1);
             padding: rem(15);
             font-weight:400;
             background-color: #fff;

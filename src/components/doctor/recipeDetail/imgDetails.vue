@@ -130,17 +130,19 @@ export default {
             var scale = window.devicePixelRatio * 2;//获取设备的显示参数
             canvas.width = width * scale; //定义canvas 宽度 * 缩放
             canvas.height = height * scale; //定义canvas高度 *缩放
-            
+            // _this.$refs.doctorImg.crossOrigin = "Anonymous"; // 图片跨域
             canvas.getContext("2d").scale(scale, scale); //获取context,设置scale 
             var opts = {
                 background:null,
                 scale: scale, // 添加的scale 参数
                 canvas: canvas, //自定义 canvas
-                logging: true, //日志开关，便于查看html2canvas的内部执行流程
+                logging: false, //日志开关，便于查看html2canvas的内部执行流程
                 width: width, //dom 原始宽度
                 height: height,
-                allowTaint: true // (如果图片不出来就加上这句)是否允许跨源图像污染画布
-                // useCORS: true // 【重要】开启跨域配置
+                // useCORS: true, // 【重要】开启跨域配置
+                // allowTaint: true,//允许跨域图片
+                // taintTest: true,//是否在渲染前测试图片
+                
             };
             html2canvas(shareContent, opts).then(function (canvas) {
                  var urls = canvas.toDataURL("image/png");

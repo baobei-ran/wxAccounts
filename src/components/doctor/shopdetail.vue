@@ -143,7 +143,7 @@ export default {
             this.$router.back()
         },
         cerateOrder () {            // 购买
-            this.$router.push({ name: 'doctororder', params: { id: this.$route.query.id}})
+            this.$router.push({ path: '/doctororder', query: { id: this.$route.query.id}})
         }
     }
 }
@@ -269,16 +269,22 @@ $color: #333;
             font-weight: 400;
             li {
                 width: 100%;
-                margin: 0.4rem 0;
-                -webkit-display: flex;
+                margin: 0.2rem 0;
+                display: -webkit-box; 
+                display: -moz-box; 
+                display: -webkit-flex; 
+                display: -moz-flex; 
+                display: -ms-flexbox; 
                 display: flex;
-
+                line-height: 20px;
                 span:first-child {
                     color: #808080;
                     display: block;
                     width: 30%;
                 }
                 span:last-child {
+                    display: block;
+                    width: 70%;
                     color: #333;
                 }
             }

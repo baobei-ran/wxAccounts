@@ -37,7 +37,7 @@ const ImgDetails = r => require.ensure([], () => r(require('@/components/doctor/
 
 const SearchDoctor = resolve => require(['@/components/doctor/searchdoctor'], resolve);        //  更多医生
 const DoctorShopList = resolve => require(['@/components/doctor/doctorshoplist'], resolve);     // 更多医生店铺
-const Error404 = resolve => require(['@/components/Errors/err404'], resolve);
+import Error404 from '@/components/Errors/err404';
 
 Vue.use(Router) 
 
@@ -83,11 +83,13 @@ const router = new Router({
     {
       path: '/personal:id?',
       title: '个人中心',
+      meta: { keeepAlive: true },
       component: Personal
     },
     {
       path: '/userdata',
       title: '个人信息',
+      meta: { keeepAlive: true },
       component: Userdata
     },
     {
@@ -114,7 +116,7 @@ const router = new Router({
       component: ShopDetail
     },
     {
-      path: '/doctororder/:id',
+      path: '/doctororder:id?',
       title: '商品下单',
       name: 'doctororder',
       component: Doctororder
@@ -168,7 +170,7 @@ const router = new Router({
       component: TakeorderDetail
     },
     {
-      path: '/successOrder/:id',  // 取消和已完成 和  待收货详情
+      path: '/successOrder:id?',  // 取消和已完成 和  待收货详情 和 待发货
       title: '订单详情',
       name: 'successOrder',
       component: SuccessOrder
@@ -180,6 +182,7 @@ const router = new Router({
       path: '/oerdersites:id?',
       title: '选择收货地址1',
       name: 'oerdersites',
+      meta: { keeepAlive: true },
       component: OerderSite
     },
     {

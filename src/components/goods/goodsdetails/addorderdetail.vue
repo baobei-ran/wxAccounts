@@ -184,7 +184,7 @@ export default {
                         });
                         self.$http.post('/mobile/Wxorder/pay_result', {order_code: data.order_code }).then(res => {
                             if (res.code == 1) {
-                                self.$router.replace({name: 'successOrder', params: { id: data.number }})
+                                self.$router.replace({ path: '/successOrder', query: { id: data.number }})
                                 cleraInterval(time)
                             }
                         })

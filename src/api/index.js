@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { Indicator } from 'mint-ui';
 // var baseURL = 'http://test99.yunyikang.cn'; // 测试
-var baseURL="https://www.yunyikang.cn";       // 正式
+var baseURL="http://www.yunyikang.cn";       // 正式
 axios.defaults.retry = 3;           //  发起请求次数
 axios.defaults.retryDelay = 1000;   //  每次请求时间
 let http = axios.create({

@@ -120,7 +120,7 @@ export default {
         },
         setData() {
             this.$nextTick(() => {
-                let arr = []
+                var arr = []
                 // this.data = this.data.concat(arr)// 添加数据
                 this.scroll.finishPullUp();
                 this.pullingDownUp()
