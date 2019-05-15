@@ -25,11 +25,11 @@
                         </div>
                 </div>
                     <div class="user">
-                        <input style='background:#fff;color: #333;' type="text" value='本人' v-model='relation' maxlength="11" disabled >
+                        <!-- <input style='background:#fff;color: #333;' type="text" value='本人' v-model='relation' maxlength="11" disabled > -->
                         <label class="label" for="">问诊人关系</label>
-                        <!-- <select name="" id="">
-                            <option value="" v-for='(val,i) in relation' :key='i'>{{ val }}</option>
-                        </select> -->
+                        <select name="" id="" v-model='relation'>
+                            <option v-for='(val,i) in relations' :value="val" :key='i'>{{ val }}</option>
+                        </select>
                     </div>
                     <div class="user">
                         <label for="">姓名</label>
@@ -62,7 +62,7 @@ export default {
                 docmHeight: document.documentElement.clientHeight, // 默认屏幕高度
                 showHeight: document.documentElement.clientHeight, // 实时屏幕高度
                 hidShow: true, // 显示或者隐藏footer
-                relation: ['父母', '兄弟姐妹', '子女', '配偶', '其他']
+                relations: ['本人','父母', '兄弟姐妹', '子女', '配偶', '其他']
             }
         },
         updated() {
@@ -94,6 +94,7 @@ export default {
         },
         methods: {
             handleClick () {    // 提交
+            console.log(this.relation)
                 var self = this;
                 // window.history.state.key = null;
                 // console.log(window.history)
@@ -275,10 +276,27 @@ export default {
         height: rem(46);
         display: -webkit-flex;
         display: flex;
+        justify-content: space-between;
         align-items: center;
         border: 1px solid #E4E9F4;
         font-size: rem(14);
         position: relative;
+        > select {
+            display: block;
+            position: absolute;
+            top: 0;
+            right: rem(0);
+            height: 100%;
+            float: right;
+            outline: none;
+            border:0;
+            background-color: #fff;
+            color: #333;
+            // appearance: none;
+            // -moz-appearance: none;
+            // -webkit-appearance: none;
+            text-align: center;
+        }
         label {
             color: #808080;
             position: absolute;

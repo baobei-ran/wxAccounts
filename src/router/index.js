@@ -135,11 +135,15 @@ const router = new Router({
       path: '/searchdoctor:id?',
       title: '更多医生',
       name: 'searchdoctor',
+      meta: { keeepAlive: true,
+        x:0, y:0
+      },
       component: SearchDoctor
     },
     {
       path: '/doctorshoplist:id?',
       title: '更多医生店铺',
+      meta: { keeepAlive: true, x:0, y:0},
       component: DoctorShopList
     },
     {
@@ -225,7 +229,20 @@ const router = new Router({
       component: ImgDetails
     },
     
-  ]
+  ],
+  // scrollBehavior (to, from, savedPosition) {
+  //   console.log(to, from, savedPosition)
+  //   if (savedPosition) {
+  //     console.log('go')
+  //     return savedPosition
+  //   } else {
+  //     if (from.meta.keepAlive) {
+  //       console.log(document.body.scrollTop)
+  //       from.meta.savedPosition = document.body.scrollTop
+  //     }
+  //     return { x: 0, y: to.meta.savedPosition || 0 }
+  //   }
+  // }
 })
 
 

@@ -180,7 +180,12 @@ export default {
             self.$http.post('/mobile/Wxorder/sub_order', obj).then(res => {
                 console.log(res)
                 if (res.code == 1) {
+                    var userSite = JSON.parse(self.$cookie.get('userSite'));
+                    if (userSite) {
+                        self.$cookie.delete('userSite');
+                    }
                     self.wxsjk(res.data) 
+                    
                 } else {
                     Toast({
                         message: res.msg,

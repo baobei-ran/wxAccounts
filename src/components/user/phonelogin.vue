@@ -87,7 +87,7 @@ export default {
             },
         },
         methods: {  
-            initdata (id) {
+            initdata (id) {         // 检测是否认证了
                 var self = this;
                 self.$http.post('/mobile/wxauth/is_auth', { uid: id}).then(res => {
                     console.log(res)

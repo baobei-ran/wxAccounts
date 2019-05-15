@@ -166,7 +166,7 @@ export default {
             this.$router.back()
         },
         getLength () {
-            this.length = this.txt.length 
+            this.length = this.txt.length
         },
         orderData () {  // 提交下单
             var self = this,
@@ -176,6 +176,10 @@ export default {
             self.$http.post('/mobile/Wxorder/sub_order', obj).then(res => {
                 console.log(res)
                 if (res.code == 1) {
+                    var userSite = JSON.parse(self.$cookie.get('userSite'));
+                    if (userSite) {
+                        self.$cookie.delete('userSite');
+                    }
                     self.wxsjk(res.data) 
                 } else {
                     Toast({

@@ -192,7 +192,7 @@ export default {
                 // console.log(res)
                 setTimeout(() => {
                     Indicator.close();
-                }, 300)
+                }, 100)
                 if (res.code == 1) {
                     _self.doctor = res.data
                     if (_self.doctor.picture) {

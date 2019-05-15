@@ -35,16 +35,16 @@ export default {
         // $auth = 2; //2 未认证,已绑定手机号
         // $auth = 3;  //3 未认证,未绑定手机号
         var urldata = this.$route.query
-        console.log(urldata)
-            var uids = this.$cookie.get('userLogins') 
-            if (!uids || urldata.uid) {
-                this.$cookie.set('userLogins', urldata.uid, 365)
-            }
-            if (urldata.auth == 0 || urldata.auth == 3) {
-                this.$router.replace('/phone?uid='+urldata.uid+"&auth="+ urldata.auth)
-            } else if (urldata.auth == 2 ) {
-                this.$router.replace('/authentication')
-            }
+        if (urldata.uid) {
+            this.$cookie.set('userLogins', urldata.uid, 365)
+            this.initdata (urldata.uid)
+        }
+            
+            // if (urldata.auth == 0 || urldata.auth == 3) {
+            //     this.$router.replace('/phone?uid='+urldata.uid+"&auth="+ urldata.auth)
+            // } else if (urldata.auth == 2 ) {
+            //     this.$router.replace('/authentication')
+            // }
         
     },
     mounted () {
@@ -64,6 +64,21 @@ export default {
         })
     },
     methods: {
+        initdata (id) {         //  检测是否认证
+            var self = this;
+            self.$http.post('/mobile/wxauth/is_auth', { uid: id}).then(res => {
+                console.log(res)
+                if (res.code == 1) {
+                    if (res.auth == 3) {
+                        self.$router.replace('/phone?uid='+id)
+                        return;
+                    } 
+                    if (res.auth == 2 ) {
+                        self.$router.replace('/authentication')
+                    }
+                }
+            })
+        },
         Return () {
             this.$router.go(-1)
         },

@@ -45,8 +45,8 @@
                 </div> -->
         </div>
         
-    <div class="section flex1" >
-        <div class="section_box" >
+    <div class="section flex1" ref='scroll' >
+        <div class="section_box"  >
             <div class="kong" v-if='!datalist.length'>
                 <img src="../../common/img/pic_zwys.png" alt="">
                 <p>无数据</p>
@@ -54,7 +54,7 @@
         
             <div class="doctor_list" v-if='datalist.length'>
                  <div v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
-                    <div class="list" v-for='(val,i) in datalist' :key='i'>
+                    <div class="list" v-for='(val,i) in datalist' :key='i' >
                         <ul @click='Clickdetail(val.did, i)'>
                             <li>
                                 <img :src="$http.baseURL+val.picture" alt="">
@@ -74,13 +74,13 @@
                         </ul>
                         <dl class="dls dis_f flex_i dis_sb">
                             <dt>
-                                处方数量 <span>2122</span>
+                                处方数量 <span>{{ val.recount }}</span>
                             </dt>
                             <dt>
-                                患者数量 <span>50</span>
+                                患者数量 <span>{{ val.fw_doc }}</span>
                             </dt>
                             <dd>
-                                平均回复时长 <span>70min</span> 
+                                平均回复时长 <span>{{ val.reversion_rate }}min</span> 
                             </dd>
                         </dl>
                     </div>
@@ -99,7 +99,7 @@
 <script>
 // 节流函数
 const delay = (function() {
-  let timer = 0;
+  var timer = 0;
   return function(callback, ms) {
     clearTimeout(timer);
     timer = setTimeout(callback, ms);
@@ -126,9 +126,11 @@ export default {
             fanhui: true,           // 返回按钮
             dropDown: false,        // 下拉
             dropup: false,          //  上拉
-            busy: false
+            busy: false,
+            timerId: ''            // 滚动时间
         }
     },
+    
      watch: {
     //watch title change
         searchVal() {
@@ -138,7 +140,41 @@ export default {
             }, 500);
         },
     },
+   
      created () {
+        var urldata = this.$route.query
+        if (urldata.uid) {
+            this.fanhui = false
+            this.$cookie.set('userLogins', urldata.uid, 365)
+            var self = this;
+            self.$http.post('/mobile/wxauth/is_auth', { uid: urldata.uid}).then(res => {
+                console.log(res)
+                if (res.code == 1) {
+                    if (res.auth == 3) {
+                        self.$router.replace('/phone?uid='+urldata.uid)
+                        return;
+                    } 
+                    if (res.auth == 2 ) {
+                        self.$router.replace('/authentication')
+                    }
+                }
+            })
+        } else {
+            this.fanhui = true
+        }
+        //  var uids = this.$cookie.get('userLogins') 
+        //     if (!uids || urldata.uid) {
+                
+        //     }
+        // if (urldata) {
+        //     if (urldata.auth == 0 || urldata.auth == 3) {
+        //         this.$router.replace('/phone?uid='+urldata.uid+"&auth="+ urldata.auth)
+        //     } else if (urldata.auth == 2) {
+        //         this.$router.replace('/authentication')
+        //     }
+        // }
+            
+        
          　var map, geolocation;
         //加载地图，调用浏览器定位服务   高德地图
         map = new AMap.Map('container', {
@@ -213,7 +249,6 @@ export default {
                 
                         function onError(data) {    // 获取失败
                             console.log(data)
-                            console.log('error')
                         }
                     })
 
@@ -222,30 +257,36 @@ export default {
             }
        getLocation()    // 执行
     
-        var urldata = this.$route.query
-        if (urldata.uid) {
-            this.fanhui = false
-        } else {
-            this.fanhui = true
-        }
-         var uids = this.$cookie.get('userLogins') 
-            if (!uids || urldata.uid) {
-                this.$cookie.set('userLogins', urldata.uid, 365)
-            }
-        if (urldata) {
-            if (urldata.auth == 0 || urldata.auth == 3) {
-                this.$router.replace('/phone?uid='+urldata.uid+"&auth="+ urldata.auth)
-            } else if (urldata.auth == 2) {
-                this.$router.replace('/authentication')
-            }
-        }
+        
     },
     mounted () {
        this.initdata()
        this.getLocations()
     },
+    activated () {
+        this.$refs.scroll.scrollTop = this.$route.meta.y 
+        var _this = this;
+        this.$refs.scroll.addEventListener('scroll',_this.justifyPos,true )
+    },
+    deactivated () {
+        // 当组件销毁的时候，移除滚动行为监听, 清空定时器；
+        // 该方法是绑定到 window 身上，即使跳转到其他组件，仍然会监听页面的滚动行为
+        var _this = this;
+        this.$refs.scroll.removeEventListener('scroll', _this.justifyPos, true)
+        clearTimeout(this.timerId)
+    },
     methods: {
-       
+       justifyPos (e) {         // 获取滚动的位置信息
+                    // 节流；
+            if (this.timerId) clearTimeout(this.timerId)
+            this.timerId = setTimeout(() => {
+                // 获取页面滚动距离之后设置给当前路由的 元信息
+                // console.log(e.target.scrollTop)
+                var _this = this;
+                this.$route.meta.y = e.target.scrollTop
+            }, 300)
+        },
+        
          getLocations() {
             const that = this;
             AMap.plugin("AMap.Geolocation", function() {
@@ -295,7 +336,6 @@ export default {
             console.log(result)
             var ar = result.rectangle.split(';')[0];
             var ar2 = ar.split(',')
-            console.log(ar2[0])
             that.lon = ar2[0]
             that.lat = ar2[1]
             
@@ -313,6 +353,7 @@ export default {
         searchs () {
             // 搜索
             console.log(this.lon, this.lat)
+            this.$refs.scroll.scrollTop = 0 // 搜索的时候滚动的top值为零
             var self = this;
              var obj = {page: 1, num: 15, lon: this.lon,lat: this.lat,  name: this.searchVal}
             self.$http.post('/mobile/Wxorder/doc_more', obj).then(res => {

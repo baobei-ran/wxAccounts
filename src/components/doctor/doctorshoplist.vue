@@ -5,7 +5,7 @@
             <img @click='Return' v-if='show' src="../../common/img/icon_fh.png" alt="">
             <span>医生店铺</span>
         </div>
-        <div class="content flex1">   
+        <div class="content flex1" ref='scrolls'>   
             <div class="content_box">
                 <div v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
                     <div class="take Mg-T"  v-for='(val,i) in alllist' :key='i'>
@@ -58,7 +58,8 @@ export default {
             busy: true,
             dropup: false,
             count: 0,
-            uid: ''
+            uid: '',
+            time: '',   // 盛放定时器
         }
     },
     created() {
@@ -70,13 +71,28 @@ export default {
             if (!uids || urldata.uid) {
                 this.$cookie.set('userLogins', urldata.uid, 365)
             }
-            if (urldata) {
-                if (urldata.auth == 0 || urldata.auth == 3) {
-                    this.$router.replace('/phone?uid='+urldata.uid+"&auth="+ urldata.auth)
-                } else if (urldata.auth == 2) {
-                    this.$router.replace('/authentication')
+            // if (urldata) {
+            //     if (urldata.auth == 0 || urldata.auth == 3) {
+            //         this.$router.replace('/phone?uid='+urldata.uid+"&auth="+ urldata.auth)
+            //     } else if (urldata.auth == 2) {
+            //         this.$router.replace('/authentication')
+            //     }
+            // }
+           
+            var self = this;
+            self.$http.post('/mobile/wxauth/is_auth', { uid: urldata.uid}).then(res => {
+                console.log(res)
+                if (res.code == 1) {
+                    if (res.auth == 3) {
+                        self.$router.replace('/phone?uid='+urldata.uid)
+                        return;
+                    } 
+                    if (res.auth == 2 ) {
+                        self.$router.replace('/authentication')
+                    }
                 }
-            }
+            })
+        
         } else {
             this.show = true
             this.uid = this.$cookie.get('userLogins');
@@ -86,7 +102,24 @@ export default {
     mounted () {
         this.initdata()
     },
+    activated () {
+        console.log(this.$route.meta)
+        this.$refs.scrolls.scrollTop = this.$route.meta.y
+        var _this = this;
+        this.$refs.scrolls.addEventListener('scroll', _this.isScrollTop, false)
+    },
+    deactivated () {
+        var _this = this;
+        this.$refs.scrolls.removeEventListener('scroll', _this.isScrollTop, false)
+        clearTimeout(this.time)
+    },
     methods: {
+        isScrollTop (e) {
+            if (this.time) clearTimeout(this.time)
+            this.time = setTimeout(() => {
+                this.$route.meta.y = e.target.scrollTop
+            }, 300)
+        },
         loadMore: function() {
             this.busy = true
             this.page += 1
@@ -204,6 +237,7 @@ export default {
    
     .content {
         width: 100%;
+        overflow: auto;
         padding: 0 rem(10);
         overflow: auto;
        .content_box {
