@@ -6,14 +6,14 @@
                 <img @click='Return' v-if='fanhui' src="../../common/img/icon_fh.png" alt="">
                 <span>更多医生</span>
             </div>
-            <div class="header_search">
+            <div class="header_search dis_f flex_i dis_sb">
                     <!-- <mt-search
                         v-model="searchVal"
                         cancel-text=""
                         @keyup.enter.native="searchs" 
                         placeholder="搜索医生、科室、疾病">
                     </mt-search> -->
-                <input class="search_txt" type="search" v-model="searchVal" @keyup.enter="searchs"   placeholder="搜索医生、科室、疾病">
+                <input class="search_txt flex1" type="search" v-model="searchVal" @keyup.enter="searchs"   placeholder="搜索医生、科室、疾病">
                 <label for="" @click='searchs'>搜索</label>
             </div>
                 <!-- <div class="sortList">
@@ -434,17 +434,17 @@ export default {
                 margin-bottom: rem(5);
         }
             
-    .mint-searchbar-core:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+    .mint-searchbar-core:-moz-placeholder { 
         font-size: rem(13);
         line-height: rem(20);
         margin-bottom: rem(5);
     }
-    .mint-searchbar-core::-moz-placeholder { /* Mozilla Firefox 19+ */
+    .mint-searchbar-core::-moz-placeholder { 
         font-size: rem(13);
         line-height: rem(20);
         margin-bottom: rem(5);
     }
-    .mint-searchbar-core:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    .mint-searchbar-core:-ms-input-placeholder {
         font-size: rem(13);
         line-height: rem(20);
         margin-bottom: rem(5);
@@ -494,7 +494,7 @@ export default {
          
         padding: rem(15);
         .search_txt {
-            width: 87%;
+            // width: 86%;
             height: rem(30);
             -webkit-appearance:none;
             -webkit-border-radius: rem(20);
@@ -509,12 +509,12 @@ export default {
             padding: 0 rem(35);
             background-position: rem(8) rem(3);
             font-size: rem(14);
-            
         }
         
 
         >label {
-            margin-left: rem(10);
+            margin-left: rem(13);
+            display: block;
             font-size: rem(14);
             color: #666;
         }

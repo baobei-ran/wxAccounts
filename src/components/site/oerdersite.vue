@@ -70,16 +70,16 @@ export default {
             Returns () {
                 this.$router.back()
             },
-            getsite (id) {
+            getsite (sid) {
                 var gid = this.$route.query.id
                 var location;
                 this.siteData.map(val => {
-                    if (val.id == id) {
+                    if (val.id == sid) {
                         location = val
                     }
                 })
-                var a = JSON.stringify(location)
-                this.$cookie.set('userSite', a, 365)
+                var sites = JSON.stringify(location)
+                this.$cookie.set('userSite', sites, 1)
                 // this.$router.replace({ name: 'doctororder', params: { id: gid} })
                 this.$router.back()
             }

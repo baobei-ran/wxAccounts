@@ -23,6 +23,10 @@ export default {
 html, body, #app {
   width:100%;
   height: 100%;
+  max-width: 640px;
+  min-width: 320px;
+  min-height: 100%;
+  margin: 0 auto;
   display: -webkit-box; 
   display: -moz-box; 
   display: -webkit-flex; 

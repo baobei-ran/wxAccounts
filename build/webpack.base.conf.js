@@ -1,5 +1,5 @@
-'use strict'
 require('babel-polyfill')
+'use strict'
 const path = require('path')
 const utils = require('./utils')
 const config = require('../config')
@@ -13,7 +13,6 @@ function resolve (dir) {
 module.exports = {
   context: path.resolve(__dirname, '../'),
   entry: {
-    // app: './src/main.js'
     app: ["babel-polyfill", "./src/main.js"]
   },
   output: {

@@ -104,9 +104,33 @@ export default {
         }
     },
     mounted() {
+    function changeTime(time){
+        if(time){
+            var oDate = new Date(time*1000),
+                oYear = oDate.getFullYear(),
+                oMonth = oDate.getMonth()+1,
+                oDay = oDate.getDate(),
+                oHour = oDate.getHours(),
+                oMin = oDate.getMinutes(),
+                oSen = oDate.getSeconds(),
+                oTime = oYear +'-'+ getBz(oMonth) +'-'+ getBz(oDay) +' '+ getBz(oHour) +':'+ getBz(oMin) +':'+getBz(oSen);//拼接时间
+            return oTime;
+        }else{
+            return "";
+        }
+
+    }
+    //补0
+    function getBz(num){
+        if(parseInt(num) < 10){
+            num = '0'+num;
+        }
+        return num;
+    }
+
         this.type = this.$route.query.type  // 1、文本 2、图片 3、音频
         this.con = this.$route.query.con    // 内容
-        this.time = this.$route.query.time  // 时间
+        this.time = changeTime(this.$route.query.time)  // 时间
         this.did = this.$route.query.did
         this.uid = this.$route.query.uid
         this.openid = this.$route.query.openid

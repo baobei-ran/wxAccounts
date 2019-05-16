@@ -120,6 +120,7 @@ export default {
                         res.data.map(val => {
                             if (val.status == 2) {
                                 self.site = val
+                                self.$cookie.set('userSite', JSON.stringify(val), 1)
                             }
                         })
                     }
@@ -153,7 +154,10 @@ export default {
            
         },
         Returns () {
-            console.log('aaa')
+            var userSite = JSON.parse(this.$cookie.get('userSite'));
+            if (userSite && userSite.status == 1) {
+                this.$cookie.delete('userSite');
+            }
             this.$router.go(-1);
         },
         getLength () {
@@ -181,7 +185,7 @@ export default {
                 console.log(res)
                 if (res.code == 1) {
                     var userSite = JSON.parse(self.$cookie.get('userSite'));
-                    if (userSite) {
+                    if (userSite && userSite.status == 1) {
                         self.$cookie.delete('userSite');
                     }
                     self.wxsjk(res.data) 

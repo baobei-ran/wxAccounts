@@ -79,6 +79,7 @@ export default {
                 var a = JSON.stringify(location)
                 this.$cookie.set('userSite', a, 365)
                 this.$router.replace({ name: 'takeorderdetail', params: { id: this.$route.query.id} })
+                this.$router.go(-1);
             }
         }
 }

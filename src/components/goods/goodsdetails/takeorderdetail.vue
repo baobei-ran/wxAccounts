@@ -132,6 +132,7 @@ export default {
                         res.data.map(val => {
                             if (val.status == 2) {
                                 self.site = val
+                                self.$cookie.set('userSite', JSON.stringify(val), 1)
                             }
                         })
                     }
@@ -163,7 +164,11 @@ export default {
            
         },
         Return () {
-            this.$router.back()
+            this.$router.go(-1)
+            var userSite = JSON.parse(this.$cookie.get('userSite'));
+            if (userSite && userSite.status == 1) {
+                this.$cookie.delete('userSite');
+            }
         },
         getLength () {
             this.length = this.txt.length
@@ -177,7 +182,7 @@ export default {
                 console.log(res)
                 if (res.code == 1) {
                     var userSite = JSON.parse(self.$cookie.get('userSite'));
-                    if (userSite) {
+                    if (userSite && userSite.status == 1) {
                         self.$cookie.delete('userSite');
                     }
                     self.wxsjk(res.data) 
@@ -454,6 +459,7 @@ export default {
                     label {
                         display: block;
                         color: #666;
+                        margin-left: rem(2);
                     }
                     textarea {
                         resize: none;width: 100%;

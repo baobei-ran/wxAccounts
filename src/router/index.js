@@ -51,6 +51,12 @@ const router = new Router({
     //   component: Index
     // },
     {
+      path: '/activity',
+      title: '活动展示',
+      meta: { keeepAlive: true },
+      component: Activity
+    },
+    {
       path:'/agreement',
       title: '用户协议',
       component: Agreement
@@ -75,11 +81,7 @@ const router = new Router({
       title: '认证成功',
       component: UserMsg
     },
-    {
-      path: '/activity',
-      title: '活动展示',
-      component: Activity
-    },
+    
     {
       path: '/personal:id?',
       title: '个人中心',
