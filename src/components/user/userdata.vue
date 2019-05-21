@@ -1,9 +1,9 @@
 <template>
     <div class="userdata">
-        <div class="header">
+        <!-- <div class="header">
             <img @click='Return' src="../../common/img/icon_fh.png" alt="">
             <span>个人信息</span>
-        </div>
+        </div> -->
         <div class="section">
             <ul>
                 <li><span>头像</span><img ref="userImg" src="../../common/img/pic_txxq.png" alt=""></li>

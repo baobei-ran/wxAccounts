@@ -1,10 +1,10 @@
 <template>
 <!-- 添加地址 -->
     <div class="sitelist">
-        <div class="header">
+        <!-- <div class="header">
             <img @click='Return' src="../../common/img/icon_fh.png" alt="">
             <span>新增收货地址</span>
-        </div>
+        </div> -->
         <div class="content flex1">
             <div class="content_box">
                 <mt-field label="收货人" placeholder="请输入用户名" v-model="username"></mt-field>
@@ -109,7 +109,7 @@ export default {
         },
         watch: {
             showHeight: function () {
-                if (this.showHeight < this.docmHeight ) {
+                if (this.docmHeight > this.showHeight) {
                     this.hidShow = false
                 } else {
                     this.hidShow = true
@@ -202,7 +202,7 @@ export default {
                     _self.disabled = false;
                     clearTimeout(t)
                 }, 3000)
-                var isphone = /^1(3|4|5|7|8|9)\d{9}$/;//手机号验证
+                var isphone = /^1(3|4|5|6|7|8|9)\d{9}$/;//手机号验证
                 if (!_self.username) {
                     Toast({
                         message: '请输入姓名',

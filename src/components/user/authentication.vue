@@ -2,10 +2,10 @@
 <template>
 <!-- 提交认证 -->
     <div class="login dis_f flex_c">
-        <div class="header">
-            <!-- <img src="../../common/img/icon_fh.png" alt=""> -->
+        <!-- <div class="header">
+            <img src="../../common/img/icon_fh.png" alt="">
             <span>添加问诊人信息</span>
-        </div>
+        </div> -->
         <div class="section_box flex1">
             <div>
                 <div class="section">
@@ -25,11 +25,11 @@
                         </div>
                 </div>
                     <div class="user">
-                        <!-- <input style='background:#fff;color: #333;' type="text" value='本人' v-model='relation' maxlength="11" disabled > -->
+                        <input style='background:#fff;color: #333;' type="text" value='本人' v-model='relation' maxlength="11" disabled >
                         <label class="label" for="">问诊人关系</label>
-                        <select name="" id="" v-model='relation'>
+                        <!-- <select name="" id="" v-model='relation'>
                             <option v-for='(val,i) in relations' :value="val" :key='i'>{{ val }}</option>
-                        </select>
+                        </select> -->
                     </div>
                     <div class="user">
                         <label for="">姓名</label>

@@ -17,12 +17,12 @@
     "es6-promise": "^4.2.6",
     "html2canvas": "^1.0.0-rc.1",
     "mint-ui": "^2.2.13",
-    "swiper": "^4.5.0",
     "vue": "^2.5.2",
     "vue-cookie": "^1.1.4",
     "vue-infinite-scroll": "^2.0.2",
     "vue-lazyload": "^1.2.6",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "vue-wechat-title": "^2.0.5"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

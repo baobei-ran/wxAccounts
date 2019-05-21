@@ -1,10 +1,10 @@
 <template>
 <!-- 商品订单 父级页面 -->
     <div class="ordergoods">
-        <div class="header">
+        <!-- <div class="header">
             <img @click='Returns' src="../../common/img/icon_fh.png" alt="">
             <span>商品订单</span>
-        </div>
+        </div> -->
         <div class="navtab">
             <ul class="dis_f dis_sb flex-vc">
                 <li @click='tabs(1)' :class="{'action': tabId == 1}" >全部</li>
@@ -532,6 +532,7 @@ export default {
                         font-size: rem(13);
                         border:1px solid rgba(74,156,243,1);
                         color: #4A9CF3;
+                        background-color: #fff;
                     }
                     .yes {
                         margin-left: rem(15);

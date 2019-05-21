@@ -1,10 +1,10 @@
 <template>
                     <!--  更多医生店铺 -->
     <div class="doctorshoplist dis_f flex_d">
-        <div class="header">
+        <!-- <div class="header">
             <img @click='Return' v-if='show' src="../../common/img/icon_fh.png" alt="">
             <span>医生店铺</span>
-        </div>
+        </div> -->
         <div class="content flex1" ref='scrolls'>   
             <div class="content_box">
                 <div v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">

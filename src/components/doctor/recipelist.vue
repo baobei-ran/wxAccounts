@@ -1,10 +1,10 @@
 <template>
     <!-- 处方订单 -->
     <div class="doctor_recipe dis_f flex-v">
-         <div class="header">
+         <!-- <div class="header">
             <img @click='Return' src="../../common/img/icon_fh.png" alt="">
             <span>处方订单</span>
-        </div>
+        </div> -->
         <div class="section flex1" ref='section'>
             <div>
                 <div>

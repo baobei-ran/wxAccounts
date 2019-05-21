@@ -2,10 +2,10 @@
 <!-- 订单详情 -->
 <!-- 已完成 和 已取消 和 待收货的 和 待发货-->
     <div class="addorderdetail">
-        <div class="header">
+        <!-- <div class="header">
             <img v-show='flag' @click='Return' src="../../../common/img/icon_fh.png" alt="">
             <span>订单详情</span>
-        </div>
+        </div> -->
         <main class="content">
             <div class="content_box"> 
                 <div class="site">

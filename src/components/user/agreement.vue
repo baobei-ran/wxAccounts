@@ -155,7 +155,7 @@ export default {
     h2 {
         width: 100%;
         text-align: center;
-        font-size: rem(15);
+        font-size: rem(16);
         font-weight: 550;
         padding: rem(16) 0;
     }

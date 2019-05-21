@@ -1,4 +1,5 @@
-require('babel-polyfill')
+require('babel-polyfill');
+require('es6-promise').polyfill()
 'use strict'
 const path = require('path')
 const utils = require('./utils')
@@ -40,6 +41,13 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel-loader',
         include: [resolve('src'), resolve('test'), resolve('node_modules/webpack-dev-server/client')]
+      },
+      {
+        test: /\.js$/,
+        loader: 'babel-loader',
+        include: [
+          resolve('src'),//表示在src目录下的js需要编译
+        ],
       },
       {
         test: /\.(png|jpe?g|gif|svg)(\?.*)?$/,

@@ -1,10 +1,10 @@
 <template>
 <!-- 编辑地址 -->
     <div class="editsitelist">
-        <div class="header">
+        <!-- <div class="header">
             <img @click='cancel' src="../../common/img/icon_fh.png" alt="">
             <span>编辑地址管理</span>
-        </div>
+        </div> -->
         <div class="content">
             <div class="content_box">
                 <mt-field label="收货人" placeholder="请输入用户名" v-model="username"></mt-field>
@@ -150,7 +150,7 @@ export default {
                     _self.disabel = false
                     clearTimeout(time)
                 })
-                var isphone = /^1(3|4|5|7|8|9)\d{9}$/;//手机号验证
+                var isphone = /^1(3|4|5|6|7|8|9)\d{9}$/;//手机号验证
                 if (!_self.username) {
                     Toast({
                         message: '请输入姓名',
@@ -311,6 +311,12 @@ export default {
                                clearTimeout(time)
                                 _self.$router.back()
                            }, 1000)
+                        } else {
+                            Toast({
+                                message: res.msg,
+                                position: 'middle',
+                                duration: 2000
+                            });
                         }
                     })
                 }).catch(cancel => {

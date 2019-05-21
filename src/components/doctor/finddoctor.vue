@@ -1,10 +1,10 @@
 <template>
     <!-- 我的医生 -->
     <div class="doctor dis_f flex-v">
-         <div class="header">
+         <!-- <div class="header">
             <img @click='Return' src="../../common/img/icon_fh.png" alt="">
             <span>我的医生</span>
-        </div>
+        </div> -->
         <div class="section flex1">
             <div>
                 <div class="kong" v-if='!datalist.length'>

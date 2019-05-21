@@ -2,10 +2,10 @@
 <template>
 <!-- 绑定手机号 -->
     <div class="login dis_f flex-v">
-        <div class="header dis_f">
-            <!-- <img @click='Return' src="../../common/img/icon_fh.png" alt=""> -->
+        <!-- <div class="header dis_f">
+            <img @click='Return' src="../../common/img/icon_fh.png" alt="">
             <span>绑定手机号</span>
-        </div>
+        </div> -->
         <div class="section flex1">
             <div class="msgs">
                 <p class="txt">

@@ -1,10 +1,11 @@
 <template>
     <!-- 医生店铺页 -->
     <div class="doctorshop dis_f flex_fc">
-         <div class="header">
+        <div v-wechat-title="doctor.true_name+'的店铺'"></div>
+         <!-- <div class="header">
             <img @click='Return' src="../../common/img/icon_fh.png" alt="">
             <span>{{ doctor.true_name }}的店铺</span>
-        </div> 
+        </div>  -->
         <div class="section flex1">
             <div >
                 <div class="list">

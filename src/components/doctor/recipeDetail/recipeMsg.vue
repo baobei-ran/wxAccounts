@@ -1,9 +1,9 @@
 <template>
     <div class="recipe dis_f flex_d">
-        <div class="header dis_f flex-hc">
+        <!-- <div class="header dis_f flex-hc">
             <img @click='Return' src="../../../common/img/icon_fh.png" alt="">
             <span>处方信息</span>
-        </div>
+        </div> -->
         <div class="flex1 section_box">
             <div class="section">
                 <div class="box">

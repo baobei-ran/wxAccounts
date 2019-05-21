@@ -1,9 +1,9 @@
 <template>
     <div class="personal">
-        <div class="header">
-            <!-- <img @click='Return' src="../../common/img/icon_fh.png" alt=""> -->
+        <!-- <div class="header">
+            <img @click='Return' src="../../common/img/icon_fh.png" alt="">
             <span>个人中心</span>
-        </div>
+        </div> -->
         <div class="section">
             <div class="portrait" @click='getUser'>
                 <p class="dis_f flex_i"><img ref='userImg' src="../../common/img/pic_txxq.png" alt="">

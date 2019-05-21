@@ -1,32 +1,32 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 // import Index from '@/components/index'
-const Activity = resolve => require(['@/components/user/activity'], resolve);     // 图片活动展示
-const Agreement = resolve => require(['@/components/user/agreement'], resolve);      // 协议
-const Login = resolve => require(['@/components/user/phonelogin'], resolve);      // 绑定手机号
-const Authentication = resolve => require(['@/components/user/authentication'], resolve);  // 添加问诊人信息
-const UserMsg = resolve => require(['@/components/user/usermsg'], resolve);  // 认证提示
+const Phones = r => require.ensure([], () => r(require('../components/user/phonelogin')), 'ph');      // 绑定手机号
+const Authentication = r => require.ensure([], () => r(require('../components/user/authentication')), 'ph');  // 添加问诊人信息
+const UserMsg = r => require.ensure([], () => r(require('../components/user/usermsg')), 'ph');  // 认证提示
+const Agreement = r => require.ensure([], () => r(require('../components/user/agreement')), 'ph');      // 协议
 
-const Personal = resolve => require(['@/components/user/personal'], resolve);  // 个人中心
-const Userdata = resolve => require(['@/components/user/userdata'], resolve);  // 个人中心,点击头像进入的
-const HealthData = resolve => require(['@/components/user/healthdata'], resolve);  // 健康数据
-const AuthenticationYes = resolve => require(['@/components/user/authenticationYes'], resolve);  // 问诊信息确认
 
-import Finddoctor from '@/components/doctor/finddoctor'  // 我的医生
-import DoctorDetail from '@/components/doctor/doctordetail'  // 医生详情
-import DoctorShop from '@/components/doctor/doctorshop'  // 医生店铺
-import ShopDetail from '@/components/doctor/shopdetail'  // 医生店铺商品详情
-import Doctororder from '@/components/doctor/doctororder'  // 商品下单
+const Personal = resolve => require(['../components/user/personal'], resolve);  // 个人中心
+const Userdata = resolve => require(['../components/user/userdata'], resolve);  // 个人中心,点击头像进入的
+const HealthData = resolve => require(['../components/user/healthdata'], resolve);  // 健康数据
+const AuthenticationYes = resolve => require(['../components/user/authenticationYes'], resolve);  // 问诊信息确认
 
-const Consultdoctor = resolve => require(['@/components/doctor/consultdoctor'], resolve);  // 咨询页 医生详情的工作室
+import Finddoctor from '../components/doctor/finddoctor'  // 我的医生
+import DoctorDetail from '../components/doctor/doctordetail'  // 医生详情
+import DoctorShop from '../components/doctor/doctorshop'  // 医生店铺
+import ShopDetail from '../components/doctor/shopdetail'  // 医生店铺商品详情
+import Doctororder from '../components/doctor/doctororder'  // 商品下单
 
-const Dingdan = resolve => require(['@/components/goods/dingdan'], resolve);   // 商品订单
-import AddorderDetail from '@/components/goods/goodsdetails/addorderdetail'   // 待支付订单详情
-import TakeorderDetail from '@/components/goods/goodsdetails/takeorderdetail'   // 待收货订单详情
-import SuccessOrder from '@/components/goods/goodsdetails/successOrder'   // 已完成 和 已取消 的订单详情
+const Consultdoctor = resolve => require(['../components/doctor/consultdoctor'], resolve);  // 咨询页 医生详情的工作室
 
-import OerderSite from '@/components/site/oerdersite';                // 购买商品选择列表
-import SetOrder from '@/components/site/setorder';                // 再次购买商品选择列表
+const Dingdan = resolve => require(['../components/goods/dingdan'], resolve);   // 商品订单
+import AddorderDetail from '../components/goods/goodsdetails/addorderdetail'   // 待支付订单详情
+import TakeorderDetail from '../components/goods/goodsdetails/takeorderdetail'   // 待收货订单详情
+import SuccessOrder from '../components/goods/goodsdetails/successOrder'   // 已完成 和 已取消 的订单详情
+
+import OerderSite from '../components/site/oerdersite';                // 购买商品选择列表
+import SetOrder from '../components/site/setorder';                // 再次购买商品选择列表
 const SiteList = resolve => require(['@/components/site/sitelist'],resolve);                 // 地址管理列表
 const AddSite  = resolve => require(['@/components/site/addsite'],resolve);                 // 添加地址
 const EditSite = resolve => require(['@/components/site/editsite'],resolve);                 // 编辑地址
@@ -37,7 +37,9 @@ const ImgDetails = r => require.ensure([], () => r(require('@/components/doctor/
 
 const SearchDoctor = resolve => require(['@/components/doctor/searchdoctor'], resolve);        //  更多医生
 const DoctorShopList = resolve => require(['@/components/doctor/doctorshoplist'], resolve);     // 更多医生店铺
-import Error404 from '@/components/Errors/err404';
+import Error404 from '../components/Errors/err404';
+const Activity = resolve => require(['../components/user/activity'], resolve);     // 图片活动展示
+
 
 Vue.use(Router) 
 
@@ -52,51 +54,67 @@ const router = new Router({
     // },
     {
       path: '/activity',
-      title: '活动展示',
-      meta: { keeepAlive: true },
+      title: '图片',
+      meta: { 
+        keeepAlive: true,
+      },
       component: Activity
     },
     {
       path:'/agreement',
-      title: '用户协议',
+      meta: {
+        keeepAlive: true,
+        title: '用户协议'
+      },
       component: Agreement
     },
     {
       path:'/err404',
-      title: '错误页面',
+      meta: {
+        title: '错误',
+      },
       component: Error404
     },
     {
       path:'/phone:id?',
-      title: '绑定手机号',
-      component: Login
+      meta: {
+        title: '绑定手机号',
+      },
+      component: Phones
     },
     {
       path: '/authentication',
-      title: '添加问诊人信息',
+      meta: {
+        title: '添加问诊人信息',
+      },
       component: Authentication
     },
     {
       path: '/usermsg',
-      title: '认证成功',
+      meta: {
+        title: '认证成功',
+      },
       component: UserMsg
     },
     
     {
       path: '/personal:id?',
-      title: '个人中心',
-      meta: { keeepAlive: true },
+      meta: { title: '个人中心',keeepAlive: true },
       component: Personal
     },
     {
       path: '/userdata',
-      title: '个人信息',
-      meta: { keeepAlive: true },
+      meta: { 
+        title: '个人信息',
+        keeepAlive: true 
+      },
       component: Userdata
     },
     {
       path: '/finddoctor',
-      title: '我的医生',
+      meta: {
+        title: '我的医生',
+      },
       component: Finddoctor
     },
     {
@@ -113,13 +131,17 @@ const router = new Router({
     },
     {
       path: '/shopdetail:id?',
-      title: '商品详情',
+      meta: {
+        title: '商品详情',
+      },
       name: 'shopdetail',
       component: ShopDetail
     },
     {
       path: '/doctororder:id?',
-      title: '商品下单',
+      meta: {
+        title: '商品下单',
+      },
       name: 'doctororder',
       component: Doctororder
     },
@@ -135,17 +157,17 @@ const router = new Router({
     },
     {
       path: '/searchdoctor:id?',
-      title: '更多医生',
       name: 'searchdoctor',
-      meta: { keeepAlive: true,
+      meta: { 
+        title: '更多医生',
+        keeepAlive: true,
         x:0, y:0
       },
       component: SearchDoctor
     },
     {
       path: '/doctorshoplist:id?',
-      title: '更多医生店铺',
-      meta: { keeepAlive: true, x:0, y:0},
+      meta: { title: '更多医生店铺', keeepAlive: true, x:0, y:0},
       component: DoctorShopList
     },
     {
@@ -159,25 +181,30 @@ const router = new Router({
     
     {
       path: '/dingdan',
-      title: '商品订单',
-      meta: { keeepAlive: true },
+      meta: { title: '商品订单', keeepAlive: true },
       component: Dingdan
     },
     {
       path: '/addorderdetail/:id',  // 待付款详情
-      title: '订单详情',
+      meta: {
+        title: '订单详情',
+      },
       name: 'addorderdetail',
       component: AddorderDetail
     },
     {
       path: '/takeorderdetail/:id', // 再次购买页
-      title: '下单',
+      meta: {
+        title: '下单详情',
+      },
       name: 'takeorderdetail',
       component: TakeorderDetail
     },
     {
       path: '/successOrder:id?',  // 取消和已完成 和  待收货详情 和 待发货
-      title: '订单详情',
+      meta: {
+        title: '订单详情',
+      },
       name: 'successOrder',
       component: SuccessOrder
     },
@@ -185,48 +212,49 @@ const router = new Router({
     
                                         //  收货地址管理
     {
-      path: '/oerdersites:id?',
-      title: '选择收货地址1',
+      path: '/oerdersites:id?',     // id 下单选择地址
       name: 'oerdersites',
-      meta: { keeepAlive: true },
+      meta: { title: '收货地址列表', keeepAlive: true },
       component: OerderSite
     },
     {
-      path: '/setorder:id?',
-      title: '选择收货地址2',
+      path: '/setorder:id?',    // 订单号选择地址
+      meta: {
+        title: '收货地址列表',
+      },
       name: 'setorder',
       component: SetOrder
     },
     {
       path: '/sitelist',
-      title: '收货地址管理',
+      meta: { title: '收货地址管理'},
       component: SiteList
     },
     {
       path: '/addsite/:id?',
-      title: '新增收货地址',
+      meta: {title: '新增收货地址'},
       component: AddSite
     },
     {
       path: '/editsite:id?',
-      title: '编辑收货地址',
+      meta: {title: '编辑收货地址'},
       component: EditSite
     },
                                       // 处方订单
     {
       path: '/recipelist',
-      title: '处方订单',
+      meta: {title: '处方订单列表'},
       component: RecipeList
     },
     {
       path: '/recipeMsg/:id',
-      title: '处方信息',
+      meta: {title: '处方信息'},
       name: 'recipeMsg',
       component: RecipeMsg
     },
     {
       path: '/chufdetails:id?',
-      title: '处方详情',
+      meta: {title: '处方详情'},
       name: 'chufdetails',
       component: ImgDetails
     },
@@ -257,5 +285,15 @@ const router = new Router({
 //       router.replace(targetPath);
 //   }
 // })
+
+router.beforeEach((to, from, next) => {
+  /* 路由发生变化修改页面title */
+  console.log(to)
+  if (to.meta.title) {
+    window.document.title = to.meta.title
+  }
+  next()
+  
+})
 
 export default router

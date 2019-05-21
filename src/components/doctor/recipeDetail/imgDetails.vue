@@ -1,10 +1,10 @@
 
 <template>
     <div class="imgDetails dis_f flex_d">
-        <div class="header">
+        <!-- <div class="header">
             <img @click='Return' src="../../../common/img/icon_fh.png" alt="">
             <span>处方详情</span>
-        </div>
+        </div> -->
         <div class="section_box flex1" id='canvas_box'>
             <div class="section dis_f flex_i"  id='imgs'> 
                 <div class="img_box">
@@ -152,7 +152,7 @@ export default {
                 img.src = urls
                 img.style['width'] = '100%';
                 img.style['background'] = '#fff';
-                document.getElementById('imgs').append(img)
+                document.getElementById('imgs').appendChild(img)
                 document.getElementById('canvas_box').style['background'] = '#000';
                 Indicator.close();
             });

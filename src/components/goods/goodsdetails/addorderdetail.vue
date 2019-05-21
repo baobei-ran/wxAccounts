@@ -1,10 +1,10 @@
 <template>
 <!-- 待支付订单详情 -->
     <div class="addorderdetail">
-        <div class="header">
+        <!-- <div class="header">
             <img @click='Return' src="../../../common/img/icon_fh.png" alt="">
             <span>订单详情</span>
-        </div>
+        </div> -->
         <main class="content">
             <div class="content_box"> 
                 <div class="site">

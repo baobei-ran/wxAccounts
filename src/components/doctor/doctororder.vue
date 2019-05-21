@@ -1,10 +1,10 @@
 <template>
 <!-- 下单 -->
     <div class="doctororder">
-        <div class="header">
+        <!-- <div class="header">
             <img @click='Returns' src="../../common/img/icon_fh.png" alt="">
             <span>下单详情</span>
-        </div>
+        </div> -->
         <main class="content flex1">
             <div class="content_box"> 
                 <div class="sites" @click='selects($event)'>
@@ -51,7 +51,7 @@
                 </div>
             </div>
         </main>
-        <div class="footer" >
+        <div class="footer" v-if='hidShow'>
             <div>总计：<span>￥{{ orderdata.price }}</span></div>
             <mt-button type="primary" :disabled='disabled' @click.native='orderData'>提交订单</mt-button>
         </div>
@@ -78,24 +78,54 @@ export default {
     mounted () {
         this.initsite();
         var vm = this
-    // window.resize监听页面高度的变化
-        window.onresize = () => {
-        return (() => {
-            vm.showHeight = document.body.clientHeight
-        })()
+        // window.resize监听页面高度的变化
+            window.onresize = () => {
+            return (() => {
+                vm.showHeight = document.body.clientHeight
+            })()
         }
+
+
+        // 监听返回按钮事件
+        if (window.history && window.history.pushState) {
+            window.addEventListener('popstate', vm.close, false)
+        }
+    },
+    destroyed(){ // 离开后进行销毁
+        var _this = this;
+        setTimeout(function(){
+            window.removeEventListener('popstate',_this.close,false);
+        },0)
     },
     watch: {
         showHeight: function () {
-        if (this.docmHeight > this.showHeight ) {
-            this.hidShow = false
-        } else {
-            this.hidShow = true
-        }
+             var ua = window.navigator.userAgent,
+            app = window.navigator.appVersion;
+            // android端
+            if(ua.indexOf('Android') > -1 || ua.indexOf('Adr') > -1) {
+                if (this.docmHeight > this.showHeight ) {
+                    this.hidShow = false
+                } else {
+                    this.hidShow = true
+                }
+            }
         },
         '$route': 'selects'
   },
     methods: {
+        close () {
+            var userSite = JSON.parse(this.$cookie.get('userSite'));
+            if (userSite && userSite.status == 1) {
+                this.$cookie.delete('userSite');
+            }
+        },
+        Returns () {
+            var userSite = JSON.parse(this.$cookie.get('userSite'));
+            if (userSite && userSite.status == 1) {
+                this.$cookie.delete('userSite');
+            }
+            this.$router.go(-1);
+        },
         initsite () {
             var self = this,
                 uid = this.$cookie.get('userLogins');
@@ -153,13 +183,7 @@ export default {
             // }, 300)
            
         },
-        Returns () {
-            var userSite = JSON.parse(this.$cookie.get('userSite'));
-            if (userSite && userSite.status == 1) {
-                this.$cookie.delete('userSite');
-            }
-            this.$router.go(-1);
-        },
+        
         getLength () {
             this.length = this.txt.length 
         },
@@ -268,7 +292,7 @@ export default {
             if (self.$router) {
                 self.$router.push({ path:'/oerdersites', query: { id: id }});
             } else {
-                window.location.href = '/oerdersites?id='+ id
+                location.href = '/oerdersites?id='+ id
             }
             
         },  

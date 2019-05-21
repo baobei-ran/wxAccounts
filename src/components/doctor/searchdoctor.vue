@@ -2,10 +2,10 @@
     <!-- 查找更多医生 -->
     <div class="doctor dis_f flex_d">
         <div class="header_box">
-            <div class="header">
+            <!-- <div class="header">
                 <img @click='Return' v-if='fanhui' src="../../common/img/icon_fh.png" alt="">
                 <span>更多医生</span>
-            </div>
+            </div> -->
             <div class="header_search dis_f flex_i dis_sb">
                     <!-- <mt-search
                         v-model="searchVal"
@@ -80,7 +80,7 @@
                                 患者数量 <span>{{ val.fw_doc }}</span>
                             </dt>
                             <dd>
-                                平均回复时长 <span>{{ val.reversion_rate }}min</span> 
+                                平均回复时长 <span>{{ val.reversion_rate }}</span> 
                             </dd>
                         </dl>
                     </div>
@@ -174,8 +174,8 @@ export default {
         //     }
         // }
             
-        
-         　var map, geolocation;
+         var self = this;
+         var map, geolocation;
         //加载地图，调用浏览器定位服务   高德地图
         map = new AMap.Map('container', {
             resizeEnable: true
@@ -191,6 +191,8 @@ export default {
                 var getLongitude = data.position.getLng();
                 var getLatitude = data.position.getLat();
                 // alert(getLongitude+'---'+getLatitude+'我的天') //弹出获得的经纬度
+                self.lon = getLongitude
+                self.lat = getLatitude
             }); //返回定位信息
              AMap.event.addListener(geolocation, 'error', function onError(err) {  //返回定位出错信息
                     console.log(err)
@@ -198,7 +200,7 @@ export default {
         });
 
 
-         var self = this;
+        
         //  onComplete=function(){},onError=function(){}
          var getLocation = function (){
                 var map = new AMap.Map('aMap', {
@@ -360,6 +362,26 @@ export default {
                 console.log(res)
                     self.busy = false
                 if (res.code == 1) {
+                     res.data.map(val => {
+                        if (val.reversion_rate != 0) {
+                            var tis = Math.round(val.reversion_rate / 60 / 60)
+                            console.log(tis)
+                            if (tis > 0) {
+                                val.reversion_rate = '小于'+ tis + '小时'
+                                return;
+                            }
+                            var ti = Math.round(val.reversion_rate / 60)
+                            console.log(ti)
+                            if (ti>0) {
+                                val.reversion_rate = '小于'+ ti + '分钟'
+                            }
+                            
+                            
+                        } else {
+                            val.reversion_rate = val.reversion_rate+'min'
+                        }
+                        
+                    })
                     self.datalist = res.data
                 } else {
                    self.datalist = []
@@ -376,6 +398,17 @@ export default {
                 console.log(res)
                     self.busy = false
                 if (res.code == 1) {
+                    res.data.map(val => {
+                        if (val.reversion_rate != 0) {
+                            var tis = new Date(val.reversion_rate*1000).getHours()
+
+                            var ti = new Date(val.reversion_rate*1000).getMinutes()
+                            console.log(ti)
+                        }else {
+                            val.reversion_rate = val.reversion_rate+'min'
+                        }
+                        
+                    })
                    if (self.page <= 1) {
                         self.datalist = res.data
                    } else if (self.page > 1) {

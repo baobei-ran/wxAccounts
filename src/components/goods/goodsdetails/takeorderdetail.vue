@@ -1,10 +1,10 @@
 <template>
 <!-- 下单 -->
     <div class="doctororder">
-        <div class="header">
+        <!-- <div class="header">
             <img @click='Return' src="../../../common/img/icon_fh.png" alt="">
             <span>下单详情</span>
-        </div>
+        </div> -->
         <main class="content">
             <div class="content_box" > 
                 <div class="site" @click='outSites($event)' >
@@ -95,6 +95,15 @@ export default {
             vm.showHeight = document.body.clientHeight
         })()
         }
+        if (window.history && window.history.pushState) {
+            window.addEventListener('popstate', vm.close, false)
+        }
+    },
+    destroyed () {
+        var vm = this;
+        setTimeout(() => {
+            window.removeEventListener('popstate', vm.close, false)
+        }, 0)
     },
     watch: {
     showHeight: function () {
@@ -107,6 +116,12 @@ export default {
     '$route' : 'outSites'
   },
     methods: {
+        close () {
+             var userSite = JSON.parse(this.$cookie.get('userSite'));
+            if (userSite && userSite.status == 1) {
+                this.$cookie.delete('userSite');
+            }
+        },
         initsite () {
             var self = this,
                 uid = this.$cookie.get('userLogins');

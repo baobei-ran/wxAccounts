@@ -1,10 +1,11 @@
 <template>
     <!-- 医生详情 -->
     <div class="doctor dis_f flex_d">
-         <div class="header">
-            <!-- <img @click='Return' src="../../common/img/icon_fh.png" alt=""> -->
+        <div v-wechat-title="datalist.true_name+'的工作室'"></div>
+         <!-- <div class="header">
+            <img @click='Return' src="../../common/img/icon_fh.png" alt="">
             <span>{{ datalist.true_name }}的工作室</span>
-        </div>
+        </div> -->
         <div class="section flex1">
             <div >
                 <div class="list">

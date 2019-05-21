@@ -1,10 +1,10 @@
 <template>
 <!-- 地址管理 -->
     <div class="sitelist">
-        <div class="header">
+        <!-- <div class="header">
             <img @click='Returns' src="../../common/img/icon_fh.png" alt="">
             <span>收货地址管理</span>
-        </div>
+        </div> -->
         <div class="content">
             <div class="content_box">
                 <div class="empty" v-if='!siteData.length'>

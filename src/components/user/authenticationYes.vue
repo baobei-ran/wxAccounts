@@ -2,10 +2,10 @@
 <template>
 <!-- 问诊信息确认 -->
     <div class="login dis_f flex_d">
-        <div class="header">
+        <!-- <div class="header">
             <img src="../../common/img/icon_return.png" alt="">
             <span>问诊信息确认</span>
-        </div>
+        </div> -->
         <main class="content">
             <div class="content_box">
                 <ul class="ul">
