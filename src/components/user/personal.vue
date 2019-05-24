@@ -13,8 +13,12 @@
             </div>
             <ul class="ul">
                 <li @click='getDoutor'><img src="../../common/img/icon_wdys.png" alt=""> <span>我的医生</span> <img class="Right" src="../../common/img/icon_enter.png" alt=""></li>
-                <li @click='getOrder'><img src="../../common/img/icon_spdd.png" alt=""> <span>商品订单</span> <img class="Right" src="../../common/img/icon_enter.png" alt=""></li>
+                <li @click='getSubscribe'><img src="../../common/img/icon_yymzjl.png" alt=""> <span>预约门诊记录</span> <img class="Right" src="../../common/img/icon_enter.png" alt=""></li>
                 <li @click='getRecipe'><img src="../../common/img/icon_cfdd.png" alt=""> <span>处方订单</span> <img class="Right" src="../../common/img/icon_enter.png" alt=""></li>
+                <li @click='getAdministration'><img src="../../common/img/icon_jzcygl.png" alt=""> <span>就诊成员管理</span> <img class="Right" src="../../common/img/icon_enter.png" alt=""></li>
+            </ul>
+            <ul class="ul">
+                <li @click='getOrder'><img src="../../common/img/icon_spdd.png" alt=""> <span>商品订单</span> <img class="Right" src="../../common/img/icon_enter.png" alt=""></li>
                 <li @click='goSite'><img src="../../common/img/icon_shdz.png" alt=""> <span>收货地址管理</span> <img class="Right" src="../../common/img/icon_enter.png" alt=""></li>
             </ul>
         </div>
@@ -82,6 +86,12 @@ export default {
         Return () {
             this.$router.go(-1)
         },
+        getSubscribe () { // 预约记录
+            this.out('/subscribe')
+        },
+        getAdministration () { // 成员管理
+            this.out('administration')
+        },
         goSite() {  // 地址
             this.out('/SiteList')
         },
@@ -89,7 +99,7 @@ export default {
             this.out('/userdata')
         },
         getDoutor () {  // 我的医生
-            this.out('/finddoctor')
+            this.out('/mydoctor')
         },
         getOrder () {   // 商品订单
             this.out('/dingdan')
@@ -130,7 +140,6 @@ export default {
         font-size: rem(14);
         .portrait {
             height: rem(94);
-            margin-bottom: rem(10);
             position: relative;
             background-color: #fff;
             > p {
@@ -163,6 +172,7 @@ export default {
         }
         .ul {
             width: 100%;
+            margin-top: rem(10);
             background-color: #fff;
             padding-left: rem(20);
             li {

@@ -12,7 +12,12 @@ const Userdata = resolve => require(['../components/user/userdata'], resolve);  
 const HealthData = resolve => require(['../components/user/healthdata'], resolve);  // 健康数据
 const AuthenticationYes = resolve => require(['../components/user/authenticationYes'], resolve);  // 问诊信息确认
 
-import Finddoctor from '../components/doctor/finddoctor'  // 我的医生
+// import Finddoctor from '../components/doctor/finddoctor'  // (旧)我的医生
+
+import Mydoctor from '../components/doctor/mydoctor'  // （新）我的医生
+import Docrecord from '../components/doctor/docrecord' // 咨询记录
+
+
 import DoctorDetail from '../components/doctor/doctordetail'  // 医生详情
 import DoctorShop from '../components/doctor/doctorshop'  // 医生店铺
 import ShopDetail from '../components/doctor/shopdetail'  // 医生店铺商品详情
@@ -31,16 +36,27 @@ const SiteList = resolve => require(['@/components/site/sitelist'],resolve);    
 const AddSite  = resolve => require(['@/components/site/addsite'],resolve);                 // 添加地址
 const EditSite = resolve => require(['@/components/site/editsite'],resolve);                 // 编辑地址
 
-const RecipeList = r => require.ensure([], () => r(require('@/components/doctor/recipelist')), 'fang');        //  处方订单
-const RecipeMsg = r => require.ensure([], () => r(require('@/components/doctor/recipeDetail/recipeMsg')), 'fang');  // 处方信息
-const ImgDetails = r => require.ensure([], () => r(require('@/components/doctor/recipeDetail/imgdetails')), 'fang');  // 处方详情
+const RecipeList = r => require.ensure([], () => r(require('@/components/doctor/recipeDetail/recipelist')), 'fang');  //  处方订单列表
+const RecipeMsg = r => require.ensure([], () => r(require('@/components/doctor/recipeDetail/recipeMsg')), 'fang');    //  处方信息
+const ImgDetails = r => require.ensure([], () => r(require('@/components/doctor/recipeDetail/imgdetails')), 'fang');  //  处方详情
 
 const SearchDoctor = resolve => require(['@/components/doctor/searchdoctor'], resolve);        //  更多医生
 const DoctorShopList = resolve => require(['@/components/doctor/doctorshoplist'], resolve);     // 更多医生店铺
 import Error404 from '../components/Errors/err404';
 const Activity = resolve => require(['../components/user/activity'], resolve);     // 图片活动展示
 
+// 预约门诊记录
+const Subscribe = r => require.ensure([], () => r(require('../components/Subscribe/subscribe.vue')), 'Subscribe'); 
+const CancelSubscribe = r => require.ensure([], () => r(require('../components/Subscribe/cancelSubscribe.vue')), 'Subscribe');  // 取消预约
+const SubscribeDetail = r => require.ensure([], () => r(require('../components/Subscribe/subscribeDetail.vue')), 'Subscribe');  // 预约记录详情
 
+// 成员管理
+const Administration = r => require.ensure([], () => r(require('../components/Administration/administration.vue')), 'administration');
+const Addmember = r => require.ensure([], () => r(require('../components/Administration/addmember.vue')), 'administration');     // 添加成员
+const Editmember = r => require.ensure([], () => r(require('../components/Administration/editmember.vue')), 'administration');   // 编辑成员信息
+
+
+const Docrecommend = resolve => require(['@/components/doctor/docrecommend'],resolve);                 // 预约医生
 Vue.use(Router) 
 
 const router = new Router({
@@ -111,12 +127,23 @@ const router = new Router({
       component: Userdata
     },
     {
-      path: '/finddoctor',
+      path: '/mydoctor',
       meta: {
         title: '我的医生',
       },
-      component: Finddoctor
+      component: Mydoctor
     },
+    {
+      path: '/mydoctor/docrecord:id?',
+      meta: {
+        title: '咨询记录',
+      },
+      name: 'docrecord',
+      component: Docrecord
+    },
+
+
+
     {
       path: '/doctordetail/:id',
       title: '医生详情',
@@ -258,6 +285,57 @@ const router = new Router({
       name: 'chufdetails',
       component: ImgDetails
     },
+
+    // 预约门诊记录
+    {
+      path: '/subscribe',
+      meta: {title: '预约记录'},
+      name: 'subscribe',
+      component: Subscribe
+    },
+    {
+      path: '/subscribe/cancelSubscribe:id?',
+      meta: {title: '取消预约'},
+      name: 'cancelSubscribe',
+      component: CancelSubscribe
+    },
+    {
+      path: '/subscribe/subscribeDetail:id?',
+      meta: {title: '预约信息'},
+      name: 'subscribeDetail',
+      component: SubscribeDetail
+    },
+    
+
+
+    // 就诊成员管理
+    {
+      path: '/administration',
+      meta: {title: '就诊成员管理'},
+      name: 'administration',
+      component: Administration
+    },
+    {
+      path: '/administration/addmember',
+      meta: {title: '添加新成员'},
+      name: 'addmember',
+      component: Addmember
+    },
+    {
+      path: '/administration/editmember',
+      meta: {title: '修改成员信息'},
+      name: 'editmember',
+      component: Editmember
+    },
+
+
+
+    {
+      path: '/docrecommend',
+      meta: {title: '预约医生', },
+      name: 'docrecommend',
+      component: Docrecommend
+    }
     
   ],
   // scrollBehavior (to, from, savedPosition) {
@@ -288,7 +366,6 @@ const router = new Router({
 
 router.beforeEach((to, from, next) => {
   /* 路由发生变化修改页面title */
-  console.log(to)
   if (to.meta.title) {
     window.document.title = to.meta.title
   }

@@ -2,14 +2,14 @@
     <!-- 处方订单 -->
     <div class="doctor_recipe dis_f flex-v">
          <!-- <div class="header">
-            <img @click='Return' src="../../common/img/icon_fh.png" alt="">
+            <img @click='Return' src="../../../common/img/icon_fh.png" alt="">
             <span>处方订单</span>
         </div> -->
         <div class="section flex1" ref='section'>
             <div>
                 <div>
                     <div class="kong" v-if='!datalist.length'>
-                            <img src="../../common/img/pic_zwcf.png" alt="">
+                            <img src="../../../common/img/pic_zwcf.png" alt="">
                             <p>还没有相关的处方信息</p>
                     </div>
                     <div v-if='datalist.length'>

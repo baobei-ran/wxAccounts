@@ -61,7 +61,13 @@ export default {
             this.$http.post('/mobile/wxdoccenter/my_doctors', obj).then(res => {
                 console.log(res)
                 if (res.code == 1) {
-                    self.datalist = res.data
+                    var data = res.data, arr = [];
+                    for (var i=0; i< data.length; i++) {
+                        if (data[i].did) {
+                            arr.push(data[i])
+                        }
+                    }
+                    self.datalist = arr
                 } else {
                     self.datalist = []
                 }

@@ -74,31 +74,10 @@
                     </dl> -->
                 </div>
                 <p>共{{ val.num }}件商品 实付款 <span>{{ val.money }}</span></p>
-                <div class="addbtn"><mt-button @click.native='buy(val)'>再次购买</mt-button>
-                    <!-- <mt-button class="yes" @click.native='take(val)'>确认收货</mt-button> -->
-                </div>
+                <div class="addbtn"><mt-button @click.native='buy(val)'>再次购买</mt-button></div>
             </div>
 
-            <!-- 等待发货 -->
-
-                <!-- <div class="take Mg-T">
-                <h4>谢永清医生的店铺<img src="../../../common/img/icon_enter.png" alt=""><span>等待发货</span></h4>
-                <div class="order_list">
-                    <dl>
-                        <dt>
-                            <img src="../../../common/img/pic_sptp.png" alt="">
-                        </dt>
-                        <dd>
-                            <h5>999搞毛亏你还</h5>
-                            <span>￥22.00</span>
-                            <p>x1</p>
-                        </dd>
-                    </dl>
-                </div>
-                <p>共1件商品 实付款 <span>22.00</span></p>
-                <div class="addbtn"><mt-button >再次购买</mt-button></div>
-            </div> -->
-
+            
 
             <!-- 待收货 -->
 
@@ -120,7 +99,6 @@
                 </div>
                 <p>共{{ val.num }}件商品 实付款 <span>{{ val.money }}</span></p>
                 <div class="addbtn"><mt-button @click.native='buy(val)'>再次购买</mt-button><mt-button class="yes" @click.native='take(val)'>确认收货</mt-button></div>
-                <!-- <div class="addbtn"><mt-button @click.native='del(val)'>删除订单</mt-button><mt-button class="yes" @click.native='buy(val)'>再次购买</mt-button></div> -->
             </div>
 
     <!-- 已完成 -->
@@ -141,7 +119,6 @@
                     </dl>
                 </div>
                 <p>共{{ val.num }}件商品 实付款 <span>{{ val.money }}</span></p>
-                <!-- <div class="addbtn"><mt-button @click.native='buy(val)'>再次购买</mt-button><mt-button class="yes" @click.native='take(val)'>确认收货</mt-button></div> -->
                 <div class="addbtn"><mt-button @click.native='del(val)'>删除订单</mt-button><mt-button class="yes" @click.native='buy(val)'>再次购买</mt-button></div>
             </div>
 
@@ -324,13 +301,24 @@ export default {
     width: 100%;
     height: 100%;
     font-size: rem(16);
-    -webkit-display: flex;
+    display: -webkit-box; 
+    display: -moz-box; 
+    display: -webkit-flex; 
+    display: -moz-flex; 
+    display: -ms-flexbox; 
     display: flex;
+    -webkit-flex-direction: column;
+    -moz-flex-direction: column;
+    -ms-flex-direction: column;
+    -o-flex-direction: column;
     flex-direction: column;
     .header {
-        -webkit-display: flex;
+        display: -webkit-flex;
         display: flex;
         height: rem(40);
+        -webkit-justify-content: center;
+        -ms-justify-content: center;
+        -o-justify-content: center;
         justify-content: center;
         color: #212121;
         position: relative;
@@ -363,8 +351,15 @@ export default {
             padding: 0 rem(20);
             font-size: rem(14);
             li {
+                float: left;
                 height: rem(46);
                 line-height: rem(46);
+            }
+            li:after {
+                display: block;
+                content: '';
+                clear:both;
+                visibility: hidden;
             }
             .action {
                 color: #4A9CF3;
@@ -375,7 +370,7 @@ export default {
     .content {
         -webkit-flex:1;
         flex: 1;
-        overflow: auto;
+        overflow-y: scroll;
         
         .orderall {
     width: 100%;
@@ -403,8 +398,10 @@ export default {
                 line-height: rem(30);
                 font-size: rem(14);
                 color:#333;
+                overflow: hidden;
                 img {
                     width: rem(25);
+                    height: auto;
                     vertical-align: middle;
                 }
                 >span {
@@ -477,6 +474,7 @@ export default {
                 color:#333;
                 img {
                     width: rem(25);
+                    height: auto;
                     vertical-align: middle;
                 }
                 >span {

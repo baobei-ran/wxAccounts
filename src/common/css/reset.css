@@ -26,7 +26,7 @@ input::-webkit-input-placeholder {
 a, img {
   -webkit-touch-callout:none;   /* 禁用长按页面时的弹出菜单(iOS下有效) ,img和a标签都要加 */
 }
-input {
+input, textarea {
   outline: none;
 }
 
@@ -52,6 +52,13 @@ time, mark, audio, video{
   vertical-align: baseline;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
+  /* 禁止IOS和安卓长按复制粘贴功能 */
+  -webkit-touch-callout:none; /*系统默认菜单被禁用*/
+  -webkit-user-select:none; /*webkit浏览器*/
+  -khtml-user-select:none; /*早期浏览器*/
+  -moz-user-select:none;/*火狐*/
+  -ms-user-select:none; /*IE10*/
+  user-select:none;
 }
 /* HTML5 display-role reset for older browsers */
 article, aside, details, figcaption, figure, 
@@ -79,6 +86,7 @@ a{
   color: #7e8c8d;
   text-decoration: none;
   -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 ::-webkit-scrollbar{
   width: 5px;
@@ -87,16 +95,19 @@ a{
 ::-webkit-scrollbar-track-piece{
   background-color: rgba(0, 0, 0, 0.2);
   -webkit-border-radius: 6px;
+  border-radius: 6px;
 }
 ::-webkit-scrollbar-thumb:vertical{
   height: 5px;
   background-color: rgba(125, 125, 125, 0.7);
   -webkit-border-radius: 6px;
+  border-radius: 6px;
 }
 ::-webkit-scrollbar-thumb:horizontal{
   width: 5px;
   background-color: rgba(125, 125, 125, 0.7);
   -webkit-border-radius: 6px;
+  border-radius: 6px;
 }
 html, body{
   width: 100%;
@@ -113,14 +124,14 @@ html{
  
 /*清除浮动*/
 .clearfix:before,
-.clearfix:after{
+.clearfix:after {
   content: " ";
   display: inline-block;
   height: 0;
   clear: both;
   visibility: hidden;
 }
-.clearfix{
+.clearfix {
   *zoom: 1;
 }
  

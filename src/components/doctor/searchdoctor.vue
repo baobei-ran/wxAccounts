@@ -80,7 +80,7 @@
                                 患者数量 <span>{{ val.fw_doc }}</span>
                             </dt>
                             <dd>
-                                平均回复时长 <span>{{ val.reversion_rate }}</span> 
+                                <span v-if='val.reversion_rate !== 0'>平均回复时长{{ val.reversion_rate }}</span> 
                             </dd>
                         </dl>
                     </div>
@@ -364,9 +364,9 @@ export default {
                 if (res.code == 1) {
                      res.data.map(val => {
                         if (val.reversion_rate != 0) {
-                            var tis = Math.round(val.reversion_rate / 60 / 60)
+                            var tis = (val.reversion_rate / 60 / 60).toFixed(2)
                             console.log(tis)
-                            if (tis > 0) {
+                            if (tis >= 1) {
                                 val.reversion_rate = '小于'+ tis + '小时'
                                 return;
                             }
@@ -378,7 +378,7 @@ export default {
                             
                             
                         } else {
-                            val.reversion_rate = val.reversion_rate+'min'
+                            val.reversion_rate = val.reversion_rate
                         }
                         
                     })
@@ -405,7 +405,7 @@ export default {
                             var ti = new Date(val.reversion_rate*1000).getMinutes()
                             console.log(ti)
                         }else {
-                            val.reversion_rate = val.reversion_rate+'min'
+                            val.reversion_rate = val.reversion_rate
                         }
                         
                     })
@@ -770,6 +770,7 @@ export default {
                 }
                 dd {
                     color: #333;
+                    min-width: rem(80);
                     > span {
                         color: #F09F88;
                     }

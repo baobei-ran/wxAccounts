@@ -91,8 +91,8 @@ export default {
     name: 'doctordetail',
     data () {
         return {
-            uid: '',  // 用户id
-            did: '',                                // 医生id
+            uid: '',   // 用户id
+            did: '',   // 医生id
             openid: '',
             datalist: {},
             type: '',
@@ -105,7 +105,7 @@ export default {
         }
     },
     mounted() {
-    function changeTime(time){
+    function changeTime(time){ // 时间转换
         if(time){
             var oDate = new Date(time*1000),
                 oYear = oDate.getFullYear(),
@@ -119,7 +119,6 @@ export default {
         }else{
             return "";
         }
-
     }
     //补0
     function getBz(num){

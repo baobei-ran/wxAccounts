@@ -45,7 +45,18 @@ Vue.prototype.out = function (url) {
   }
 }
 
-
+window.addEventListener('online',  function(){
+  // 网络由异常到正常时触发
+  setTimeout(function () {
+    window.location.reload()
+  },0)
+ });
+ window.addEventListener('offline', function(){
+  // 网络由正常常到异常时触发
+  setTimeout(function () {
+    window.location.reload()
+  },0)
+ })
 
 /* eslint-disable no-new */
 new Vue({

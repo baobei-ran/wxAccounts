@@ -43,10 +43,10 @@
     justify-content: space-between;
 }
 .dis_sa {
+    -webkit-justify-content:space-around;
     -moz-justify-content: space-around;
     -ms-justify-content: space-around;
     -o-justify-content: space-around;
-    -webkit-justify-content:space-around;
     justify-content: space-around;
 }
 
@@ -183,3 +183,8 @@
         min-height: 100%;
         margin:0 auto;
     }
+    img {
+        height: auto;
+        width: auto;
+    }
+    

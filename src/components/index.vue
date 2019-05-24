@@ -40,8 +40,8 @@
               <li>个人中心</li>
               <li @click='moreServer'>更多服务</li>
                <div class="fiexd" v-show="buttonShow">
-                    <p @click="out('/finddoctor')">找医生</p>
-                    <p @click='out("/finddoctor")'>最近的店铺</p>
+                    <p @click="out('/mydoctor')">找医生</p>
+                    <p @click='out("/mydoctor")'>最近的店铺</p>
                     <p @click='out("/doctorshoplist")'>更多医生店铺</p>
                 </div>
             </ul>

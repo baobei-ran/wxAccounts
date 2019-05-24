@@ -1,7 +1,7 @@
 <template>
     <div class="detail bg_f">
         <!-- <div class="fiexd">
-            <img class="backs" @click='Return' src="../../common/img/icon_return.png" alt="">
+            <img class="backs" @click='Returns' src="../../common/img/icon_return.png" alt="">
             <div><img src="../../common/img/icon_tj.png" alt="">推荐</div>
         </div> -->
        <div class="content flex1">
@@ -14,14 +14,6 @@
                     </ul>
                     <ol class="swiper-pagination"></ol>
                 </div>
-                <!-- <div class="carousel">
-                    <ul class="ul" >
-                        <li class="lis" v-for='(val,i) in pics' :key='i'>
-                            <img :src="$http.baseURL+val.img" alt="">
-                        </li>
-                    </ul>
-                    <ol class="points"></ol>
-                </div> -->
             </div>
             <div class="title bg_f">
                 <span class="price" >￥<span style='font-size: .28rem;'>{{ datalist.price }}</span></span>
@@ -80,9 +72,42 @@
             </div>
        </div>
         <div class="footer">
-                <mt-button class="btnback" type="default"  @click.native='doctorShop'>店铺首页</mt-button>
-                <mt-button class="clickup" type="primary" @click.native="cerateOrder">立即购买</mt-button>
+                <mt-button class="btnback" type="default"  @click.native='Returns'>店铺首页</mt-button>
+                <mt-button class="clickup" type="primary" @click.native="showModal">立即购买</mt-button>
         </div>
+        <mt-popup style='width: 100%;'
+            v-model="popupVisible"
+            position="bottom">
+            <div class="modals">
+                <dl class="dl_detail dis_f">
+                    <dt>
+                        <img src="../../common/img/pic_sptp.png" alt="">
+                    </dt>
+                    <dd>
+                        ￥100.00
+                    </dd>
+                    <dd class="delss" @click='colseModal'><span>x</span></dd>
+                </dl>
+                <div class="gui">
+                    <h3>规格</h3>
+                    <ul class="dis_f">
+                        <li :class="{'liactive':g == 1 }" @click='specification(1)'>0.25g*30片</li> 
+                        <li class="liactive">0.25g*30片</li>
+                    </ul>
+                </div>
+                <div class="num dis_f dis_sb">
+                    <span>购买数量</span>
+                    <div class="handle dis_f">
+                        <span @click='subtractnumber'>-</span>
+                        <span>{{ num }}</span>
+                        <span @click='addnumber'>+</span>
+                    </div>
+                </div>
+            <div class="foots">
+                <mt-button class="clickup" type="primary" @click.native="cerateOrder">立即购买</mt-button>
+            </div>
+            </div>
+        </mt-popup>
     </div>
 </template>
 <script>
@@ -107,8 +132,11 @@ export default {
                 uselife: "",
                 usetype: 1
             },
+            num: '1',
             imgs: [],
             pics: [],
+            popupVisible: false,
+            g: ''
         }
     },
     mounted () {
@@ -124,193 +152,6 @@ export default {
                     _this.datalist.recipe = res.data.recipe == 0? '非处方':'处方'
                     _this.imgs = res.img
                     _this.pics = res.pic
-                    // setTimeout(() => {
-                    //     var carousel = document.querySelector('.swiper-container');
-                    //     var carouselUl = carousel.querySelector('.swiper-wrapper');
-                    //     var carouselLis = carouselUl.querySelectorAll('.swiper-slide');
-                    //     var points = carousel.querySelector('.swiper-pagination');
-                    //     console.log(points)
-                    //     // 屏幕的宽度
-                    //     var screenWidth = document.documentElement.offsetWidth;
-                    //     var timer = null;
-                        
-                    //     // 设置 ul 的高度
-                    //     carouselUl.style.width = carouselLis[0].offsetWidth * carouselLis.length + 'px'
-                    //     carouselUl.style.display = 'flex';
-                    //     carouselUl.style.height = carouselLis[0].offsetHeight + 'px';
-                    //     console.log(carouselUl)
-                        
-                    //     // 动态生成小圆点
-                    //     for (var i = 0; i < carouselLis.length; i++) {
-                    //     var li = document.createElement('li');
-                    //         li.style.width='8px';
-                    //         li.style.height='8px';
-                    //         li.style.borderRadius = '100%'
-                    //         li.style.backgroundColor = 'rgba(0,0,0,.3)';
-                    //         li.style.float = 'left'
-                    //         li.style.marginRight = '8px'
-                    //     if (i == 0) {
-                    //         // li.classList.add('active');
-                    //         li.classList.className='actives'
-                            
-                    //     }
-                    //         points.appendChild(li);
-                            
-                    //     }
-
-
-
-                    //     ////////////////////////////////////////////
-                        
-                    //     // 初始三个固定的位置
-                    //     // var left = carouselLis.length - 1;
-                    //     // var center = 0;
-                    //     // var right = 1;
-
-                    //    var indexs = 0
-                        
-                    //     // 归位（多次使用，封装成函数）
-                    //     setTransform();
-                        
-                    //     // 调用定时器
-                    //     // timer = setInterval(showNext, 3000);
-                        
-                    //     // 分别绑定touch事件
-                    //     var startX = 0; // 手指落点
-                    //     var startTime = null; // 开始触摸时间
-                    //     carouselUl.addEventListener('touchstart', touchstartHandler); // 滑动开始绑定的函数 touchstartHandler
-                    //     carouselUl.addEventListener('touchmove', touchmoveHandler);  // 持续滑动绑定的函数 touchmoveHandler
-                    //     carouselUl.addEventListener('touchend', touchendHandeler);  // 滑动结束绑定的函数 touchendHandeler
-                        
-                    //     // // 轮播图片切换下一张
-                    //     // function showNext() {
-                    //     // // 轮转下标
-                    //     // left = center;
-                    //     // center = right;
-                    //     // right++;
-                    //     // //　极值判断
-                    //     // if (right > carouselLis.length - 1) {
-                    //     //     right = 0;
-                    //     // }
-                    //     // //添加过渡（多次使用，封装成函数）
-                    //     // setTransition(1, 1, 0);
-                    //     // // 归位
-                    //     // setTransform();
-                    //     // // 自动设置小圆点
-                    //     // setPoint();
-                    //     // }
-                        
-                    //     // 轮播图片切换上一张
-                    //     // function showPrev() {
-                    //     // // 轮转下标
-                    //     // right = center;
-                    //     // center = left;
-                    //     // left--;
-                    //     // //　极值判断
-                    //     // if (left < 0) {
-                    //     //     left = carouselLis.length - 1;
-                    //     // }
-                    //     // //添加过渡
-                    //     // setTransition(0, 1, 1);
-                    //     // // 归位
-                    //     // setTransform();
-                    //     // // 自动设置小圆点
-                    //     // setPoint();
-                    //     // }
-                    //     function lefts () {
-                    //         indexs ++;
-                    //         // carouselLis[index].style.transform = 'translateX(' + (-screenWidth + indexs) + 'px)';
-                    //         if (indexs >= carouselLis.length) {
-                    //             indexs = 0
-                    //         } 
-                    //     }
-                        
-                    //     // 滑动开始
-                    //     function touchstartHandler(e) {
-                    //     // 清除定时器
-                    //     clearInterval(timer);
-                    //     // 记录滑动开始的时间
-                    //     startTime = Date.now();
-                    //     // 记录手指最开始的落点
-                    //     startX = e.changedTouches[0].clientX;
-                    //     }
-                    //     // 滑动持续中
-                    //     function touchmoveHandler(e) {
-                    //     // 获取差值 自带正负
-                    //     var dx = e.changedTouches[0].clientX - startX;
-                    //     // 干掉过渡
-                    //     setTransition(0, 0, 0);
-                    //     // 归位
-                    //     setTransform(dx);
-                    //     }
-                    //     //　滑动结束
-                    //     function touchendHandeler(e) {
-                    //     // 在手指松开的时候，要判断当前是否滑动成功
-                    //     var dx = e.changedTouches[0].clientX - startX;
-                    //     // 获取时间差
-                    //     var dTime = Date.now() - startTime;
-                    //     // 滑动成功的依据是滑动的距离（绝对值）超过屏幕的三分之一 或者滑动的时间小于300毫秒同时滑动的距离大于30
-                    //     if (Math.abs(dx) > screenWidth / 3 || (dTime < 300 && Math.abs(dx) > 30)) {
-                    //         // 滑动成功了
-                    //         // 判断用户是往哪个方向滑
-                    //         if (dx > 0) {
-                    //         // 往右滑 看到上一张
-                    //         showPrev();
-                    //         } else {
-                    //         // 往左滑 看到下一张
-                    //         // showNext();
-                    //         lefts()
-                    //         }
-                    //     } else {
-                    //         // 添加上过渡
-                    //         setTransition(1, 1, 1);
-                    //         // 滑动失败了
-                    //         setTransform();
-                    //     }
-                        
-                    //     // 重新启动定时器
-                    //     clearInterval(timer);
-                    //     // 调用定时器
-                    //     timer = setInterval(lefts, 3000);
-                    //     }
-                    //     // 设置过渡
-                    //     function setTransition(a, b, c) {
-                    //         if (a) {
-                    //             carouselLis[indexs].style.transition = 'transform 1s';
-                    //         } else {
-                    //             carouselLis[indexs].style.transition = 'none';
-                    //         }
-                    //         if (b) {
-                    //             carouselLis[indexs].style.transition = 'transform 1s';
-                    //         } else {
-                    //             carouselLis[indexs].style.transition = 'none';
-                    //         }
-                    //         if (c) {
-                    //             carouselLis[indexs].style.transition = 'transform 1s';
-                    //         } else {
-                    //             carouselLis[indexs].style.transition = 'none';
-                    //         }
-                    //     }
-                        
-                    //     // 　封装归位
-                    //     function setTransform(dx) {
-                    //         dx = dx || 0;
-                    //         console.log(dx)
-                    //         carouselLis[indexs].style.transform = 'translateX(' + (-screenWidth + dx) + 'px)';
-                    //         // carouselLis[center].style.transform = 'translateX(' + dx + 'px)';
-                    //         // carouselLis[right].style.transform = 'translateX(' + (screenWidth + dx) + 'px)';
-                    //     }
-                    //     // 动态设置小圆点的active类
-                    //     var pointsLis = points.querySelectorAll('.swiper-pagination li');
-                       
-                    //     function setPoint() {
-                    //         for (var i = 0; i < pointsLis.length; i++) {
-                    //             pointsLis[i].classList.remove('actives');
-                    //         }
-                    //         pointsLis[center].classList.add('actives');
-                    //     }
-                        
-                    // }, 100)
                     _this.$nextTick(() => {
                         if (_this.pics.length > 1) {
                             var swipers = new Swiper ('.swiper-container', {
@@ -331,14 +172,30 @@ export default {
         
     },
     methods: {
-        Return () {
-            this.$router.back()
-        },
-        doctorShop () {
+        Returns () {
             this.$router.back()
         },
         cerateOrder () {            // 购买
+            
             this.$router.push({ path: '/doctororder', query: { id: this.$route.query.id}})
+        },
+        showModal () { // 开启 modal
+            this.popupVisible = true
+        },
+        colseModal () { // 关闭 modal
+            this.popupVisible = false
+        },
+        addnumber () { // 加
+            this.num ++
+        },
+        subtractnumber () { // 减
+            if (this.num == 1) {
+                return;
+            }
+            this.num --
+        },
+        specification (n) {
+            this.g = n
         }
     }
 }
@@ -382,6 +239,7 @@ $color: #333;
         width: 100%;
     }
 }
+$w: 100%;
 .detail {
     width: 100%;
     height: 100%;
@@ -534,8 +392,133 @@ $color: #333;
             width: 65%;
             margin-left: rem(7);
             font-size: rem(14);
+            background-color: #5189F6;
         }
     }
 
+   
 }
+
+    .modals {
+        width: $w;
+        background-color: #FFF;
+        position: relative;
+        padding: rem(15) rem(15) rem(220) rem(15);
+        .dl_detail {
+            width: 100%;
+            border-bottom: 1px solid #E6E6E6;
+            padding-bottom: rem(15);
+            position: relative;
+            dl {
+                width: rem(100);
+                height: rem(100);
+                border: 1px solid #E6E6E6;
+                border-radius: 4px;
+                img {
+                    width: $w;
+                    height: $w;
+                    border-radius: 4px;
+                    background-color: #EFEFEF;
+                }
+            }
+            dd {
+                margin-top: rem(95);
+                margin-left: rem(13);
+                color: #F09F88;
+            }
+            .delss {
+                margin: 0;
+                position: absolute;
+                right: 0;
+                top: 0;
+                width: rem(30);
+                height: rem(30);
+                color: #808080;
+                > span {
+                    display: block;
+                    width: rem(20);
+                    height: rem(20);
+                    line-height: rem(20);
+                    text-align: center;
+                    border: 1px solid #aaa;
+                    -webkit-border-radius: 100%;
+                    border-radius: 100%;
+                }
+            }
+        }
+        .gui {
+            width: 100%;
+            padding: rem(15) 0;
+            border-bottom: 1px solid #E6E6E6;
+
+            > h3 {
+                margin-bottom: rem(15);
+                color: #333;
+                font-size: rem(14);
+            }
+            > ul {
+                width: 100%;
+                li {
+                    width: rem(84);
+                    height: rem(25);
+                    text-align: center;
+                    line-height: rem(25);
+                    background-color: #EEEEEE;
+                    font-size: rem(12);
+                    color: #808080;
+                    -webkit-border-radius:2px;
+                    border-radius:2px;
+                    margin-right: rem(10);
+                    cursor: pointer;
+                }
+                .liactive {
+                    color:#469AF4;
+                    background-color: #ECF5FE;
+                    border:1px solid #469AF4;
+                }
+            }
+        }
+
+        .num {
+            width: 100%;
+            padding: rem(15) 0;
+            >span {
+                margin-top: rem(5);
+            }
+            .handle {
+                > span {
+                    display: block;
+                    width: rem(25);
+                    height: rem(25);
+                    text-align: center;
+                    line-height: rem(27);
+                    color: #808080;
+                    margin-left: rem(4);
+                    background-color: #EEEEEE;
+                    -webkit-border-radius:2px;
+                    border-radius:2px;
+                }
+                > span:nth-child(2) {
+                    width: rem(35);
+                }
+            }
+        }
+
+        .foots {
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            height: rem(49);
+            >button {
+                width: 100%;
+                height: 100%;
+                color: #fff;
+                background-color: #5189F6;
+                font-size: rem(17);
+                -webkit-border-radius: 0;
+                border-radius: 0;
+            }
+        }
+    }
 </style>

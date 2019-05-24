@@ -60,13 +60,46 @@
                              </li>
                          </ul>
                      </div>
+
+                    <div class="doctor_Time">
+                        <h1>预约医生门诊</h1>
+                        <div class="doc_msgs" v-if='false'>
+                            <img src="../../common/img/pic_zwktxxmz.png" alt="">
+                            <p>该医生暂未开通线下门诊服务</p>
+                        </div>
+                        <div class="hebdomad_time">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th v-for='val in 7'></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>上午</td>
+                                        <td v-for='val in 7'></td>
+                                    </tr>
+                                    <tr>
+                                        <td>下午</td>
+                                        <td v-for='val in 7'></td>
+                                    </tr>
+                                    <tr>
+                                        <td>晚上</td>
+                                        <td v-for='val in 7'></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
         <div class="footer dis_f">
             <mt-button type="primary" :class="isClose ? 'button1' : 'dian'" size="large" @click.native="handleClick">他的店铺</mt-button>
             <mt-button type="primary" id='btnout' v-show="isClose" size="large" @click.native="handleClick4">关注医生</mt-button>
-            <!-- <mt-button type="primary" v-show='!btnShow' id='btnout' size="large" @click.native="handleClick2">立即问诊</mt-button>
+            <!-- <mt-button type="primary" v-show='!btnShow' id='btnout' size="large" @click.native="handleClick2">在线问诊</mt-button>
             <mt-button type="primary" v-show='btnShow' class="btnTime" size="large" @click.native="handleClick3">
                 <span>继续问诊</span>
                 <p>剩余时间：10:00:09</p>
@@ -92,6 +125,7 @@ export default {
             isClose: true,
             index: this.$route.params.index,
             isTxt: false,                            // 控制箭头显示
+            timeList: '',                        // 时间列表
         }
     },
     mounted() {
@@ -114,7 +148,8 @@ export default {
                     }
                     self.$nextTick(() => {
                         var p = document.getElementById('introduce').offsetHeight
-                        if (p > 80) {
+                       
+                        if (p > 84) {
                             self.isTxt = true
                         } else {
                             self.isTxt = false
@@ -140,11 +175,6 @@ export default {
                      MessageBox.confirm('你已成功关注了此医生，返回后点击我的医生，即可向医生咨询问题', {showCancelButton: false, confirmButtonText: '确定'}).then(action => {
                         
                     });
-                    // Toast({
-                    //     message: '',
-                    //     position: 'ceneter',
-                    //     duration: 3000
-                    // });
                     this.isClose = false
                 } else {
                     Toast({
@@ -167,6 +197,24 @@ export default {
                 position: 'center',
                 duration: 2000
             });
+        },
+        getTime (day) {
+            var time = new Date();
+            var weekdata = ['周一','周二', '周三', '周四', '周五', '周六', '周日'];
+            var targetday_milliseconds = today.getTime() + 1000 * 60 * 60 * 24 * day;
+            today.setTime(targetday_milliseconds); //注意，这行是关键代码
+            var tYear = today.getFullYear();
+            var tMonth = today.getMonth();
+            var tDate = today.getDate();
+            tMonth = DoHandleMonth(tMonth + 1);
+            tDate = DoHandleMonth(tDate);
+                
+            return {
+                date: tMonth + "." + tDate,
+                id: tMonth + "-" + tDate,
+                time: parseInt(targetday_milliseconds / 1000),
+                week: weekDate[today.getDay()]
+            }
         }
     }
 }
@@ -182,7 +230,7 @@ export default {
 .doctor {
     width: 100%;
     height: 100%;
-    background: #fff;
+    background: #F5F5F5;
     font-size: rem(14);
     .header {
         display: -webkit-flex;
@@ -220,14 +268,11 @@ export default {
         .list {
             width: 100%;
             font-size: rem(12);
-            padding: 0 rem(15);
             >ul {
-                padding: rem(15);
+                padding: rem(12);
                 width: 100%;
                 background:rgba(255,255,255,1);
-                box-shadow:0px 2px 5px 0px rgba(0, 0, 0, 0.1);
                 border-radius:4px;
-                margin-top: rem(5);
                 li:first-child {
                     -webkit-display: flex;
                     display: flex;
@@ -243,7 +288,7 @@ export default {
                         dt {
                             line-height: rem(30);
                             span {
-                                margin-right: rem(15);
+                                margin-right: rem(5);
                                 color:#333;
                                 font-size: rem(16);
                             }
@@ -265,6 +310,8 @@ export default {
                     line-height: rem(18);
                     padding-bottom: rem(15);
                     border-bottom: 1px solid #e6e6e6;
+                    padding-left: rem(20);
+                    background: url('../../common/img/icon_scs.png') no-repeat left top;
                 }
                 .list_intro {
                    margin-top: rem(15);
@@ -275,6 +322,8 @@ export default {
                    #introduce {
                        >p {
                             line-height: rem(20);
+                            padding-left: rem(20);
+                            background: url('../../common/img/icon_ysjj.png') no-repeat left top;
                         }
                    }
                    .arrows {
@@ -293,7 +342,7 @@ export default {
                    
                 }
                 .f_hide {
-                    .p{position: relative; line-height: rem(20); max-height: rem(79);overflow: hidden;}
+                    .p{position: relative; line-height: rem(20); max-height: 80px;overflow: hidden;}
                     .p::after{content: "..."; position: absolute; bottom: 0; right: 0; padding-left: rem(30);
                     background: -webkit-linear-gradient(left, transparent, #fff 50%);
                     background: -o-linear-gradient(right, transparent, #fff 50%);
@@ -306,11 +355,11 @@ export default {
 
         .server {
             width: 100%;
-            box-shadow:0px 5px 10px 0px rgba(0, 0, 0, 0.1);
             border-radius:4px;
-            margin-top: rem(5);
+            margin-top: rem(10);
+            background: #FFF;
             h4 {
-                padding: rem(15) rem(16);
+                padding: rem(15) rem(12);
                 border-bottom: 1px solid #E6E6E6;
                 color: #333;
                 font-size: rem(16);
@@ -322,7 +371,7 @@ export default {
                     li {
                         -webkit-display: flex;
                         display: flex;
-                        padding: rem(15);
+                        padding: rem(15) rem(12);
                         >img {
                             width: rem(40);
                             height: rem(40);
@@ -354,6 +403,60 @@ export default {
                             > img {
                                 width: rem(35);
                                 font-size: rem(9);
+                            }
+                        }
+                    }
+                }
+            }
+
+            .doctor_Time {
+                width: 100%;
+                background: #FFF;
+                margin-top: rem(10);
+                padding: rem(16) rem(12);
+                > h1 {
+                    font-size: rem(16);
+                    font-weight: 500;
+                    line-height: rem(20);
+                    padding-bottom: rem(15);
+                }
+                .doc_msgs {
+                    width: 100%;
+                    text-align: center;
+                    img {
+                        height: rem(60);
+                        height: rem(60);
+                    }
+                    p {
+                        margin-top: rem(11);
+                        text-align: center;
+                        color: #808080;
+                        font-size: rem(13);
+                    }
+                }
+
+                .hebdomad_time {
+                    width: 100%;
+                    table {
+                        width: 100%;
+                        thead {
+                            tr {
+                                th {
+                                    width: rem(41);
+                                    height: rem(36);
+                                    border: 1px solid #EBEBEB;
+                                }
+                            }
+                        }
+                        tbody {
+                            tr {
+                                text-align: center;
+                                line-height: rem(36);
+                                td {
+                                    width: rem(41);
+                                    height: rem(36);
+                                    border: 1px solid #EBEBEB;
+                                }
                             }
                         }
                     }

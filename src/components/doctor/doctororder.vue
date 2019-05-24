@@ -255,12 +255,12 @@ export default {
                             
                             self.ordertime = setTimeout(function () {
                                 self.offorder(data)
-                            }, 1500)
+                            }, 1000)
                             
                     } else {
                         Toast({
                             message: '支付失败！',
-                            position: 'center',
+                            position: 'middle',
                             duration: 2000
                         });
                         setTimeout(function () {
@@ -278,7 +278,8 @@ export default {
                 if (res.code == 1) {
                     Toast({
                         message: '支付成功！',
-                        position: 'center',
+                        position: 'middle',
+                        iconClass: 'iconfont icon-tipssuccess',
                         duration: 2000
                     });
                     self.$router.replace({ path: '/successOrder', query: { id: data.number }})

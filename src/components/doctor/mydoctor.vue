@@ -1,0 +1,266 @@
+<template>
+    <!-- 我的医生 -->
+    <div class="doctor dis_f flex-v">
+         <!-- <div class="header">
+            <img @click='Return' src="../../common/img/icon_fh.png" alt="">
+            <span>我的医生</span>
+        </div> -->
+        <div class="section flex1">
+            <div>
+                <div class="kong" v-if='!datalist.length'>
+                    <img src="../../common/img/pic_zwys.png" alt="">
+                    <p>你当前暂未添加医生，<span @click='handleClick'>立即找医生</span></p>
+                </div>
+                <div v-if='datalist.length'>
+                    <div class="list">
+                        <div class="commons await" v-for='(val, i) in datalist' :key='i'>
+                            <h4>{{ val.hospital_name }}</h4>
+                            <dl class="dis_f flex-vc"  @click='Clickdetail(val.did)'>
+                                <dt><img :src="$http.baseURL+val.picture" alt=""></dt>
+                                <dd>
+                                    <p>
+                                        <span>{{ val.true_name }}</span>
+                                    </p>
+                                    <p>
+                                        <span>{{ val.gname }}</span> | <span>{{ val.department_name }}</span>
+                                    </p>
+                                </dd>
+                            </dl>
+                            <div class="ckBtn">
+                                <span class="blue"><mt-button @click.native="handerOnce(val.did)" >立即咨询</mt-button></span>
+                                <span class="orange"><mt-button @click.native="handerLoding(val.did)" >问诊咨询中</mt-button></span>
+                                <span><mt-button @click.native="handerDetail(val.did)">咨询记录</mt-button></span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <mt-button type="primary" v-if='!datalist.length' size="large" @click.native="handleClick">立即找医生</mt-button>
+            <mt-button type="primary" v-if='datalist.length' size="large" @click.native="handleClick2">找其他医生</mt-button>
+        </div>
+    </div>
+</template>
+
+<script>
+export default {
+    data () {
+        return {
+            datalist: [],
+            uid: this.$cookie.get('userLogins'),
+            page: 1,
+            limit: 15
+        }
+    },
+   
+    mounted() {
+        this.initdata()
+    },
+    methods: {
+        initdata () {
+            var self = this;
+            var obj = {uid:this.uid, page: this.page, limit: this.limit}
+            this.$http.post('/mobile/wxdoccenter/my_doctors', obj).then(res => {
+                console.log(res)
+                if (res.code == 1) {
+                    var data = res.data, arr = [];
+                    for (var i=0; i< data.length; i++) {
+                        if (data[i].did) {
+                            arr.push(data[i])
+                        }
+                    }
+                    self.datalist = arr
+                } else {
+                    self.datalist = []
+                }
+            })
+        },
+        handleClick() {         // 立即找医生
+            this.out('searchdoctor')
+        },
+        handleClick2() {    // 找其他医生
+            this.out('/searchdoctor')
+        },
+        Return () {         // 返回
+            this.$router.go(-1)
+        },
+
+        Clickdetail (id) {       // 进入医生详情
+            this.$router.push({ name: 'doctordetail', params: { id:id}})
+        },
+        handerOnce () {  // 立即咨询
+
+        },
+        handerLoding () { // 咨询中
+
+        },
+        handerDetail (id) {  // 咨询记录
+            this.$router.push({path:'/mydoctor/docrecord', query: { id: id}})
+        }
+    }
+}
+</script>
+
+<style>
+
+</style>
+<style lang="scss" scoped>
+@function rem($px) {
+    @return $px / 50 + rem;
+}
+.doctor {
+    width: 100%;
+    height: 100%;
+    background: #fafafa;
+    font-size: rem(14);
+    .header {
+        -webkit-display: flex;
+        display: flex;
+        height: rem(40);
+        justify-content: center;
+        color: #212121;
+        position: relative;
+        box-shadow:0px 1px 0px 0px rgba(224,224,224,.5);
+        padding-top: rem(0);
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        font-size: rem(16);
+        background: #fff;
+        img {
+            font-size: rem(30);
+            position: absolute;
+            left: rem(15);
+            top: rem(9);
+            line-height: 1;
+            font-size: rem(18);
+            width: rem(18);
+        }
+        span {
+            padding-top: rem(12);
+            font-weight:400;
+            color: #212121;
+        }
+    }
+    .section {
+        width: 100%;
+        font-size: rem(14);
+        overflow-y: scroll;
+        padding-bottom: rem(5);
+        .kong {
+            text-align: center;
+            padding: rem(81) 0;
+            img {
+                width: rem(125);
+                display: block;
+                margin: 0 auto;
+            }
+            >p {
+                text-align: center;
+                color: #808080;
+                margin-top: rem(26);
+                >span {
+                    color: #129DFA;
+                }
+            }
+        }
+        .list {
+            width: 100%;
+            font-size: rem(12);
+
+               .commons {
+                    width: 100%;
+                    margin-bottom: rem(12);   
+                    > h4 {
+                        width: 100%;
+                        height: rem(40);
+                        line-height: rem(40);
+                        color: #808080;
+                        font-size: rem(13);
+                        background-color: #fff;
+                        padding: 0 rem(15); 
+                    
+                    }
+                    > dl {
+                        width: 100%;
+                        height: rem(72);
+                        padding: 0 rem(15); 
+                        dt {
+                            width: rem(54);
+                            height: rem(54);
+                            -webkit-border-radius: 100%;
+                            border-radius: 100%;
+                            >img {
+                                width: 100%;
+                                height: 100%;
+                                -webkit-border-radius: 100%;
+                                border-radius: 100%;
+                            }
+                        }
+                        dd {
+                            padding-left: rem(15);
+                            color: #333;
+                            font-size: rem(14);
+                            > p {
+                                line-height: rem(19);
+                            }
+                            p:last-child {
+                                margin-top: rem(5);
+                            }
+                        }
+                    }
+                    .ckBtn {
+                        width: 100%;
+                        height: rem(49);
+                        line-height: rem(49);
+                        text-align: right;
+                        background-color: #fff;
+                        padding: 0 rem(15); 
+                        > span {
+                            button {
+                                width: rem(72);
+                                height: rem(23);
+                                line-height: rem(23);
+                                color: #808080;
+                                font-size: rem(11);
+                                background-color: #fff;
+                                border: 1px solid #808080;
+                                padding: 0; 
+                                text-align: center;
+                                -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+                            }
+                        }
+                        
+                        button {
+                            margin-left: rem(15);
+                        }
+                        .blue {
+                            button {
+                                color: #469AF4;
+                                border:1px solid #469AF4;
+                            }
+                        }
+                        .orange {
+                            button {
+                                color: #F09F88;
+                                border:1px solid #F09F88;
+                            }
+                        }
+                    }
+
+
+                }
+        
+        }
+    }
+    .footer {
+        width: 100%;
+        height: rem(49);
+        button {
+            height: rem(49);
+            font-size: rem(17);
+        }
+    }
+}
+</style>

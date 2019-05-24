@@ -238,23 +238,30 @@ export default {
                     if(res.err_msg == "get_brand_wcpay_request:ok"){
                     // 使用以上方式判断前端返回,微信团队郑重提示：
                             //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
-                            Toast({
-                                message: '支付成功！',
-                                position: 'center',
-                                duration: 2000
-                            });
-                        setTimeout(function () {
+                            
+                       var times = setTimeout(function () {
                             self.$http.post('/mobile/Wxorder/pay_result', {order_code: data.order_code }).then(res => { // 查询是否支付成功
                                 if (res.code == 1) {
-                                    self.$router.replace({path: '/successOrder', query: { id: data.number }})
+                                    Toast({
+                                        message: '支付成功！',
+                                        position: 'middle',
+                                        iconClass: 'iconfont icon-tipssuccess',
+                                        duration: 2000
+                                    });
+                                   var time = setTimeout(function () {
+                                        self.$router.replace({path: '/successOrder', query: { id: data.number }})
+                                        clearTimeout(time)
+                                    }, 1500)
                                 }
                             })
-                        }, 1500)
+                            cleraInterval(times)
+                        }, 500)
+                       
                     } else {
                         Toast({
                             message: '支付失败！',
-                            position: 'canter',
-                            duration: 1000
+                            position: 'middle',
+                            duration: 1500
                         });
                         setTimeout(function () {
                             self.$router.replace({name: 'addorderdetail', params: { id: data.number }})

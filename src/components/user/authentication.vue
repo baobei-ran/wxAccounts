@@ -10,19 +10,19 @@
             <div>
                 <div class="section">
                     <div class="msgs">
-                            <p class="txt">
-                                请先绑定手机号，添加问诊人，成功后即可使用云医康公众号与医生在线沟通！
-                            </p>
-                            <ul class="dis_f flex_i">
-                                <li><img src="../../common/img/icon_bdsjh.png" alt="">
-                                    <p>绑定手机号</p>
-                                </li>
-                                <li class="jian"><img src="../../common/img/icon_jt.png" alt=""></li>
-                                <li><img src="../../common/img/icon_tjjzrl.png" alt="">
-                                    <p>添加问诊人</p>
-                                </li>
-                            </ul>
-                        </div>
+                        <p class="txt">
+                            请先绑定手机号，添加问诊人，成功后即可使用云医康公众号与医生在线沟通！
+                        </p>
+                        <ul class="dis_f flex_i">
+                            <li><img src="../../common/img/icon_bdsjh.png" alt="">
+                                <p>绑定手机号</p>
+                            </li>
+                            <li class="jian"><img src="../../common/img/icon_jt.png" alt=""></li>
+                            <li><img src="../../common/img/icon_tjjzrl.png" alt="">
+                                <p>添加问诊人</p>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
                     <div class="user">
                         <input style='background:#fff;color: #333;' type="text" value='本人' v-model='relation' maxlength="11" disabled >
@@ -276,6 +276,7 @@ export default {
         height: rem(46);
         display: -webkit-flex;
         display: flex;
+        -webkit-justify-content: space-between;
         justify-content: space-between;
         align-items: center;
         border: 1px solid #E4E9F4;

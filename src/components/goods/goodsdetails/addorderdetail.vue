@@ -124,6 +124,7 @@ export default {
                 }
             };
         },
+        
         createOrder () {    // 再次购买
             this.$router.push({ name: 'doctororder', params: { number: this.paydata.number }})
         },
@@ -177,22 +178,28 @@ export default {
                     if(res.err_msg == "get_brand_wcpay_request:ok") {
                     // 使用以上方式判断前端返回,微信团队郑重提示：
                             //res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
-                        Toast({
-                            message: '支付成功！',
-                            position: 'canter',
-                            duration: 1000
-                        });
+                    var times = setTimeout(function () {
                         self.$http.post('/mobile/Wxorder/pay_result', {order_code: data.order_code }).then(res => {
                             if (res.code == 1) {
-                                self.$router.replace({ path: '/successOrder', query: { id: data.number }})
-                                cleraInterval(time)
+                                Toast({
+                                    message: '支付成功！',
+                                    position: 'middle',
+                                    iconClass: 'iconfont icon-tipssuccess',
+                                    duration: 2000
+                                });
+                                var time = setTimeout(function () {
+                                    self.$router.replace({ path: '/successOrder', query: { id: data.number }})
+                                    cleraInterval(time)
+                                }, 1000)
                             }
                         })
+                        cleraInterval(times)
+                    }, 300)
                     } else {
                         Toast({
                             message: '支付失败！',
-                            position: 'canter',
-                            duration: 1000
+                            position: 'middle',
+                            duration: 2000
                         });
                         self.initdata()
                     }
@@ -303,6 +310,7 @@ export default {
             }
             .orderList {
                 width: 100%;
+                margin-top: rem(5);
                 padding: rem(15);
                 box-shadow:0px rem(5) rem(10) 0px rgba(0, 0, 0, 0.1);
                 border-radius: rem(4);

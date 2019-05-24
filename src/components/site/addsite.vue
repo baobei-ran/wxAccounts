@@ -49,7 +49,7 @@
                </div>
             </div>
         </div>
-        <div class="footer dis_f" v-show="hidshow">
+        <div class="footer dis_f" v-show="hiShow">
             <mt-button size="large" class="noce" @click.native='cancel'>取消</mt-button>
             <mt-button size="large" :disabled='disabled' type="primary" @click.native='outShop'>确定</mt-button>
         </div>
@@ -93,26 +93,26 @@ export default {
                 areasBool: false,      // 区
                 disabled: false,        // 按钮控制
                 docmHeight: document.documentElement.clientHeight,  //默认屏幕高度
-                showHeight: document.documentElement.clientHeight,   //实时屏幕高度
-                hidshow:true  //显示或者隐藏footer
+                showHeight: document.documentElement.clientHeight,  //实时屏幕高度
+                hiShow:true  //显示或者隐藏footer
             }
         },
        
         mounted () {
+            this.shengs()
             var self = this;
             window.onresize = function () {
                 return (function () {
                     self.showHeight = document.body.clientHeight
                 })()
             }
-            this.shengs()
         },
         watch: {
             showHeight: function () {
                 if (this.docmHeight > this.showHeight) {
-                    this.hidShow = false
+                    this.hiShow = false
                 } else {
-                    this.hidShow = true
+                    this.hiShow = true
                 }
             },
         },
