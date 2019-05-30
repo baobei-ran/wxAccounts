@@ -84,8 +84,6 @@
 </template>
 
 <script>
-import { Toast } from 'mint-ui';
-import { MessageBox } from 'mint-ui';
 var BenzAMRRecorder = require('benz-amr-recorder');
 export default {
     name: 'doctordetail',
@@ -180,7 +178,6 @@ export default {
             }, 300)
             // this.playTime = Math.floor(Math.random() * 199)
         }
-        // console.log(this.$route)
         this.inituser()
         
     },
@@ -214,7 +211,7 @@ export default {
                 if (res.code == 1) {
                     self.usermsg()
                 } else {
-                    Toast({
+                    self.$toast({
                         message: res.msg,
                         position: 'conter',
                         duration: 2000
@@ -228,7 +225,7 @@ export default {
         
         usermsg () {
             var self = this;
-            MessageBox.confirm('你已选择该医生，请直接返回聊天', {showCancelButton: false, confirmButtonText: '确定并返回'}).then(action => {
+            this.$messagebox.confirm('你已选择该医生，请直接返回聊天', {showCancelButton: false, confirmButtonText: '确定并返回'}).then(action => {
                 self.wx_clocs()
             });
         },

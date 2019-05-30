@@ -14,16 +14,17 @@ const AuthenticationYes = resolve => require(['../components/user/authentication
 
 // import Finddoctor from '../components/doctor/finddoctor'  // (旧)我的医生
 
-import Mydoctor from '../components/doctor/mydoctor'  // （新）我的医生
-import Docrecord from '../components/doctor/docrecord' // 咨询记录
+import Mydoctor from '../components/doctor/mydoctor'  // 我的医生(1.1.0)
+import Docrecord from '../components/doctor/docrecord' // 咨询记录(1.1.0)
 
 
 import DoctorDetail from '../components/doctor/doctordetail'  // 医生详情
+import Yuyuedoc from '../components/doctor/yuyuedoc'          // 预约医生信息(1.1.0)
+import WxpaySucceed from '../components/doctor/wxpaySucceed'  // 预约支付成功(1.1.0)
 import DoctorShop from '../components/doctor/doctorshop'  // 医生店铺
 import ShopDetail from '../components/doctor/shopdetail'  // 医生店铺商品详情
 import Doctororder from '../components/doctor/doctororder'  // 商品下单
 
-const Consultdoctor = resolve => require(['../components/doctor/consultdoctor'], resolve);  // 咨询页 医生详情的工作室
 
 const Dingdan = resolve => require(['../components/goods/dingdan'], resolve);   // 商品订单
 import AddorderDetail from '../components/goods/goodsdetails/addorderdetail'   // 待支付订单详情
@@ -43,20 +44,26 @@ const ImgDetails = r => require.ensure([], () => r(require('@/components/doctor/
 const SearchDoctor = resolve => require(['@/components/doctor/searchdoctor'], resolve);        //  更多医生
 const DoctorShopList = resolve => require(['@/components/doctor/doctorshoplist'], resolve);     // 更多医生店铺
 import Error404 from '../components/Errors/err404';
-const Activity = resolve => require(['../components/user/activity'], resolve);     // 图片活动展示
 
-// 预约门诊记录
+
+// 预约门诊记录(1.1.0)
 const Subscribe = r => require.ensure([], () => r(require('../components/Subscribe/subscribe.vue')), 'Subscribe'); 
 const CancelSubscribe = r => require.ensure([], () => r(require('../components/Subscribe/cancelSubscribe.vue')), 'Subscribe');  // 取消预约
 const SubscribeDetail = r => require.ensure([], () => r(require('../components/Subscribe/subscribeDetail.vue')), 'Subscribe');  // 预约记录详情
 
-// 成员管理
+// 成员管理(1.1.0)
 const Administration = r => require.ensure([], () => r(require('../components/Administration/administration.vue')), 'administration');
+const GetAdministration = r => require.ensure([], () => r(require('../components/Administration/getAdministration.vue')), 'administration');  // 选择成员列表
 const Addmember = r => require.ensure([], () => r(require('../components/Administration/addmember.vue')), 'administration');     // 添加成员
 const Editmember = r => require.ensure([], () => r(require('../components/Administration/editmember.vue')), 'administration');   // 编辑成员信息
 
 
-const Docrecommend = resolve => require(['@/components/doctor/docrecommend'],resolve);                 // 预约医生
+// 从微信公众号信息进行跳转进来的页面
+const Consultdoctor = resolve => require(['../components/wxView/consultdoctor'], resolve);  // 咨询页 医生详情的工作室
+const Activity = resolve => require(['../components/wxView/activity'], resolve);            // 图片活动展示
+const Docrecommend = resolve => require(['@/components/wxView/docrecommend'],resolve);      // 推荐预约医生(1.1.0)
+const DocSuspend = resolve => require(['@/components/wxView/docSuspend'],resolve);          // 医生停诊通知(1.1.0)
+
 Vue.use(Router) 
 
 const router = new Router({
@@ -149,6 +156,18 @@ const router = new Router({
       title: '医生详情',
       name: 'doctordetail',
       component: DoctorDetail
+    },
+    {
+      path: '/yuyuedoc:id?',          // 预约医生和支付
+      meta: {title: '预约医生信息', },
+      name: 'yuyuedoc',
+      component: Yuyuedoc
+    },
+    {
+      path: '/wxpaySucceed:id?', 
+      meta: { title: '支付成功' },   // 预约医生支付成功页
+      name: 'wxpaySucceed',
+      component: WxpaySucceed
     },
     {
       path: '/doctorshop/:id',
@@ -288,19 +307,19 @@ const router = new Router({
 
     // 预约门诊记录
     {
-      path: '/subscribe',
-      meta: {title: '预约记录'},
+      path: '/subscribe',          // 列表
+      meta: {title: '预约记录', keeepAlive: true },
       name: 'subscribe',
       component: Subscribe
     },
     {
-      path: '/subscribe/cancelSubscribe:id?',
+      path: '/subscribe/cancelSubscribe:did?',   // 取消预约
       meta: {title: '取消预约'},
       name: 'cancelSubscribe',
       component: CancelSubscribe
     },
     {
-      path: '/subscribe/subscribeDetail:id?',
+      path: '/subscribe/subscribeDetail:id?', // 预约详情
       meta: {title: '预约信息'},
       name: 'subscribeDetail',
       component: SubscribeDetail
@@ -314,6 +333,12 @@ const router = new Router({
       meta: {title: '就诊成员管理'},
       name: 'administration',
       component: Administration
+    },
+    {
+      path: '/getAdministration',
+      meta: {title: '就诊成员列表'},
+      name: 'getAdministration',
+      component: GetAdministration
     },
     {
       path: '/administration/addmember',
@@ -331,11 +356,18 @@ const router = new Router({
 
 
     {
-      path: '/docrecommend',
-      meta: {title: '预约医生', },
+      path: '/wxView/docrecommend:id?',          //  医生推荐的预约
+      meta: {title: '预约医生', },  
       name: 'docrecommend',
       component: Docrecommend
-    }
+    },
+    {
+      path: '/wxView/docSuspend:id?',           //  医生停诊通知
+      meta: {title: '停诊通知', },  
+      name: 'docSuspend',
+      component: DocSuspend
+    },
+
     
   ],
   // scrollBehavior (to, from, savedPosition) {

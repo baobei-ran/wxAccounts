@@ -1,16 +1,13 @@
 <template>
     <!-- 添加成员 -->
     <div class="wrap">
-        <div class="addmember dis_f flex_c" v-show="!isGetrelative">
+        <div class="addmember dis_f flex_c">
             <div class="section flex1" >
                 <div class="section_msg">
                     <div class="user">
                         <label class="label" for="">问诊人关系</label>
                         <span v-show="!relation" class="RightJT" @click='getRelative'>请选择 <i class="iconfont icon-youjiantou1"></i></span>
                         <span class="RightJT2" v-show='relation' @click='getRelative'>{{ relation }} <i class="iconfont icon-youjiantou1"></i></span>
-                        <!-- <select v-model='relation' >
-                            <option v-for='(val,i) in relationss' :value="val" :key='i'>{{ val }}</option>
-                        </select> -->
                     </div>
                     <div class="user">
                         <label for="">姓名</label>
@@ -29,9 +26,13 @@
                 <mt-button @click.native="preserveClick">保存</mt-button>
             </div>
         </div>
-        <div class="absoloute" v-show="isGetrelative">
-            <child-relative  v-on:childByValue="childByValue" ></child-relative>
-        </div>
+        <mt-popup style="width: 100%;"
+            v-model="isGetrelative"
+            position="bottom">
+            <div class="absoloute">
+                <child-relative :types='type'  v-on:childByValue="childByValue" ></child-relative>
+            </div>
+        </mt-popup>
     </div>
 </template>
 
@@ -48,12 +49,19 @@ export default {
             relation: '',
             userName: '',
             IDcard: '',
-            relationss: ['本人','父母', '兄弟姐妹', '子女', '配偶', '其他'],
             docmHeight: document.documentElement.clientHeight,  //默认屏幕高度
             showHeight: document.documentElement.clientHeight,  //实时屏幕高度
             hidshow: true,  //显示或者隐藏footer
-            isGetrelative: false
+            isGetrelative: false,
+            aid: '',
+            type: ''
         }
+    },
+    created () {
+        this.aid = this.$route.query.id
+        this.type = this.$route.query.type
+        this.userName = this.$route.query.name
+        this.IDcard = this.$route.query.idcard
     },
     mounted() {
         // window.onresize监听页面高度的变化
@@ -74,12 +82,9 @@ export default {
         }
     },
     methods: {
-        initdata: function () {
-
-        },
         preserveClick: function () {  // 保存
             var iscardReg = /^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$|^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}([0-9]|X)$/;   // 正则身份证
-            
+            var self= this;
             if (this.relation == '') {
                 this.$toast({
                     message: '请选择问诊人关系',
@@ -104,19 +109,67 @@ export default {
                 })
                 return;
             }
-
-            console.log('yes')
+            var obj = {id: this.aid, type: this.type,name: this.userName, idcard:this.IDcard };
+            var jsonobj2 = {id: this.aid, type: this.type,real_name: this.userName, id_card:this.IDcard }
+            console.log(obj)
+            this.$http.post('/mobile/Wxpatient/edit_patient', obj).then(res => {
+                console.log(res)
+                if (res.code == 1) {
+                    this.$cookie.set('administrationVal', JSON.stringify(jsonobj2))
+                    self.$toast({
+                        message: '修改成功！',
+                        position: 'middle',
+                        duration: 2000
+                    });
+                    var time = setTimeout(function () {
+                        self.$router.go(-1)
+                        clearTimeout(time)
+                    }, 1000)
+                } else {
+                    self.$toast({
+                        message: res.msg,
+                        position: 'middle',
+                        duration: 2000
+                    });
+                }
+            })
         },
         childByValue: function (v) {
-            this.relation = v.value;
-            this.isGetrelative = v.hi
+            this.relation = v.name;
+            this.type = v.id
+            this.isGetrelative = v.hide
         },
         getRelative: function () {
             this.isGetrelative = true;
         },
         delClick: function () {  // 删除
-            this.$messagebox.confirm('删除后信息不可找回，确定删除吗？', '').then(action => {
-        
+            var self = this;
+            this.$messagebox.confirm('<p style="color: #333;">删除后信息不可找回，确定删除吗？</p>', '').then(action => {
+                self.$http.post('/mobile/Wxpatient/del_patient', { id: self.aid}).then(res => {
+                    console.log(res)
+                    if (res.code == 1) {
+                        self.$toast({
+                            message: '删除成功！',
+                            position: 'middle',
+                            duration: 2000
+                        });
+                         var Val = JSON.parse(this.$cookie.get('administrationVal'));
+                        console.log(Val)
+                        if (Val && Val.id == self.aid) {
+                            this.$cookie.delete('administrationVal')
+                        }
+                        var time = setTimeout(function () {
+                            self.$router.go(-1)
+                            clearTimeout(time)
+                        }, 1000)
+                    } else {
+                        self.$toast({
+                            message: res.msg,
+                            position: 'middle',
+                            duration: 2000
+                        });
+                    }
+                })
             }).catch(cancel => {
 
             })

@@ -19,11 +19,10 @@ import VueWechatTitle from 'vue-wechat-title'
 Vue.use(VueWechatTitle)
 
 Vue.use(infiniteScroll)
-Vue.use(VueLazyload)
 Vue.use(VueLazyload, {
   preLoad: 1.3,
   error: '',
-  loading: './common/img/5-121204193R0-50.gif',
+  loading: './static/image/lazy.gif',
   attempt: 1
 })
 
@@ -45,13 +44,13 @@ Vue.prototype.out = function (url) {
   }
 }
 
-window.addEventListener('online',  function(){
+window.addEventListener('online',  function() {
   // 网络由异常到正常时触发
   setTimeout(function () {
     window.location.reload()
   },0)
  });
- window.addEventListener('offline', function(){
+ window.addEventListener('offline', function() {
   // 网络由正常常到异常时触发
   setTimeout(function () {
     window.location.reload()

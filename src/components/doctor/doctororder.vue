@@ -33,14 +33,14 @@
                         <dd>
                             <h5>{{ orderdata.name }}</h5>
                             <span>￥{{ orderdata.price }}</span>
-                            <p>x1</p>
+                            <p>x{{ num }}</p>
                         </dd>
                     </dl>
                     <ul class="goods">
                         <li><span>配送方式</span><span>快递 包邮 
                             <!-- <img src="../../common/img/icon_enter.png" alt=""> -->
                         </span></li>
-                        <li><span>商品总额</span><span>￥{{ orderdata.price }}</span></li>
+                        <li><span>商品总额</span><span>￥{{ orderdata.zprice }}</span></li>
                         <li><span>运费</span><span>￥0.00</span></li>
                     </ul>
                     <div class="usermsg">
@@ -52,7 +52,7 @@
             </div>
         </main>
         <div class="footer" v-if='hidShow'>
-            <div>总计：<span>￥{{ orderdata.price }}</span></div>
+            <div>总计：<span>￥{{ orderdata.zprice }}</span></div>
             <mt-button type="primary" :disabled='disabled' @click.native='orderData'>提交订单</mt-button>
         </div>
     </div>
@@ -73,6 +73,7 @@ export default {
             docmHeight: document.documentElement.clientHeight, // 默认屏幕高度
             showHeight: document.documentElement.clientHeight, // 实时屏幕高度
             hidShow: true, // 显示或者隐藏footer
+            num: this.$route.query.num,   // 购买数量
         }
     },
     mounted () {
@@ -126,20 +127,22 @@ export default {
             }
             this.$router.go(-1);
         },
-        initsite () {
+        initsite () { // 获取数据
             var self = this,
                 uid = this.$cookie.get('userLogins');
                 var id = this.$route.query.id
                 this.$http.post('/mobile/Wxorder/look_order', { id: id}).then(res => {
                     console.log(res)
                     if (res.code == 1) {
-                        self.orderdata = res.data
+                        var data = res.data
+                        data.zprice = (data.price * self.num).toFixed(2);
+                        self.orderdata = data
                     } else {
 
                     }
                 }).catch(err => { console.log(err)})
             
-            // 更改后
+            // 获取地址：更改后
            var userSite = JSON.parse(this.$cookie.get('userSite'))
            if (userSite && userSite.uid == uid) {
                this.site = userSite 
@@ -159,7 +162,7 @@ export default {
             
 
 
-            // 以下为 板本1 的方式
+            //  获取地址： 以下为 板本1 的方式
             // this.$http.post('/mobile/Wxuser/useraddress_list', { uid: uid}).then(res => {
             //         console.log(res)
             //         if (res.code == 1) {
@@ -196,14 +199,14 @@ export default {
                     clearTimeout(t)
                 }, 3000)
             if (!this.site) {
-                Toast({
+                this.$toast({
                     message: '请选择地址',
-                    position: 'canter',
+                    position: 'middle',
                     duration: 2000
                 });
                 return
             }
-            var obj = { addid: this.site.id, gid: this.orderdata.id, type: 1, remark: this.txt, uid: uid, doc_sid: this.orderdata.did };
+            var obj = { addid: this.site.id, gid: this.orderdata.id, type: 1, remark: this.txt, uid: uid, doc_sid: this.orderdata.did, num: this.num };
             console.log(obj)
             self.$http.post('/mobile/Wxorder/sub_order', obj).then(res => {
                 console.log(res)
@@ -215,9 +218,9 @@ export default {
                     self.wxsjk(res.data) 
                     
                 } else {
-                    Toast({
+                    this.$toast({
                         message: res.msg,
-                        position: 'canter',
+                        position: 'middle',
                         duration: 2000
                     });
                 }

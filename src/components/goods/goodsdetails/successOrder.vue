@@ -45,11 +45,11 @@
                         <dd>
                             <h5>{{ detaildata.gname }}</h5>
                             <span>￥{{ detaildata.money }}</span>
-                            <p>x1</p>
+                            <p>x{{ num }}</p>
                         </dd>
                     </dl>
                     <ul class="goods">
-                        <li><span>商品总额</span><span>￥{{ detaildata.money }}</span></li>
+                        <li><span>商品总额</span><span>￥{{ detaildata.moneys }}</span></li>
                         <li><span>运费</span><span>￥{{ detaildata.postage }}</span></li>
                         <li><span>总付费(含运费)</span><span>￥{{ detaildata.moneys }}</span></li>
                     </ul>

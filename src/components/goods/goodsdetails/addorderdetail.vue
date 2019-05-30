@@ -32,7 +32,7 @@
                         <dd>
                             <h5>{{ paydata.gname }}</h5>
                             <span>￥{{ paydata.money }}</span>
-                            <p>x1</p>
+                            <p>x{{ paydata.num }}</p>
                         </dd>
                     </dl>
                     <ul class="goods">
@@ -194,7 +194,7 @@ export default {
                             }
                         })
                         cleraInterval(times)
-                    }, 300)
+                    }, 500)
                     } else {
                         Toast({
                             message: '支付失败！',

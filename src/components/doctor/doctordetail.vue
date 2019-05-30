@@ -63,33 +63,60 @@
 
                     <div class="doctor_Time">
                         <h1>预约医生门诊</h1>
-                        <div class="doc_msgs" v-if='false'>
+                        <div class="doc_msgs" v-if='!code'>
                             <img src="../../common/img/pic_zwktxxmz.png" alt="">
                             <p>该医生暂未开通线下门诊服务</p>
                         </div>
-                        <div class="hebdomad_time">
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th v-for='val in 7'></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>上午</td>
-                                        <td v-for='val in 7'></td>
-                                    </tr>
-                                    <tr>
-                                        <td>下午</td>
-                                        <td v-for='val in 7'></td>
-                                    </tr>
-                                    <tr>
-                                        <td>晚上</td>
-                                        <td v-for='val in 7'></td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <div class="hebdomad_time" v-if='code'>
+                            <div class="time_box">
+                                <table cellpadding="0" cellspacing="0" border='0'>
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th v-for='(val, i) in TimeAll' :id='val.id'>
+                                                {{ val.week }}
+                                                {{ val.date }}
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr id='sw'>
+                                            <td>上午</td>
+                                            <td v-for='(val, i) in TimeAll' @click='tableClick($event, val)' 
+                                                :data-id='val.id'
+                                                :data-time="val.time"
+                                                data-type="1"
+                                                :data-week="val.week"
+                                                :data-date="val.date"
+                                            ></td>
+                                        </tr>
+                                        <tr id='xw'>
+                                            <td>下午</td>
+                                            <td v-for='(val, i) in TimeAll' @click='tableClick($event, val)'
+                                            :data-id='val.id'
+                                            :data-time="val.time"
+                                            data-type="2"
+                                            :data-week="val.week"
+                                            :data-date="val.date"
+                                            ></td>
+                                        </tr>
+                                        <tr id='ws'>
+                                            <td>晚上</td>
+                                            <td v-for='(val, i) in TimeAll' @click='tableClick($event, val)'
+                                                :data-id='val.id'
+                                                :data-time="val.time"
+                                                data-type="3"
+                                                :data-week="val.week"
+                                                :data-date="val.date"
+                                            ></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="time_frame">
+                                <p>上午时段 8:00-12:00 / 下午时段 13:00-18:00</p>
+                                <p>晚上时段 18:00-24:00</p>
+                            </div>
                         </div>
                     </div>
 
@@ -109,23 +136,26 @@
 </template>
 
 <script>
-import { Toast } from 'mint-ui';
-import { MessageBox } from 'mint-ui';
 export default {
     name: 'doctordetail',
     data () {
         return {
             datalist: {},
-            show: true,                         // 显示医生简介
-            btnShow: true,                      //  是否支付，来进行按钮切换操作
-            lng: '',                            // 经度
-            lat: '',                            // 纬度
-            uid: this.$cookie.get('userLogins'),  // 用户id
+            show: true,                             // 显示医生简介
+            btnShow: true,                          //  是否支付，来进行按钮切换操作
+            lng: '',                                // 经度
+            lat: '',                                // 纬度
+            uid: this.$cookie.get('userLogins'),    // 用户id
             did: '',                                // 医生id
             isClose: true,
             index: this.$route.params.index,
-            isTxt: false,                            // 控制箭头显示
-            timeList: '',                        // 时间列表
+            isTxt: false,                           // 控制箭头显示
+            timeList: '',                           // 时间列表
+            code: false,
+            TimeAll: [],                            // 时间列表
+            TimeInterval: ['上午 8:00-12:00', '下午 13:00-18:00', '晚上 18:00-24:00'], 
+            docTimeMsg: [],                         // 医生排班
+            docClose: []                            // 医生停诊
         }
     },
     mounted() {
@@ -133,11 +163,76 @@ export default {
         console.log(this.$route.params)
         this.initdata()
     },
+    updated () {
+        var self = this;
+        var Time = this.docTimeMsg
+        var close = this.docClose
+        console.log(Time, close)
+        
+        // 可约 和 约满
+        self.docYue(Time)
+      //已停诊
+      $.each(close, function (i, v) {
+        var d = new Date(v.close_days * 1000);
+        var tMonth = d.getMonth();
+        var tDate = d.getDate();
+        tMonth = self.DoHandleMonth(tMonth + 1);
+        tDate = self.DoHandleMonth(tDate);
+        var id = tMonth + "-" + tDate;
+        var index = $("#" + id).index();
+        if (v.close_time == 1 ) {
+          //上午
+          $("#sw>td").eq(index).addClass("tz");
+        } else if (v.close_time == 2 ) {
+          //下午
+          $("#xw>td").eq(index).addClass("tz");
+        } else if (v.close_time == 3 ) {
+          //晚上
+          $("#ws>td").eq(index).addClass("tz");
+        }
+      })
+    
+    },
     methods: {
+        docYue (Time) {   // 遍历医生可约的数据
+            var self = this;
+            for (var i=0; i< this.TimeAll.length; i++) {
+            for (var j=0; j<Time.length; j++) {
+                var d = new Date(Time[j].days * 1000);
+                var tMonth = d.getMonth();
+                var tDate = d.getDate();
+                tMonth = self.DoHandleMonth(tMonth + 1);
+                tDate = self.DoHandleMonth(tDate);
+                var id = tMonth + "-" + tDate;
+                var index = $("#" + id).index();
+                if (Time[j].time == 1 && id == this.TimeAll[i].id) {
+                    if (Time[j].alreadynum == Time[j].num) {
+                        $("#sw>td").eq(index).addClass("ym");
+                        return
+                    }
+                    $("#sw>td").eq(index).addClass("ky");
+                }
+                if (Time[j].time == 2 && id == this.TimeAll[i].id) {
+                    if (Time[j].alreadynum == Time[j].num) {
+                        $("#xw>td").eq(index).addClass("ym");
+                        return
+                    }
+                    $("#xw>td").eq(index).addClass("ky");
+                } 
+                if (Time[j].time == 3 && id == this.TimeAll[i].id) {
+                     if (Time[j].alreadynum == Time[j].num) {
+                        $("#ws>td").eq(index).addClass("ym");
+                        return
+                    }
+                    $("#ws>td").eq(index).addClass("ky");
+                } 
+                }
+            }
+        },
         initdata () {
             var self = this;
             this.$http.post('/mobile/wxdoccenter/doctor_detail', {did:this.did, uid: this.uid}).then(res => {
-                console.log(res)
+                // console.log(res)
                 if (res.code == 1) {
                     self.datalist = res.data
                     if (self.datalist.picture) {
@@ -157,11 +252,35 @@ export default {
                     })
                 }
             })
+
+            var selectAll = [], dayNum = 0;
+            this.$http.post('/mobile/Wxregistration/doc_scheduling', { did:this.did, }).then(res => {
+                console.log(res)
+                if (res.code == 1) {
+                    if (res.data.business == 1) {
+                        self.code = true
+                    } else {
+                        self.code = false
+                    }
+                    this.docTimeMsg = res.data.msg
+                    this.docClose = res.data.close
+                    dayNum = 7;
+                    for (var i=0; i < dayNum; i++) {
+                        (function (n) {
+                            selectAll.push(self.getDates(n))
+                        })(i)
+                    }
+                    // console.log(selectAll)
+                    self.TimeAll = selectAll
+                } else {
+                    self.code = false
+                }
+            })
         },
         handleClick() {     // 进入医生店铺
             this.$router.push({ name: 'doctorshop', params: {id: this.did, index: this.index }})
         },
-        handleClick2() {    // 立即问诊按钮
+        handleClick2() {    // 在线问诊按钮
             console.log('haha222')
         },
         handleClick3 () {   // 已开通问诊，在有效的时间随时可以问诊
@@ -172,14 +291,14 @@ export default {
             this.$http.post('/mobile/wxdoccenter/relevance_doctor', obj).then(res => {
                 console.log(res)
                 if (res.code == 1) {
-                     MessageBox.confirm('你已成功关注了此医生，返回后点击我的医生，即可向医生咨询问题', {showCancelButton: false, confirmButtonText: '确定'}).then(action => {
+                    this.$messagebox.confirm('你已成功关注了此医生，返回后点击我的医生，即可向医生咨询问题', {showCancelButton: false, confirmButtonText: '确定'}).then(action => {
                         
                     });
                     this.isClose = false
                 } else {
-                    Toast({
+                    this.$toast({
                         message: res.msg,
-                        position: 'ceneter',
+                        position: 'middle',
                         duration: 2000
                     });
                 }
@@ -192,32 +311,104 @@ export default {
             this.show = !this.show
         },
         doctordata () {     //  医生问诊
-            Toast({
+            this.$toast({
                 message: '暂未开通医生问诊服务',
-                position: 'center',
+                position: 'middle',
                 duration: 2000
             });
         },
-        getTime (day) {
-            var time = new Date();
-            var weekdata = ['周一','周二', '周三', '周四', '周五', '周六', '周日'];
+        getDates (day) {
+            var today = new Date();
+            var weekdata = ['周日', '周一','周二', '周三', '周四', '周五', '周六'];
             var targetday_milliseconds = today.getTime() + 1000 * 60 * 60 * 24 * day;
             today.setTime(targetday_milliseconds); //注意，这行是关键代码
             var tYear = today.getFullYear();
             var tMonth = today.getMonth();
             var tDate = today.getDate();
-            tMonth = DoHandleMonth(tMonth + 1);
-            tDate = DoHandleMonth(tDate);
+            tMonth = this.DoHandleMonth(tMonth + 1);
+            tDate = this.DoHandleMonth(tDate);
                 
             return {
                 date: tMonth + "." + tDate,
                 id: tMonth + "-" + tDate,
                 time: parseInt(targetday_milliseconds / 1000),
-                week: weekDate[today.getDay()]
+                month: tMonth + "月" + tDate + '日',
+                week: weekdata[today.getDay()]
             }
+        },
+        DoHandleMonth (num) {
+            if (num < 10) {
+                return '0' + num;
+            } 
+            return num
+        },
+        tableClick (e, k) {   // 对可预约 点击
+            var _this = e.target;
+            var self = this;
+            if (!hasClass(_this,'ky')) {
+                return;
+            }
+            var num = _this.getAttribute('data-type');   // 获取 上 下 晚
+            var day = _this.getAttribute('data-time');   // 获取 秒
+            var type = this.TimeInterval[(num-1)];
+            var date = _this.getAttribute('data-id')
+            var price = 0, pz = '', pzName = '', rid = '';
+            this.docTimeMsg.map(function (v,i) {
+                var d = new Date(v.days * 1000);
+                var tMonth = d.getMonth();
+                var tDate = d.getDate();
+                tMonth = self.DoHandleMonth(tMonth + 1);
+                tDate = self.DoHandleMonth(tDate);
+                var id = tMonth + "-" + tDate;
+                if (v.time == num && id == date) {
+                    price = v.money;
+                    pz = v.type
+                    rid = v.rid
+                }
+            })
+            if (pz == 1) {
+                pzName = '普通门诊'
+            } else if (pz == 2) {
+                pzName = '专家门诊'
+            }
+            
+            this.$messagebox.confirm('<p style="color:#333;">'+k.month+' '+k.week+' '+type+'<br/>'+pzName+' '+price+'元</p>', '预约信息').then(action => {
+                var obj = { did: this.did, uid: this.uid, day: day, time: num }
+                console.log(obj)
+                this.$http.post('/mobile/Wxregistration/number_lock', obj).then(res => {
+                    console.log(res)
+                    if (res.code == 1) {
+                        this.$router.push({ path: '/yuyuedoc', query: { did: self.did, day: day, time: num, order_code: res.order_code }})
+                    } else {
+                        this.$toast({
+                            message: res.msg,
+                            position: 'middle',
+                            duration: 2000
+                        });
+                    }
+                })
+                
+            }).catch(cancel => {})
+               
+            
         }
     }
 }
+
+function hasClass( elements,cName ) {
+    return !!elements.className.match( new RegExp( "(\\s|^)" + cName + "(\\s|$)") ); // ( \\s|^ ) 判断前面是否有空格 （\\s | $ ）判断后面是否有空格 两个感叹号为转换为布尔值 以方便做判断
+};
+    function addClass( elements,cName ) {
+    if(!hasClass( elements,cName )){
+        elements.className += " " + cName;
+    };
+};
+function removeClass(elements,cName) {
+    if(hasClass( elements,cName ) ){
+        elements.className = elements.className.replace( new RegExp( "(\\s|^)" + cName + "(\\s|$)" )," " ); // replace方法是替换
+    };
+};
+
 </script>
 
 <style>
@@ -264,7 +455,9 @@ export default {
     .section {
         width: 100%;
         font-size: rem(14);
+        overflow-x: hidden;
         overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
         .list {
             width: 100%;
             font-size: rem(12);
@@ -274,7 +467,7 @@ export default {
                 background:rgba(255,255,255,1);
                 border-radius:4px;
                 li:first-child {
-                    -webkit-display: flex;
+                    display: -webkit-flex;
                     display: flex;
                     >img {
                         display: block;
@@ -283,6 +476,10 @@ export default {
                         border-radius: 50%;
                     }
                     >dl {
+                        -webkit-box-flex: 1;              
+                        -moz-box-flex: 1;                 
+                        -webkit-flex: 1;                    
+                        -ms-flex: 1;  
                         flex: 1;
                         padding-left: rem(15);
                         dt {
@@ -424,11 +621,11 @@ export default {
                     width: 100%;
                     text-align: center;
                     img {
-                        height: rem(60);
-                        height: rem(60);
+                        height: rem(70);
+                        height: rem(70);
                     }
                     p {
-                        margin-top: rem(11);
+                        margin-top: rem(13);
                         text-align: center;
                         color: #808080;
                         font-size: rem(13);
@@ -437,27 +634,140 @@ export default {
 
                 .hebdomad_time {
                     width: 100%;
+                    position: relative;
+                    margin-bottom: rem(10);
+                    .time_box {
+                       overflow-x:scroll;
+                        overflow-y: hidden;
+                        -webkit-overflow-scrolling: touch;
                     table {
-                        width: 100%;
+                        margin-left: rem(41);
+                        border-collapse: collapse;
                         thead {
                             tr {
+                                height: rem(36);
+                                line-height: rem(18);
+                                font-weight: 600;
+                                
                                 th {
-                                    width: rem(41);
-                                    height: rem(36);
+                                    min-width: rem(41);
+                                    min-height: rem(36);
+                                    max-width: rem(41);
+                                    max-height: rem(36);
                                     border: 1px solid #EBEBEB;
+                                    font-weight: 600;
+                                    color: #202020;
                                 }
+                                th:nth-child(2) {
+                                    border-left: 0;
+                                }
+                            }
+                            tr:first-child {
+                                th:first-child {
+                                    position: absolute;
+                                    left: 0;
+                                    top:0;
+                                    background-color: #fff;
+                                    border-bottom: 0;
+                                }
+                                
                             }
                         }
                         tbody {
                             tr {
                                 text-align: center;
+                                height: rem(36);
                                 line-height: rem(36);
                                 td {
-                                    width: rem(41);
-                                    height: rem(36);
+                                    min-width: rem(41);
+                                    min-height: rem(36);
+                                    max-width: rem(41);
+                                    max-height: rem(36);
                                     border: 1px solid #EBEBEB;
+                                    color: #202020;
+                                }
+
+                                td.active {
+                                    background: #469AF4;
+                                }
+                                td.ym {
+                                    background: #CCC;
+                                }
+                                td.ky {
+                                    background: #469AF4;
+                                }
+                                td.tz {
+                                    background-color: orange;
+                                }
+                                td.ym::after {
+                                   content: '约满';
+                                    color: #FFF;
+                                    font-size: rem(11);
+                                }
+                                td.active::after {
+                                    content: '已约';
+                                    color: #FFF;
+                                    font-size: rem(11);
+                                }
+                                td.ky::after {
+                                    content: '可约';
+                                    color: #FFF;
+                                    font-size: rem(11);
+                                }
+                                td.tz::after {
+                                    content: '停诊';
+                                    color: #FFF;
+                                    font-size: rem(11);
                                 }
                             }
+                            tr:first-child {
+                                td:first-child {
+                                    position: absolute;
+                                    left: 0;
+                                    top:rem(36);
+                                    background-color: #fff;
+                                    border-bottom: 0;
+                                }
+                                td:nth-child(2) {
+                                    border-left: 0;
+                                }
+                            }
+                            tr:nth-child(2) {
+                                td:first-child {
+                                    position: absolute;
+                                    left: 0;
+                                    top:rem(72);
+                                    background-color: #fff;
+                                    border-bottom: 0;
+                                }
+                                td:nth-child(2) {
+                                    border-left: 0;
+                                }
+                            }
+                            tr:nth-child(3) {
+                                td:first-child {
+                                    position: absolute;
+                                    left: 0;
+                                    top:rem(108);
+                                    background-color: #fff;
+                                }
+                                td:nth-child(2) {
+                                    border-left: 0;
+                                }
+                            }
+                        }
+                    }
+                    &::-webkit-scrollbar {
+                        display: none;
+                    }
+                    }
+
+                    .time_frame {
+                        margin-top: rem(10);
+                        color: #808080;
+                        font-size: rem(11);
+                        p {
+                            line-height: rem(17);
                         }
                     }
                 }

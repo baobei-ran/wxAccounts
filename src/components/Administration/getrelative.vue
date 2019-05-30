@@ -2,24 +2,45 @@
     <!-- 选择与本人的关系 -->
     <div class="getrelative">
         <ul>
-            <li v-for='(val,i) in relations' :key='i' @click='pitchonClick(val)'><span>{{ val }}</span><img v-show="val == v_success" src='../../common/img/icon_xuanze.png' alt='' /> </li>
+            <li v-for='(val,i) in relations' :key='val.id' @click='pitchonClick(val)' :class='{"blue":val.id == v_success }'><span>{{ val.name }}</span> </li>
         </ul>
     </div>
 </template>
 
 <script>
 export default {
+    props: ['types'],
     data () {
         return {
-            relations: ['父母', '兄弟姐妹', '子女', '配偶', '其他'],
+            relations: [],
             v_success: ''
         }
     },
+    mounted () {
+        this.initdata()
+        console.log(this.type)
+    },
     methods: {
+        initdata: function () {
+            var self = this;
+            self.$http.post('/mobile/Wxpatient/type').then(res => {
+                console.log(res)
+                if (res.code == 1) {
+                    self.relations = res.data
+                    self.v_success = self.types
+                    res.data.map(v => {
+                        if (v.id == self.types) {
+                            self.pitchonClick(v)
+                        }
+                    })
+                }
+            })
+        },
         pitchonClick: function (v) {
-            this.v_success = v;
-            var val = { hi: false, value: v  }
-            this.$emit("childByValue", val)
+            this.v_success = v.id;
+            v.hide = false
+            console.log(v)
+            this.$emit("childByValue", v)
         }
     }
 }
@@ -36,23 +57,18 @@ export default {
     font-size: rem(14);
     > ul {
         width: 100%;
-        padding-left: rem(16);
         li {
             font-size: rem(14);
             color: #333;
-            border-bottom: 1px solid #E0E0E0;
-            padding: rem(18) rem(18) rem(18) 0;
+            padding: rem(12) 0;
             line-height: rem(22);
             overflow: hidden;
             cursor: pointer;
-            > img {
-                display: block;
-                width: rem(22);
-                height: rem(22);
-                float: right;
-                -webkit-vertical-align: middle;
-                vertical-align: middle;
-            }
+            text-align: center;
+        }
+        .blue {
+            color: #3196FF;
+            background: rgba(70,154,244, .1);
         }
     }
 }

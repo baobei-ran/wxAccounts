@@ -16,7 +16,7 @@
                         <div class="commons await" v-for='(val, i) in datalist' :key='i'>
                             <h4>{{ val.hospital_name }}</h4>
                             <dl class="dis_f flex-vc"  @click='Clickdetail(val.did)'>
-                                <dt><img :src="$http.baseURL+val.picture" alt=""></dt>
+                                <dt><img v-lazy="$http.baseURL+val.picture" :key="val.picture" alt=""></dt>
                                 <dd>
                                     <p>
                                         <span>{{ val.true_name }}</span>
@@ -27,9 +27,9 @@
                                 </dd>
                             </dl>
                             <div class="ckBtn">
-                                <span class="blue"><mt-button @click.native="handerOnce(val.did)" >立即咨询</mt-button></span>
-                                <span class="orange"><mt-button @click.native="handerLoding(val.did)" >问诊咨询中</mt-button></span>
-                                <span><mt-button @click.native="handerDetail(val.did)">咨询记录</mt-button></span>
+                                <span class="blue" v-if='!val.status'><mt-button @click.native="handerOnce(val.did)" >立即咨询</mt-button></span>
+                                <span class="orange" v-if='val.status'><mt-button @click.native="handerLoding(val.did)" >问诊咨询中</mt-button></span>
+                                <span><mt-button @click.native="handerDetail(val.did, val.status)">咨询记录</mt-button></span>
                             </div>
                         </div>
                         
@@ -90,21 +90,39 @@ export default {
         Clickdetail (id) {       // 进入医生详情
             this.$router.push({ name: 'doctordetail', params: { id:id}})
         },
-        handerOnce () {  // 立即咨询
-
+        handerOnce (id) {  // 立即咨询
+            var self = this, 
+                obj = { uid: this.uid, did: id };
+            self.$http.post('/mobile/wxauth/consult', obj).then(res => {
+                console.log(res)
+                if (res.code == 1) {
+                    self.$messagebox.confirm('你已成功选择该医生，返回公众号首页，即可向医生咨询问题', {showCancelButton: false, confirmButtonText: '确定'}).then(action => {
+                        WeixinJSBridge.call('closeWindow'); 
+                    });
+                } else {
+                    this.$toast({
+                        message: res.msg,
+                        position: 'middle',
+                        duration: 2000
+                    });
+                }
+            })
+            
         },
         handerLoding () { // 咨询中
-
+            this.$messagebox.confirm('返回公众号首页，即可继续向医生咨询问题', {showCancelButton: false, confirmButtonText: '确定'}).then(action => {
+               WeixinJSBridge.call('closeWindow'); 
+            });
         },
-        handerDetail (id) {  // 咨询记录
-            this.$router.push({path:'/mydoctor/docrecord', query: { id: id}})
+        handerDetail (id, n) {  // 咨询记录
+            this.$router.push({path:'/mydoctor/docrecord', query: { id: id, status: n}})
         }
     }
 }
 </script>
 
 <style>
-
+    
 </style>
 <style lang="scss" scoped>
 @function rem($px) {
@@ -191,12 +209,26 @@ export default {
                             height: rem(54);
                             -webkit-border-radius: 100%;
                             border-radius: 100%;
-                            >img {
-                                width: 100%;
-                                height: 100%;
+                            overflow: hidden;
+                            position: relative;
+                            >img[lazy=loaded] {
+                                width: rem(54);
+                                height: rem(54);
+                                max-width: rem(54);
+                                max-height: rem(54);
                                 -webkit-border-radius: 100%;
                                 border-radius: 100%;
                             }
+                            > img[lazy=loading] {
+                                position: absolute;
+                                left: 0;
+                                right: 0;
+                                bottom: 0;
+                                top: 0;
+                                width: 20px;
+                                margin: auto;
+                            }
+                            
                         }
                         dd {
                             padding-left: rem(15);

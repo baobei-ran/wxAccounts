@@ -1,5 +1,5 @@
 <template>
-<!-- 下单 -->
+<!-- 再次购买下单 -->
     <div class="doctororder">
         <!-- <div class="header">
             <img @click='Return' src="../../../common/img/icon_fh.png" alt="">
@@ -44,7 +44,7 @@
                         <dd>
                             <h5>{{ orderdata.name }}</h5>
                             <span>￥{{ orderdata.money }}</span>
-                            <p>x1</p>
+                            <p>x{{ orderdata.num }}</p>
                         </dd>
                     </dl>
                     <ul class="goods">
@@ -191,7 +191,7 @@ export default {
         orderData () {  // 提交下单
             var self = this,
                 uid = this.$cookie.get('userLogins');
-            var obj = { addid: this.site.id, gid: this.orderdata.gid, type: this.orderdata.type, remark: this.txt, uid: uid, doc_sid: this.orderdata.doc_sid };
+            var obj = { addid: this.site.id, gid: this.orderdata.gid, type: this.orderdata.type, remark: this.txt, uid: uid, doc_sid: this.orderdata.doc_sid, num: this.orderdata.num };
             console.log(obj)
             self.$http.post('/mobile/Wxorder/sub_order', obj).then(res => {
                 console.log(res)

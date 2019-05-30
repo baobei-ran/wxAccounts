@@ -18,6 +18,23 @@ Vue.filter('filterTime', function(time) {
     return Y+'-'+M+'-'+D +' '+h+':'+m+':'+s
 })
 
+Vue.filter('Times', function(time) {
+    if (!time) {
+        return;
+    }
+    var date = new Date(time*1000)
+    var dateNumFun = (num) => num < 10 ? '0' + num : num;
+    var weekdata = ['周日', '周一','周二', '周三', '周四', '周五', '周六'];
+           var Y = date.getFullYear(),
+               M = dateNumFun(date.getMonth() + 1),
+               D = dateNumFun(date.getDate()),
+               h = dateNumFun(date.getHours()),
+               m = dateNumFun(date.getMinutes()),
+               s = dateNumFun(date.getSeconds()),
+               week = weekdata[date.getDay()]     // 周几？
+    return Y+'年'+M+'月'+D + '日' + ' ' + week
+})
+
 
 Vue.filter('money', function(val) {
     val = val.toString().replace(/\$|\,/g,'');

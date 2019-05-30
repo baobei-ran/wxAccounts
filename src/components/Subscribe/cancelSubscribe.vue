@@ -4,13 +4,13 @@
         <div class="section flex1">
             <div class="section_box">
                 <dl class="doctor_title dis_f flex-vc">
-                    <dt><img src="../../common/img/pic_wdys_ystx.png" alt=""></dt>
+                    <dt><img :src="$http.baseURL+cancel_info.picture" alt=""></dt>
                     <dd>
                         <p>
-                            <span>就诊医生：</span><span>医生姓名</span>
+                            <span>就诊医生：</span><span>{{ cancel_info.true_name }}</span>
                         </p>
                         <p>
-                            <span>就诊时间：</span><span>8月27日 周四 上午8:00-12:00</span>
+                            <span>就诊时间：</span><span>{{ days | Times }} {{ TimeInterval[(times-1)] }}</span>
                         </p>
                     </dd>
                 </dl>
@@ -18,17 +18,18 @@
                     <ul>
                         <li class="dis_f dis_sb">
                             <span>取消原因</span>
-                            <span>请选择 <i class="iconfont icon-iconfontjiantou2"></i></span>
+                            <span class="yuan" @click='getPopupVisible' v-show="!li_name">请选择 <i class="iconfont icon-iconfontjiantou2"></i></span>
+                            <span class="yuan" @click='getPopupVisible' v-show='li_name' style='color:#333;'>{{ li_name }} <i class="iconfont icon-iconfontjiantou2"></i></span>
                         </li>
                         <li>
                             <span>退款金额</span>
-                            <span>￥10.00</span>
+                            <span>￥{{ cancel_info.money }}</span>
                         </li>
                         <li class="cancel_txt">
                             <span>取消说明</span>
                         </li>
                         <li class="cancel_txt cancel_txt2">
-                            <textarea maxlength="200" placeholder="说明为选填项"></textarea>
+                            <textarea maxlength="200" v-model='txt_area' placeholder="说明为选填项"></textarea>
                         </li>
                     </ul>
                 </div>
@@ -37,6 +38,17 @@
         <div class="footer" v-show="hidshow">
             <mt-button @click.native="handleClick">提交</mt-button>
         </div>
+
+        <mt-popup style="width: 100%;"
+        v-model="popupVisible"
+        position="bottom">
+            <div class="h_title">
+                取消原因
+            </div>
+            <ul class="ul_popup">
+                <li v-for='val in popupVal' :class='{"active":val.id == li_i }' @click='li_cause(val)'>{{ val.name }}</li>
+            </ul>
+        </mt-popup>
     </div>
 </template>
 
@@ -48,6 +60,15 @@ export default {
             docmHeight: document.documentElement.clientHeight,  //默认屏幕高度
             showHeight: document.documentElement.clientHeight,  //实时屏幕高度
             hidshow: true,  //显示或者隐藏footer
+            popupVisible: false,
+            popupVal: [{id:1, name: '病情好转无需就诊' }, { id: 2, name: '无法按照预约时间到诊'}, {  id: 3, name: '已选择其他方式就诊' }, { id: 4, name: "其他"}],
+            li_i: 0,
+            li_name: '',
+            txt_area: '',
+            cancel_info: {},       // 接口数据
+            TimeInterval: ['上午 8:00-12:00', '下午 13:00-18:00', '晚上 18:00-24:00'], 
+            days: this.$route.query.day,
+            times:this.$route.query.time,
         }
     },
     mounted() {
@@ -58,6 +79,7 @@ export default {
                 self.showHeight = document.body.clientHeight;
             })()
         }
+        this.initdata()
     },
     watch: {
         showHeight:function() {
@@ -69,8 +91,61 @@ export default {
         }
     },
     methods: {
-        handleClick: function () {
-
+        initdata: function () {
+            var self = this,
+                did = this.$route.query.did,
+                day = this.$route.query.day,
+                time = this.$route.query.time;
+            var obj = { did:did, day:day, time: time }
+            self.$http.post('/mobile/Wxregistration/info', obj).then(res => {
+                console.log(res)
+                if (res.code == 1) {
+                    self.cancel_info = res.data
+                }
+            })
+        },
+        handleClick: function () {     // 取消提交
+            if (this.li_name == '') {
+                this.$toast({
+                    message: '请选择取消原因',
+                    position: 'middle',
+                    duration: 2000
+                });
+                return false;
+            }
+            var obj = { rid: this.$route.query.did, remark: this.li_name, describe: this.txt_area }
+            this.$http.post('/mobile/Wxregistration/registration_cancel', obj).then(res => {
+                console.log(res)
+                if (res.code == 1) {
+                    this.$toast({
+                        message: '取消成功！',
+                        position: 'middle',
+                        duration: 2000
+                    });
+                    var time = setTimeout(function () {
+                         this.$router.replace({path: '/subscribe/subscribeDetail', query: {id: this.$route.query.did}})
+                         clearTimeout(time)
+                    }, 1000)
+                } else {
+                    this.$toast({
+                        message: res.msg,
+                        position: 'middle',
+                        duration: 2000
+                    });
+                }
+            })
+           
+        },
+        getPopupVisible: function () {
+            this.popupVisible = true
+        },
+        li_cause: function (v) {
+            this.li_i = v.id
+            this.li_name = v.name
+            var self = this;
+            setTimeout(function () {
+                self.popupVisible = false
+            }, 50)
         }
     }
 }
@@ -100,8 +175,8 @@ export default {
                     -webkit-border-radius: 100%;
                     border-radius: 100%;
                     >img {
-                        width: 100%;
-                        height: 100%;
+                        width: rem(54);
+                        height: rem(54);
                         -webkit-border-radius: 100%;
                         border-radius: 100%;
                     }
@@ -132,6 +207,9 @@ export default {
                         font-size: rem(14);
                         color: #808080;
                         border-bottom: 1px solid #E0E0E0;
+                        .yuan {
+                            padding-left: 10%;
+                        }
                     }
                     .cancel_txt {
                         border:0;
@@ -165,6 +243,32 @@ export default {
             font-size: rem(16);
             -webkit-border-radius: 0;
             border-radius: 0;
+        }
+    }
+
+    .h_title {
+        height: rem(42);
+        line-height: rem(42);
+        font-size: rem(13);
+        padding-left: rem(15);
+        color: #333;
+    }
+    .ul_popup {
+        width: 100%;
+        padding: rem(10) 0;
+        border-top: 1px solid #E6E6E6;
+        li {
+            width: 100%;
+            height: rem(35);
+            line-height: rem(35);
+            color: #808080;
+            font-size: rem(14);
+            text-align: center;
+            cursor: pointer;
+        }
+        li.active {
+            color: #3196FF;
+            background-color: rgba(70,154,244, .1);
         }
     }
 }

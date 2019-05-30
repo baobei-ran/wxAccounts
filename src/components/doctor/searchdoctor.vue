@@ -364,14 +364,30 @@ export default {
                 if (res.code == 1) {
                      res.data.map(val => {
                         if (val.reversion_rate != 0) {
+                            console.log(val.reversion_rate/30/60/90)
+                            var nian = (val.reversion_rate / 60 / 60 / 24 / 30 / 365).toFixed(2)
+                            if (nian > 1) {
+                                val.reversion_rate = '小于'+ nian + '年'
+                                return;
+                            }
+                            var month = (val.reversion_rate / 60 / 60 / 24 / 30).toFixed(2)
+                            if (month > 1) {
+                                val.reversion_rate = '小于'+ month + '月'
+                                return;
+                            }
+                            var ri = (val.reversion_rate / 60 / 60 / 24).toFixed(2)
+                            if (ri > 1) {
+                                val.reversion_rate = '小于'+ ri + '天'
+                                return;
+                            }
                             var tis = (val.reversion_rate / 60 / 60).toFixed(2)
-                            console.log(tis)
+                            
                             if (tis >= 1) {
                                 val.reversion_rate = '小于'+ tis + '小时'
                                 return;
                             }
                             var ti = Math.round(val.reversion_rate / 60)
-                            console.log(ti)
+                            
                             if (ti>0) {
                                 val.reversion_rate = '小于'+ ti + '分钟'
                             }

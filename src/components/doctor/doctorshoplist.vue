@@ -1,17 +1,13 @@
 <template>
                     <!--  更多医生店铺 -->
     <div class="doctorshoplist dis_f flex_d">
-        <!-- <div class="header">
-            <img @click='Return' v-if='show' src="../../common/img/icon_fh.png" alt="">
-            <span>医生店铺</span>
-        </div> -->
         <div class="content flex1" ref='scrolls'>   
             <div class="content_box">
                 <div v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
                     <div class="take Mg-T"  v-for='(val,i) in alllist' :key='i'>
                         <div class="doctor_box dis_f dis_sb flex_i">
-                            <div class="doctor_title dis_f dis_sb flex_i">
-                                <img :src="$http.baseURL+val.picture" alt="">
+                            <div class="doctor_title dis_f flex_i">
+                                <div class="doc_pic"><img :src="$http.baseURL+val.picture" :key='val.picture' alt=""></div>
                                 <div class="keep">
                                     <h4>{{ val.true_name }}医生的店铺 
                                         <span v-if='val.relevance == 1'><img src='../../common/img/icon_bq.png' alt=''>关注的医生</span></h4>
@@ -24,9 +20,9 @@
                         </div>
                         
                         <div class="order_list" @click='getDoctor(val.did)'>
-                            <ul class="dis_f">
+                            <ul class="dis_f" id='doc_dian'>
                                 <li v-for='item in val.goods_pic' >
-                                    <img v-lazy="$http.baseURL+item" alt="">
+                                    <img v-lazy="$http.baseURL+item" :key='item' alt="">
                                 </li>
                             
                                 <!-- <li class="right"><img src="../../common/img/icon_enter.png" alt=""></li> -->
@@ -54,7 +50,6 @@ export default {
             alllist: [],         //  数据
             page: 1,
             limit: 10,
-            show: true,           // 返回按钮显示
             busy: true,
             dropup: false,
             count: 0,
@@ -65,7 +60,6 @@ export default {
     created() {
         var urldata = this.$route.query
         if(urldata.uid) {
-            this.show = false
             this.uid = urldata.uid
             var uids = this.$cookie.get('userLogins') 
             if (!uids || urldata.uid) {
@@ -182,9 +176,7 @@ export default {
 }
 </script>
 
-<style>
 
-</style>
 <style lang="scss" scoped>
 @function rem($px) {
     @return $px / 50 + rem;
@@ -201,36 +193,7 @@ export default {
     height: 100%;
     font-size: rem(16);
     background-color: #f9f9f9;
-    .header {
-        display: -webkit-flex;
-        display: flex;
-        height: rem(40);
-        -webkit-justify-content: center;
-        justify-content: center;
-        color: #212121;
-        position: relative;
-        box-shadow:0px 1px 0px 0px rgba(224,224,224,.5);
-        padding-top: rem(0);
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-        font-size: rem(16);
-        background: #fff;
-        img {
-            font-size: rem(30);
-            position: absolute;
-            left: rem(15);
-            top: rem(13);
-            line-height: 1;
-            font-size: rem(19);
-            width: rem(30);
-            padding: rem(5);
-        }
-        span {
-            padding-top: rem(15);
-            font-weight:400;
-            color: #212121;
-        }
-    }
+    
     .Mg-T {
         margin-top: rem(10);
     }
@@ -260,10 +223,20 @@ export default {
             .doctor_box {
                 width: 100%;
                 .doctor_title {
-                    >img {
+                    width: 100%;
+                    .doc_pic {
                         width: rem(44);
                         height: rem(44);
                         @include borderRaduis(100%);
+                        img {
+                            width: rem(44);
+                            height: rem(44);
+                            max-width: rem(44);
+                            max-height: rem(44);
+                            min-height: rem(44);
+                            @include borderRaduis(100%);
+                        }
+                   
                     }
                  .keep {
                      padding-left: rem(10);
@@ -311,18 +284,38 @@ export default {
             .order_list {
                 width: 100%;
                 margin-top: rem(10);
-                >ul {
+                #doc_dian {
                     display: -webkit-flex;
                     display: flex;
-                    position: relative;
                         li {
                             width: 32%;
+                            min-height: rem(108);
+                            position: relative;
                             >img {
+                                max-width: 100%;
                                 display: block;
-                                width: 100%;
-                                height: auto;
+                                -webkit-border: 1px solid #eee;
                                 border: 1px solid #eee;
                                 @include borderRaduis(rem(4));
+                            }
+                            img[lazy-loaded] {
+                                display: block;
+                                width: 100%;
+                                max-width: 100%;
+                                -webkit-border: 1px solid #eee;
+                                border: 1px solid #eee;
+                                @include borderRaduis(rem(4));
+                            }
+                            img[lazy=loading] {
+                                position: absolute;
+                                left: 0;
+                                right: 0;
+                                bottom: 0;
+                                top: 0;
+                                width: 20px;
+                                margin: auto;
+                                -webkit-border: 0;
+                                border:0;
                             }
                         }
                         li:nth-child(2) {
@@ -335,9 +328,6 @@ export default {
                 .addbtn {
                     width: 100%;
                     height: rem(25);
-                   
-                   
-                   
                 }
         }
     }

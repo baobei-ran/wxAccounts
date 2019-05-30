@@ -1,32 +1,49 @@
 <template>
     <!-- 咨询记录 -->
     <div class="docrecord dis_f flex_c">
-        <div class="content_box flex1"> 
+        <div class="content_box flex1" id='scrolls'> 
             <div class='content'>
-                <div class="time"><span>07-12 18:02:34</span></div>
-               <div class="userMsg_box" v-for='val in msgList'>
-                     <div class="doc" v-if='val.aa == 1'>
+                <dl class="emptys" v-if='!msgList.length'>
+                    <dt></dt>
+                    <dd>暂无数据</dd>
+                </dl>
+               <div class="userMsg_box" v-for='(val, i) in msgList' :key='i'>
+                    <div class="time"><span>{{ val.chat_time }}</span></div>
+                     <div class="doc" >
                       <ul>
-                          <li>
-                              <img src="../../common/img/pic_wdys_ystx.png" alt="">
+                          <li class="doc_img">
+                              <img :src="$http.baseURL+val.uimg1" alt="">
                           </li>
-                          <li>
-                              <p> {{ val.msg }}</p>
-                              <div class="docFang" v-if='val.y == 1'>
+                          <li class="txt" v-if='val.type == "txt"'>
+                              <p> {{ val.user1 }}</p>
+                              <div class="docFang" v-if='val.stype == 1' @click='chuFang(val.ext)'>
                                   <img src="../../common/img/img_lt_cfy.png" alt="">
-                                  <span>{{ val.us }}</span>
+                                  <span>{{ val.content }}</span>
                               </div>
+                              <div class="docFang" v-if='val.stype == 2' @click='yaoPin(val.ext)'>
+                                  <img src="../../common/img/icon_yptj.png" alt="">
+                                  <span>{{ val.content }}</span>
+                              </div>
+                              <div class="docFang" v-if='val.stype == 3'>
+                                  <img src="../../common/img/icon_xxmz.png" alt="">
+                                  <span>{{ val.content }}</span>
+                              </div>
+                          </li>
+                          <li class="imgs"  v-if='val.type == "img"'><img src="https://img1.mukewang.com/5bd275090001747f04720802.jpg" alt=""></li>
+                          <li class="audios"  v-if='val.type == "audio"'>
+
                           </li>
                       </ul>
                   </div>
-                  <div class="myuser" v-if='val.aa == 2'>
+                  <div class="myuser">
                       <ul>
-                          <li class="msg">
-                              医生，请给我来个大力神丸，吃了金枪不倒
-                              {{ val.msg }}
+                          <li class="msg" v-if='val.type == "txt"'>{{ val.user2 }}</li>
+                          <li class="msg2" v-if='val.type == "img"'><img src="https://p0.meituan.net/movie/ea4ac75173a8273f3956e514a4c78018253143.jpeg" alt=""></li>
+                          <li class="msg3" v-if='val.type == "audio"'>
+
                           </li>
                           <li class="head">
-                              <img src="../../common/img/pic_wdys_ystx.png" alt="">
+                              <img :src="$http.baseURL+val.uimg2" alt="">
                           </li>
                       </ul>
                   </div>
@@ -34,7 +51,8 @@
             </div>
         </div>
         <div class="footer">
-            <mt-button @click.native="handerDoctor">继续咨询记录</mt-button>
+            <mt-button v-show="status == 0 || !msgList.length" @click.native="handerDoctor">立即咨询</mt-button>
+            <mt-button v-show="status == 1" @click.native="handerDoctor2">继续咨询</mt-button>
         </div>
     </div>
 </template>
@@ -44,24 +62,88 @@ export default {
     name: 'docrecord',
     data () {
         return {
-            msgList: [
-                {aa: 1, msg: '您已选择李一一医生，请直接沟通实地考察实地考察收看电视,更好的dscfhsd 剑'},
-                {aa: 2, msg: '更好的顺风车释放出的时间表的就撤风刀霜剑'},
-                {aa: 1, msg: '您已选择李一一医生，请直接沟通实地考察实地考察收看电视,更好的顺风车释放出的时间表的就撤风刀霜剑'},
-                {aa: 2, msg: '更好的顺风车释放出的时间表的就撤风刀霜剑'},
-                {aa: 2, msg: '更好的顺风车释放出的时间表的就撤风刀霜剑'},
-                {aa: 1, y: 1, msg: '电子处方', pic: '', us: '患者李除阿的电子处方'},
-                {aa: 1, y: 1, msg: '药品推荐', pic: '', us: '白云山板蓝根颗粒20袋清热解毒咽喉肿痛感冒药冲剂'},
-                {aa: 2, msg: '更好的顺风车释放出的时间表的就撤风刀霜剑'},
-            ]
+            msgList: [],  // 数据
+            uid: this.$cookie.get('userLogins'),
+            did: this.$route.query.id,              // 医生 id 
+            status: this.$route.query.status        // 咨询状态
         }
     },
+    mounted () {
+        this.initdata();
+    },
     methods: {
+        initdata: function () {
+            var self = this, obj = { uid: this.uid, did: this.did };
+            this.$http.post('/mobile/Wxregistration/chatting_records', obj).then(response => {
+                console.log(response)
+                if (response.code == 1) {
+                    self.msgList = response.data
+                    setTimeout(() => {
+                        // self.funcReadImgInfo(".doc_img");
+                        // self.funcReadImgInfo(".head");
+                        self.funcReadImgInfo(".imgs");
+                        self.funcReadImgInfo(".msg2");
+                    }, 100)
+                    this.$nextTick(() => {
+                        // var container = this.$el.querySelector("#scrolls");
+                        //     container.scrollTop = container.scrollHeight;
+                        var msg = document.getElementById('scrolls');
+                        msg.scrollTop = msg.scrollHeight            // 滚动高度
+                    })
+                }
+            })
+        },
         handerDoctor: function () {  // 立即咨询
-            this.out('/docrecommend')
-        }
+            var self = this;
+            var obj = { did: this.did, uid: this.uid}
+            this.$http.post('/mobile/wxauth/consult', obj).then(res => {
+                console.log(res)
+                if (res.code == 1) {
+                    self.$messagebox.confirm('已选择该医生，返回公众号首页，即可向医生咨询问题', {showCancelButton: false, confirmButtonText: '确定'}).then(action => {
+                        WeixinJSBridge.call('closeWindow'); 
+                    });
+                } else {
+                    this.$toast({
+                        message: res.msg,
+                        position: 'middle',
+                        duration: 2000
+                    });
+                }
+            })
+        },
+        handerDoctor2: function () {  // 继续咨询
+            this.$messagebox.confirm('返回公众号首页，即可继续向医生咨询问题', {showCancelButton: false, confirmButtonText: '确定'}).then(action => {
+               WeixinJSBridge.call('closeWindow'); 
+            });
+        },
+        chuFang: function (id) { // 去处方详情页
+            this.$router.push({ path:'/chufdetails', query: {id: id} })
+        },
+        yaoPin: function (id) { // 去商品详情页
+            console.log(id)
+            this.$router.push({ path:'/shopdetail', query: {id: id} })
+        },
+        /*调用微信预览图片的方法*/
+        funcReadImgInfo: function (dom) {
+            var imgs = [];
+            // var imgObj = $(".imgs img");//这里改成相应的对象
+            var imgObj = $( dom +" "+"img")
+            for(var i=0; i<imgObj.length; i++) {
+                imgs.push(imgObj.eq(i).attr('src'));
+                imgObj.eq(i).click(function() {
+                    var nowImgurl = $(this).attr('src');
+                        WeixinJSBridge.invoke("imagePreview",{
+                    "urls":imgs,
+                    "current":nowImgurl
+                });
+                });
+            }
+        },
     }
 }
+
+    
+    
 </script>
 
 <style lang="scss" scoped>
@@ -72,41 +154,69 @@ export default {
     width: 100%;
     height: 100%;
     font-size: rem(14);
-    background-color: #fafafa;
+    background-color: #F5F5F7;
     .content_box {
         width: 100%;
         overflow-y: scroll;
         .content {
           width: 100%;
-          padding: rem(18);
-          .time {
+          padding: 0 rem(18) rem(18);
+          .emptys {
               width: 100%;
               text-align: center;
-              > span {
-                color: #666;
-                font-size: rem(12);
+              padding-top: rem(40);
+             dt {
+                width: rem(120);
+                height: rem(120);
+                display: block;
+                margin: 0 auto;
+                background: url('../../common/img/pic_zwxgyyjl.png') no-repeat;
+                background-size: contain;
+                    
+             }
+             dd {
+                  color: #808080;
+                  font-size: rem(14);
+                  margin-top: rem(15);
               }
           }
           .userMsg_box {
               width: 100%;
+              .time {
+                    width: 100%;
+                    margin-top: rem(18);
+                    text-align: center;
+                    > span {
+                        color: #999;
+                        font-size: rem(11);
+                    }
+                }
               .doc {
                 width: 100%;
                 margin-top: rem(15);
                 ul {
+                    display: box; 
+                    display: -webkit-box; 
+                    display: -moz-box; 
+                    display: -webkit-flex; 
+                    display: -moz-flex; 
+                    display: -ms-flexbox; 
                     display: flex;
                     color: #181818;
                     
-                  li:first-child {
-                      width: rem(37);
-                      height:rem(37);
+                  li.doc_img {
+                      width: rem(40);
+                      height:rem(40);
                      -webkit-border-radius:100%;
                       border-radius:100%;
                     img {
-                        width: 100%;
-                        height: 100%;
+                        width: rem(40);
+                        height:rem(40);
+                        -webkit-border-radius:100%;
+                        border-radius:100%;
                     }
                   }
-                  li:last-child {
+                  li.txt {
                     margin-left: rem(10);
                     max-width: 80%;
                     background: #fff;
@@ -134,6 +244,20 @@ export default {
                         }
                     }
                   }
+                  li.imgs {
+                        margin-left: rem(10);
+                        max-width: 80%;
+                        background: #fff;
+                        padding: rem(10);
+                        line-height: rem(18);
+                        -webkit-border-radius:0px rem(10) rem(10) rem(10);
+                        border-radius:0px rem(10) rem(10) rem(10);
+                      > img {
+                          width: rem(60);
+                          -webkit-border-radius: 4px;
+                          border-radius: 4px;
+                      }
+                  }
                   
                 }
             }
@@ -156,13 +280,15 @@ export default {
                     justify-content: flex-end;
                     color: #181818;
                     .head {
-                      width: rem(37);
-                      height:rem(37);
+                      width: rem(40);
+                      height:rem(40);
                       -webkit-border-radius:100%;
                       border-radius:100%;
                     img {
-                        width: 100%;
-                        height: 100%;
+                        width: rem(40);
+                        height:rem(40);
+                        -webkit-border-radius:100%;
+                        border-radius:100%;
                     }
                   }
                     .msg {
@@ -175,7 +301,17 @@ export default {
                         -webkit-border-radius: rem(10) 0px rem(10) rem(10);
                         border-radius:rem(10) 0px rem(10) rem(10);
                     }
-                   
+                   .msg2 {
+                       margin-right: rem(10);
+                        max-width: 80%;
+                        background: #fff;
+                        padding: rem(10);
+                        -webkit-border-radius: rem(10) 0px rem(10) rem(10);
+                        border-radius:rem(10) 0px rem(10) rem(10);
+                        > img {
+                            width: rem(60);
+                        }
+                   }
                 }
             }
           }
@@ -189,7 +325,7 @@ export default {
             width: 100%;
             height: 100%;
             background: url('../../common/img/icon_ljwz.png') no-repeat;
-            background-position: rem(110) center;
+            background-position: rem(123) center;
             background-size: 8%;
             background-color: #469AF4;
             color: #fff;

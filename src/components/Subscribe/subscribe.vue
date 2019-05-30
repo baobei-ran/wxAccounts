@@ -6,72 +6,76 @@
                     <li :class="{'ckblue':flag == 0}" @click='clickNav(0)'>全部</li>
                     <li :class="{'ckblue':flag == 1}" @click='clickNav(1)'>待就诊</li>
                     <li :class="{'ckblue':flag == 2}" @click='clickNav(2)'>已就诊</li>
-                    <li :class="{'ckblue':flag == 3}" @click='clickNav(3)'>退款</li>
+                    <li :class="{'ckblue':flag == 4}" @click='clickNav(4)'>退款</li>
                 </ul>
         </div>
         <div class="section flex1">
             <div class="section_box">
-                <div class="content_wrap">
+                <div class="empty" v-if='!yudocMsgList.length'>
+                    <img src="../../common/img/pic_zwxgyyjl.png" alt="">
+                    <p>暂无相关预约记录</p>
+                </div>
+                <div class="content_wrap" v-for='(val, i) in yudocMsgList' :key='i'>
                     <!-- 待就诊 -->
                     <div>
-                        <div class="commons await" v-for='val in 3'>
-                            <h4>北京首都师范儿童医院（医生所在医院）<span>待就诊</span></h4>
+                        <div class="commons await" v-if='val.registration_stat == 1'>
+                            <h4>{{ val.hospital_name }}<span>待就诊</span></h4>
                             <dl class="dis_f flex-vc">
-                                <dt><img src="../../common/img/pic_wdys_ystx.png" alt=""></dt>
+                                <dt><img :src="$http.baseURL + val.picture" alt=""></dt>
                                 <dd>
                                     <p>
-                                        <span>就诊医生：</span><span>医生姓名</span>
+                                        <span>就诊医生：</span><span>{{ val.true_name }}</span>
                                     </p>
                                     <p>
-                                        <span>就诊时间：</span><span>8月27日 周四 上午8:00-12:00</span>
+                                        <span>就诊时间：</span><span>{{ val.registration_time | Times }} {{ TimeInterval[(val.registration_timeslot - 1)] }}</span>
                                     </p>
                                 </dd>
                             </dl>
                             <div class="ckBtn">
-                                <mt-button @click.native="clickCancel(1)" plain>取消预约</mt-button>
-                                <mt-button @click.native="clickDetail(1)">挂号详情</mt-button>
+                                <mt-button @click.native="clickCancel(val)" >取消预约</mt-button>
+                                <mt-button @click.native="clickDetail(val.registration_id)">挂号详情</mt-button>
                             </div>
                         </div>
                     </div>
 
                     <!-- 已就诊 -->
                     <div>
-                        <div class="commons alreadyOver" v-for='val in 3'>
-                            <h4>北京首都师范儿童医院（医生所在医院）<span>已就诊</span></h4>
+                        <div class="commons alreadyOver" v-if='val.registration_stat == 2'>
+                            <h4>{{ val.hospital_name }}<span>已就诊</span></h4>
                             <dl class="dis_f flex-vc">
-                                <dt><img src="../../common/img/pic_wdys_ystx.png" alt=""></dt>
+                                <dt><img :src="$http.baseURL + val.picture" alt=""></dt>
                                 <dd>
                                     <p>
-                                        <span>就诊医生：</span><span>医生姓名</span>
+                                        <span>就诊医生：</span><span>{{ val.true_name }} </span>
                                     </p>
                                     <p>
-                                        <span>就诊时间：</span><span>8月27日 周四 上午8:00-12:00</span>
+                                        <span>就诊时间：</span><span>{{ val.registration_time | Times }} {{ TimeInterval[(val.registration_timeslot - 1)] }}</span>
                                     </p>
                                 </dd>
                             </dl>
                             <div class="ckBtn">
-                                <mt-button @click.native="clickDetail(2)">挂号详情</mt-button>
+                                <mt-button @click.native="clickDetail(val.registration_id)">挂号详情</mt-button>
                             </div>
                         </div>
                     </div>
 
                     <!-- 退款 -->
                     <div>
-                         <div class="commons refund" v-for='val in 3'>
-                            <h4>北京首都师范儿童医院（医生所在医院）<span>退款成功</span></h4>
+                         <div class="commons refund" v-if='val.registration_stat == 4'>
+                            <h4>{{ val.hospital_name }}<span v-text=' val.registration_status == 3 ? "退款成功" : val.registration_status == 4 ? "退款失败" : val.registration_status == 5? "退款中" : "" '></span></h4>
                             <dl class="dis_f flex-vc">
-                                <dt><img src="../../common/img/pic_wdys_ystx.png" alt=""></dt>
+                                <dt><img :src="$http.baseURL + val.picture" alt=""></dt>
                                 <dd>
                                     <p>
-                                        <span>就诊医生：</span><span>医生姓名</span>
+                                        <span>就诊医生：</span><span>{{ val.true_name }}</span>
                                     </p>
                                     <p>
-                                        <span>就诊时间：</span><span>8月27日 周四 上午8:00-12:00</span>
+                                        <span>就诊时间：</span><span>{{ val.registration_time | Times }} {{ TimeInterval[(val.registration_timeslot - 1)] }}</span>
                                     </p>
                                 </dd>
                             </dl>
                             <div class="ckBtn">
-                                <mt-button @click.native="clickDetail(3)">挂号详情</mt-button>
+                                <mt-button @click.native="clickDetail(val.registration_id)">挂号详情</mt-button>
                             </div>
                         </div>
                     </div>
@@ -89,14 +93,44 @@ export default {
     data () {
         return {
             flag: 0,
+            yudocMsgList: [],
+            uid: this.$cookie.get('userLogins'),    // 用户id
+            page: 1,
+            limit: 10,
+            TimeInterval: ['上午 8:00-12:00', '下午 13:00-18:00', '晚上 18:00-24:00'], 
         }
     },
+    mounted () {
+        this.initdata ('')
+    },
     methods: {
+        initdata (num) {
+            var self = this,
+                obj = {uid:this.uid, registration_stat: num, page: this.page, limit: this.limit}
+            self.$http.post('/mobile/Wxregistration/registration_list', obj).then(res => {
+                console.log(res)
+                if (res.code == 1) {
+                    self.yudocMsgList = res.data
+                } else {
+                    self.yudocMsgList = []
+                }
+            })
+        },
         clickNav: function (n) {
             this.flag = n;
+            if (n == 0) {
+                this.initdata ('')
+            } else if (n == 1) {
+                this.initdata (1)
+            } else if (n == 2) {
+                this.initdata (2)
+            } else {
+                this.initdata (4)
+            }
         },  
-        clickCancel: function (id) { // 取消预约
-            this.$router.push({path: '/subscribe/cancelSubscribe', query: { id: id }})
+        clickCancel: function (v) { // 取消预约
+            console.log(v)
+            this.$router.push({path: '/subscribe/cancelSubscribe', query: { did: v.registration_id, day: v.registration_time, time: v.registration_timeslot }})
         },
         clickDetail: function (id) { // 查看详情
             this.$router.push({path: '/subscribe/subscribeDetail', query: {id: id}})
@@ -127,7 +161,7 @@ export default {
                 font-size: rem(14);
                 height: 100%;
                 float: left;
-                width: 14.7%;
+                padding: 0 rem(5);
                 text-align: center;
                 line-height: rem(44);
                 color: #666;
@@ -149,6 +183,19 @@ export default {
         overflow-y: scroll;
         .section_box {
             width: 100%;
+            .empty {
+                width: 100%;
+                text-align: center;
+                padding-top: rem(50);
+                img {
+                    width: rem(125);
+                }
+                p {
+                    margin-top: rem(24);
+                    color: #666;
+                    font-size: rem(14);
+                }
+            }
             .content_wrap {
                 margin-top: rem(1);
                 width: 100%;
@@ -181,8 +228,8 @@ export default {
                             -webkit-border-radius: 100%;
                             border-radius: 100%;
                             >img {
-                                width: 100%;
-                                height: 100%;
+                                width: rem(54);
+                                display: block;
                                 -webkit-border-radius: 100%;
                                 border-radius: 100%;
                             }
@@ -210,6 +257,7 @@ export default {
                             width: rem(72);
                             height: rem(23);
                             line-height: rem(23);
+                            padding: 0;
                             color: #808080;
                             font-size: rem(11);
                             background-color: #fff;

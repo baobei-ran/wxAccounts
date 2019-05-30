@@ -3,70 +3,71 @@
     <div class="subscribeDetail">
         <div class="section">
             <div class="section_box">
-                <div class="section_head">
+                <div class="section_head" v-if='yudetail.registration_stat == 1'>
                     <h3><img src="../../common/img/icon_djz.png" alt="">待就诊</h3>
                     <div class="cancelBtn"><mt-button @click.native="cancelClick">取消预约</mt-button></div>
                 </div>
-                <div class="section_head2">
-                    <h3><img src="../../common/img/icon_yjz.png" alt="">待就诊</h3>
+                <div class="section_head2" v-if='yudetail.registration_stat == 2'>
+                    <h3><img src="../../common/img/icon_yjz.png" alt="">已就诊</h3>
                 </div>
-                <div class="section_head2">
-                    <h3><img src="../../common/img/icon_ytk.png" alt="">已退款</h3>
+                <div class="section_head2" v-if='yudetail.registration_stat == 4'>
+                    <h3><img src="../../common/img/icon_yqx.png" alt="">已取消</h3>
+                    <span v-text='yudetail.registration_status == 3?"已退款": yudetail.registration_status == 4? "退款失败": yudetail.registration_status == 5? "退款中":""'></span>
                 </div>
                 <div class="section_con">
                     <ul>
                         <li>
                             <span>就诊人员</span>
-                            <span>患者姓名</span>
+                            <span>{{ yudetail.real_name }}</span>
                         </li>
                         <li>
                             <span>医生信息</span>
-                            <span>医生姓名</span>
+                            <span>{{ yudetail.true_name }}</span>
                         </li>
                         <li>
                             <span>就诊地址</span>
-                            <span>北京市清华大学附属医院</span>
+                            <span>{{ yudetail.hospital_name }}</span>
                         </li>
                         <li>
                             <span>就诊科室</span>
-                            <span>眼科</span>
+                            <span>{{ yudetail.department_name }}</span>
                         </li>
                         <li>
                             <span>预约时间</span>
-                            <span>2017年8月27日 周四 上午8:00-12:00</span>
+                            <span>{{ yudetail.registration_time | Times }} {{ times }}</span>
                         </li>
                         <li>
                             <span>挂号类型</span>
-                            <span>专家门诊</span>
+                            <span v-text='yudetail.type == 1 ? "普通门诊": "专家门诊"'></span>
                         </li>
                         <li>
                             <span>费用金额</span>
-                            <span>100元</span>
+                            <span>{{ yudetail.department_name }}元</span>
                         </li>
                         <li>
                             <span>病情描述</span>
-                            <span>这次为患者填写的病情描述，文字较多的时候可能是多行显示内容</span>
+                            <span>{{ yudetail.disease }}</span>
                         </li>
                         <li>
                             <span>预约单号</span>
-                            <span>2713781290327109</span>
+                            <span>{{ yudetail.registration_number }}</span>
                         </li>
                         <li>
                             <span>付款时间</span>
-                            <span>2019-08-01 12:45</span>
+                            <span>{{ yudetail.pay_time | filterTime }}</span>
                         </li>
                     </ul>
                 </div>
                 
-                <div class="refundTime">
+                <div class="refundTime" v-if='yudetail.registration_stat == 4'>
                     <ul>
                         <li>
-                            <span>退款时间</span>
-                            <span>2019-08-01 14:45</span>
+                            <span>取消时间</span>
+                            <span>{{ yudetail.refund_time | filterTime }}</span>
                         </li>
                         <li>
-                            <span>退款说明</span>
-                            <span>个人原因,这次为患者填写的病情描述，文字较多的时候可能是多行显示内容</span>
+                            <span>取消原因</span>
+                            <span>{{ yudetail.refund_remark }}</span>
                         </li>
                     </ul>
                 </div>
@@ -81,12 +82,28 @@ export default {
     name: 'subscribeDetail',
     data () {
         return {
-
+            yudetail: {},
+            TimeInterval: ['上午 8:00-12:00', '下午 13:00-18:00', '晚上 18:00-24:00'], 
+            times: ''
         }
     },
+    mounted () {
+        this.initdata() 
+    },
     methods: {
-        cancelClick: function () {
-            this.$router.push({path: '/subscribe/cancelSubscribe', query: { id: this.$route.query.id }})
+        initdata () {
+            var self = this,
+                obj = {rid: this.$route.query.id};
+            self.$http.post('/mobile/Wxregistration/registration_detail', obj).then(res => {
+                console.log(res)
+                if (res.code == 1) {
+                    self.yudetail = res.data
+                    self.times = self.TimeInterval[(res.data.registration_timeslot - 1)]
+                }
+            })
+        },
+        cancelClick: function () {  // 取消预约
+            this.$router.push({path: '/subscribe/cancelSubscribe', query: { did: this.$route.query.id, day: this.yudetail.registration_time , time: this.yudetail.registration_timeslot  }})
         }
     }
 }
@@ -144,9 +161,11 @@ export default {
                 padding: 0 rem(13);
                 background-color: #FFF;
                 line-height: rem(67);
+                overflow: hidden;
                > h3 {
                     font-size: rem(16);
                     color: #469AF4;
+                    float: left;
                     img {
                         width: rem(38);
                         height: rem(38);
@@ -155,6 +174,11 @@ export default {
                         vertical-align: middle;
                         margin-right: rem(5);
                     }
+                }
+                >span {
+                    float: right;
+                    font-size: rem(12);
+                    color: #808080;
                 }
             }
 

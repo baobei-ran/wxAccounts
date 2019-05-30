@@ -80,19 +80,18 @@
             position="bottom">
             <div class="modals">
                 <dl class="dl_detail dis_f">
-                    <dt>
-                        <img src="../../common/img/pic_sptp.png" alt="">
+                    <dt id='dt_img'>
+                        <img :src="$http.baseURL+datalist.pic" alt="">
                     </dt>
                     <dd>
-                        ￥100.00
+                        ￥{{ datalist.price }}
                     </dd>
                     <dd class="delss" @click='colseModal'><span>x</span></dd>
                 </dl>
-                <div class="gui">
+                <div class="gui" v-if='datalist.type == 3?false:true'>
                     <h3>规格</h3>
                     <ul class="dis_f">
-                        <li :class="{'liactive':g == 1 }" @click='specification(1)'>0.25g*30片</li> 
-                        <li class="liactive">0.25g*30片</li>
+                        <li :class="{'liactive':gTxt == datalist.specification }" @click='specification(datalist.specification)'>{{ datalist.specification }}</li> 
                     </ul>
                 </div>
                 <div class="num dis_f dis_sb">
@@ -132,11 +131,11 @@ export default {
                 uselife: "",
                 usetype: 1
             },
-            num: '1',
+            num: 1,
             imgs: [],
             pics: [],
             popupVisible: false,
-            g: ''
+            gTxt: '',                   // 规格
         }
     },
     mounted () {
@@ -175,9 +174,17 @@ export default {
         Returns () {
             this.$router.back()
         },
-        cerateOrder () {            // 购买
-            
-            this.$router.push({ path: '/doctororder', query: { id: this.$route.query.id}})
+        cerateOrder () {                   // 下单
+            var self = this;
+            if (this.datalist.type !== 3 && this.gTxt == '') {
+                self.$toast({
+                    message: '请选择规格',
+                    position: 'middle',
+                    duration: 3000
+                });
+                    return false;
+            }
+            this.$router.push({ path: '/doctororder', query: { id: this.$route.query.id, num: this.num }})
         },
         showModal () { // 开启 modal
             this.popupVisible = true
@@ -195,7 +202,7 @@ export default {
             this.num --
         },
         specification (n) {
-            this.g = n
+            this.gTxt = n
         }
     }
 }
@@ -211,7 +218,6 @@ export default {
         .swiper-slide {
             
             > img {
-                
                 width: 100%;
             }
         }
@@ -403,26 +409,28 @@ $w: 100%;
         width: $w;
         background-color: #FFF;
         position: relative;
-        padding: rem(15) rem(15) rem(220) rem(15);
+        padding: rem(15) rem(15) rem(200) rem(15);
         .dl_detail {
             width: 100%;
             border-bottom: 1px solid #E6E6E6;
             padding-bottom: rem(15);
             position: relative;
-            dl {
+            > #dt_img {
                 width: rem(100);
                 height: rem(100);
                 border: 1px solid #E6E6E6;
+                -webkit-border-radius: 4px;
                 border-radius: 4px;
-                img {
-                    width: $w;
-                    height: $w;
+                > img {
+                    width: rem(100);
+                    height: rem(100);
+                    -webkit-border-radius: 4px;
                     border-radius: 4px;
                     background-color: #EFEFEF;
                 }
             }
             dd {
-                margin-top: rem(95);
+                margin-top: rem(80);
                 margin-left: rem(13);
                 color: #F09F88;
             }
@@ -438,7 +446,7 @@ $w: 100%;
                     display: block;
                     width: rem(20);
                     height: rem(20);
-                    line-height: rem(20);
+                    line-height: rem(18);
                     text-align: center;
                     border: 1px solid #aaa;
                     -webkit-border-radius: 100%;
