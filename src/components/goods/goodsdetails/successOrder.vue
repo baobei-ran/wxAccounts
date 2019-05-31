@@ -45,7 +45,7 @@
                         <dd>
                             <h5>{{ detaildata.gname }}</h5>
                             <span>￥{{ detaildata.money }}</span>
-                            <p>x{{ num }}</p>
+                            <p>x{{ detaildata.num }}</p>
                         </dd>
                     </dl>
                     <ul class="goods">

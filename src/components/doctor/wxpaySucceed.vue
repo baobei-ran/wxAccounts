@@ -16,12 +16,12 @@ export default {
     name: 'wxpaySucceed',
     data () {
         return {
-            rid: this.$router.query.id
+            rid: this.$router.query.rid
         }
     },
     methods: {
         handerdoc2 () { // 预约门诊中的详情
-            this.$router.replace({ path: '/subscribe/subscribeDetail', query: { id: this.rid }})
+            this.$router.replace({ path: '/subscribeDetail', query: { rid: this.rid }})
         }
     }
 }

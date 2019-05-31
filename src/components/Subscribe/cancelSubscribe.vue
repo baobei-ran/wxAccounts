@@ -10,7 +10,7 @@
                             <span>就诊医生：</span><span>{{ cancel_info.true_name }}</span>
                         </p>
                         <p>
-                            <span>就诊时间：</span><span>{{ days | Times }} {{ TimeInterval[(times-1)] }}</span>
+                            <span>就诊时间：</span><span>{{ cancel_info.registration_time | Times }} {{ times }}</span>
                         </p>
                     </dd>
                 </dl>
@@ -23,7 +23,7 @@
                         </li>
                         <li>
                             <span>退款金额</span>
-                            <span>￥{{ cancel_info.money }}</span>
+                            <span>￥{{ cancel_info.registration_amount }}</span>
                         </li>
                         <li class="cancel_txt">
                             <span>取消说明</span>
@@ -67,8 +67,7 @@ export default {
             txt_area: '',
             cancel_info: {},       // 接口数据
             TimeInterval: ['上午 8:00-12:00', '下午 13:00-18:00', '晚上 18:00-24:00'], 
-            days: this.$route.query.day,
-            times:this.$route.query.time,
+            times: ''
         }
     },
     mounted() {
@@ -92,15 +91,12 @@ export default {
     },
     methods: {
         initdata: function () {
-            var self = this,
-                did = this.$route.query.did,
-                day = this.$route.query.day,
-                time = this.$route.query.time;
-            var obj = { did:did, day:day, time: time }
-            self.$http.post('/mobile/Wxregistration/info', obj).then(res => {
+            var self = this;
+            self.$http.post('/mobile/Wxregistration/registration_detail', this.$route.query).then(res => {
                 console.log(res)
                 if (res.code == 1) {
                     self.cancel_info = res.data
+                    self.times = self.TimeInterval[(res.data.registration_timeslot - 1)]
                 }
             })
         },
@@ -113,7 +109,7 @@ export default {
                 });
                 return false;
             }
-            var obj = { rid: this.$route.query.did, remark: this.li_name, describe: this.txt_area }
+            var obj = { rid: this.$route.query.rid, remark: this.li_name, describe: this.txt_area }
             this.$http.post('/mobile/Wxregistration/registration_cancel', obj).then(res => {
                 console.log(res)
                 if (res.code == 1) {

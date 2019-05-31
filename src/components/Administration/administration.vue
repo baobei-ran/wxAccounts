@@ -2,7 +2,7 @@
     <!-- 就诊成员管理 -->
     <div class="administration dis_f flex_c">
         <div class="section flex1">
-            <dl class="empty" v-if='!dataList.length'>
+            <dl class="empty" v-if='flag'>
                 <dt><img src="../../common/img/pic_zwys.png" alt=""></dt>
                 <dd>暂无数据</dd>
             </dl>
@@ -25,7 +25,8 @@ export default {
     data () {
         return {
             uid: this.$cookie.get('userLogins'),
-            dataList: []
+            dataList: [],
+            flag: false
         }
     },
     mounted () {
@@ -38,6 +39,9 @@ export default {
                 console.log(res)
                 if (res.code == 1) {
                     self.dataList = res.data
+                } else {
+                    self.dataList = []
+                    self.flag = true
                 }
             })
         },

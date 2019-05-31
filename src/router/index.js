@@ -47,9 +47,9 @@ import Error404 from '../components/Errors/err404';
 
 
 // 预约门诊记录(1.1.0)
-const Subscribe = r => require.ensure([], () => r(require('../components/Subscribe/subscribe.vue')), 'Subscribe'); 
-const CancelSubscribe = r => require.ensure([], () => r(require('../components/Subscribe/cancelSubscribe.vue')), 'Subscribe');  // 取消预约
-const SubscribeDetail = r => require.ensure([], () => r(require('../components/Subscribe/subscribeDetail.vue')), 'Subscribe');  // 预约记录详情
+import Subscribe from '../components/Subscribe/subscribe.vue'; 
+import CancelSubscribe from '../components/Subscribe/cancelSubscribe.vue';  // 取消预约
+import SubscribeDetail from '../components/Subscribe/subscribeDetail.vue';  // 预约记录详情
 
 // 成员管理(1.1.0)
 const Administration = r => require.ensure([], () => r(require('../components/Administration/administration.vue')), 'administration');
@@ -61,8 +61,8 @@ const Editmember = r => require.ensure([], () => r(require('../components/Admini
 // 从微信公众号信息进行跳转进来的页面
 const Consultdoctor = resolve => require(['../components/wxView/consultdoctor'], resolve);  // 咨询页 医生详情的工作室
 const Activity = resolve => require(['../components/wxView/activity'], resolve);            // 图片活动展示
-const Docrecommend = resolve => require(['@/components/wxView/docrecommend'],resolve);      // 推荐预约医生(1.1.0)
-const DocSuspend = resolve => require(['@/components/wxView/docSuspend'],resolve);          // 医生停诊通知(1.1.0)
+import Docrecommend from '@/components/wxView/docrecommend';                                // 推荐预约医生(1.1.0)
+import DocSuspend from '@/components/wxView/docSuspend';                                    // 医生停诊通知(1.1.0)
 
 Vue.use(Router) 
 
@@ -137,6 +137,7 @@ const router = new Router({
       path: '/mydoctor',
       meta: {
         title: '我的医生',
+        keeepAlive: true
       },
       component: Mydoctor
     },
@@ -164,7 +165,7 @@ const router = new Router({
       component: Yuyuedoc
     },
     {
-      path: '/wxpaySucceed:id?', 
+      path: '/wxpaySucceed:rid?', 
       meta: { title: '支付成功' },   // 预约医生支付成功页
       name: 'wxpaySucceed',
       component: WxpaySucceed
@@ -313,13 +314,13 @@ const router = new Router({
       component: Subscribe
     },
     {
-      path: '/subscribe/cancelSubscribe:did?',   // 取消预约
+      path: '/cancelSubscribe:rid?',   // 取消预约
       meta: {title: '取消预约'},
       name: 'cancelSubscribe',
       component: CancelSubscribe
     },
     {
-      path: '/subscribe/subscribeDetail:id?', // 预约详情
+      path: '/subscribeDetail:rid?', // 预约详情
       meta: {title: '预约信息'},
       name: 'subscribeDetail',
       component: SubscribeDetail
@@ -356,13 +357,13 @@ const router = new Router({
 
 
     {
-      path: '/wxView/docrecommend:id?',          //  医生推荐的预约
+      path: '/docrecommend:id?',          //  医生推荐的预约
       meta: {title: '预约医生', },  
       name: 'docrecommend',
       component: Docrecommend
     },
     {
-      path: '/wxView/docSuspend:id?',           //  医生停诊通知
+      path: '/docSuspend:id?',           //  医生停诊通知
       meta: {title: '停诊通知', },  
       name: 'docSuspend',
       component: DocSuspend

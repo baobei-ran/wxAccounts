@@ -9,41 +9,41 @@
                 </dl>
                <div class="userMsg_box" v-for='(val, i) in msgList' :key='i'>
                     <div class="time"><span>{{ val.chat_time }}</span></div>
-                     <div class="doc" >
+                     <div class="doc" v-if='val.user1 == "doc_367"'>
                       <ul>
                           <li class="doc_img">
                               <img :src="$http.baseURL+val.uimg1" alt="">
                           </li>
                           <li class="txt" v-if='val.type == "txt"'>
-                              <p> {{ val.user1 }}</p>
+                              <p> {{ val.content }}</p>
                               <div class="docFang" v-if='val.stype == 1' @click='chuFang(val.ext)'>
                                   <img src="../../common/img/img_lt_cfy.png" alt="">
-                                  <span>{{ val.content }}</span>
+                                  <span>电子处方</span>
                               </div>
                               <div class="docFang" v-if='val.stype == 2' @click='yaoPin(val.ext)'>
                                   <img src="../../common/img/icon_yptj.png" alt="">
-                                  <span>{{ val.content }}</span>
+                                  <span>推荐商品</span>
                               </div>
                               <div class="docFang" v-if='val.stype == 3'>
                                   <img src="../../common/img/icon_xxmz.png" alt="">
-                                  <span>{{ val.content }}</span>
+                                  <span>线下门诊</span>
                               </div>
                           </li>
-                          <li class="imgs"  v-if='val.type == "img"'><img src="https://img1.mukewang.com/5bd275090001747f04720802.jpg" alt=""></li>
+                          <li class="imgs"  v-if='val.type == "img"'><img :src="$http.baseURL+val.content" alt=""></li>
                           <li class="audios"  v-if='val.type == "audio"'>
 
                           </li>
                       </ul>
                   </div>
-                  <div class="myuser">
+                  <div class="myuser" v-if='val.user1 == "user_559"'>
                       <ul>
-                          <li class="msg" v-if='val.type == "txt"'>{{ val.user2 }}</li>
-                          <li class="msg2" v-if='val.type == "img"'><img src="https://p0.meituan.net/movie/ea4ac75173a8273f3956e514a4c78018253143.jpeg" alt=""></li>
+                          <li class="msg" v-if='val.type == "txt"'>{{ val.content }}</li>
+                          <li class="msg2" v-if='val.type == "img"'><img :src="$http.baseURL+val.content" alt=""></li>
                           <li class="msg3" v-if='val.type == "audio"'>
 
                           </li>
                           <li class="head">
-                              <img :src="$http.baseURL+val.uimg2" alt="">
+                              <img :src="$http.baseURL+val.uimg1" alt="">
                           </li>
                       </ul>
                   </div>
@@ -72,6 +72,51 @@ export default {
         this.initdata();
     },
     methods: {
+        // audio_mar: function (url) {   // 解析语音
+            // setTimeout(() => {
+                // var _self = this;
+                // var amr = new BenzAMRRecorder();
+                // var urls = this.$http.baseURL + url,
+                //     playTime;
+                // amr.initWithUrl(urls).then(function() {
+                //     playTime = _self.amr.getDuration().toFixed(0) + '\"';
+                // })
+                // amr.onPlay(function () {
+                //     console.log('开始播放');
+                    
+                // });
+                // amr.onEnded(function() {
+                //     console.log('播放完毕');
+                    
+                // })
+                // amr.onStop(function() {
+                //     console.log('停止播放');
+                    
+                // })
+                // amr.onAutoEnded(function () {
+                //     console.log('Event: autoEnded');
+                // });
+                // amr.onStartRecord(function () {
+                //     console.log('Event: startRecord');
+                // });
+                // amr.onFinishRecord(function () {
+                //     console.log('Event: finishRecord');
+                // });
+                // amr.onCancelRecord(function () {
+                //     console.log('Event: cancelRecord');
+                // });
+                // var Audio = document.getElementById('Audio');
+                // Audio.onclick = function () {
+                //     if (_self.amr.isPlaying()) {
+                //         console.log('停止播放');
+                //         _self.amr.stop();
+                //     } else {
+                //         console.log('播放');
+                //         _self.amr.play();
+                //     }
+                // }
+            // }, 100)
+        // },
         initdata: function () {
             var self = this, obj = { uid: this.uid, did: this.did };
             this.$http.post('/mobile/Wxregistration/chatting_records', obj).then(response => {

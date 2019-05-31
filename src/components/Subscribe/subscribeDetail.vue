@@ -38,11 +38,11 @@
                         </li>
                         <li>
                             <span>挂号类型</span>
-                            <span v-text='yudetail.type == 1 ? "普通门诊": "专家门诊"'></span>
+                            <span v-text='yudetail.type == 1 ? "普通门诊": yudetail.type == 2? "专家门诊": ""'></span>
                         </li>
                         <li>
                             <span>费用金额</span>
-                            <span>{{ yudetail.department_name }}元</span>
+                            <span>{{ yudetail.registration_amount }}元</span>
                         </li>
                         <li>
                             <span>病情描述</span>
@@ -84,7 +84,8 @@ export default {
         return {
             yudetail: {},
             TimeInterval: ['上午 8:00-12:00', '下午 13:00-18:00', '晚上 18:00-24:00'], 
-            times: ''
+            times: '',
+            rid: ''
         }
     },
     mounted () {
@@ -92,18 +93,21 @@ export default {
     },
     methods: {
         initdata () {
-            var self = this,
-                obj = {rid: this.$route.query.id};
+            var self = this;
+                this.rid = this.$route.query.rid;
+                var obj = { rid: this.rid };
             self.$http.post('/mobile/Wxregistration/registration_detail', obj).then(res => {
                 console.log(res)
                 if (res.code == 1) {
                     self.yudetail = res.data
                     self.times = self.TimeInterval[(res.data.registration_timeslot - 1)]
+                } else {
+
                 }
             })
         },
         cancelClick: function () {  // 取消预约
-            this.$router.push({path: '/subscribe/cancelSubscribe', query: { did: this.$route.query.id, day: this.yudetail.registration_time , time: this.yudetail.registration_timeslot  }})
+            this.$router.push({path: '/cancelSubscribe', query: { rid: this.rid }})
         }
     }
 }

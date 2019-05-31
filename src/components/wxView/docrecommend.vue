@@ -23,7 +23,7 @@
                     <li><span>就诊地址</span><span>{{ docMsg.address }}</span></li>
                     <li><span>就诊科室</span><span>{{ docMsg.dep_name }}</span></li>
                     <li><span>预约时间</span><span>{{ day | Times }} {{ day_time }}</span></li>
-                    <li><span>预约类型</span><span v-text='docMsg.type == 1? "普通门诊" : "专家门诊"'></span></li>
+                    <li><span>预约类型</span><span v-text='docMsg.type == 1? "普通门诊" : docMsg.type == 2? "专家门诊":""'></span></li>
                     <li><span>费用金额</span><span>{{ docMsg.money }}元</span></li>
                 </ol>
             </div>
@@ -44,8 +44,9 @@ export default {
             txt_area: '',
             TimeInterval: ['上午 8:00-12:00', '下午 13:00-18:00', '晚上 18:00-24:00'], 
             day_time: '',
-            day: this.$route.query.day,
-            user_val: ''
+            day: '',
+            user_val: '',
+            rid: ''
         }
     },
     mounted () {
@@ -64,12 +65,13 @@ export default {
     methods: {
         initdata: function () {
             var self = this;
-            console.log(this.$route.query)
+            this.day = this.$route.query.dau;
             var did = this.$route.query.did,   // 医生 id
-                day = this.$route.query.day,
+                day = this.$route.query.dau,
                 time = this.$route.query.time;
-            var obj = {did:did, day:day, time: time}
-            self.$http.post('/mobile/Wxregistration/info', obj).then(res => {
+            var objs = {did:did, day:day, time: time}
+            console.log(objs)
+            self.$http.post('/mobile/Wxregistration/info', objs).then(res => {
                 console.log(res)
                 if (res.code == 1) {
                     self.docMsg = res.data
@@ -80,13 +82,14 @@ export default {
         handerdoc: function () {
             var self = this,
                 did = this.$route.query.did,
-                day = this.$route.query.day,
+                day = this.$route.query.dau,
                 time = this.$route.query.time,
                 obj = {did:did,uid: self.uid, day:day, time: time , cid: self.user_val.id , disease: self.txt_area };
                console.log(obj)
             self.$http.post('/mobile/Wxregistration/accept', obj).then(res => {
                 console.log(res)
                 if (res.code == 1) {
+                    self.rid = res.data.rid;
                     self.wxsjk(res.data)
                 } else {
                     this.$toast({
@@ -114,7 +117,7 @@ export default {
                 console.log(data)
                 WeixinJSBridge.invoke (
                     'getBrandWCPayRequest', {
-                        debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                        // debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
                         "appId": data.appId,     //公众号名称，由商户传入     
                         "timeStamp": data.timeStamp,         //时间戳，自1970年以来的秒数     
                         "nonceStr": data.nonceStr, //随机串     
@@ -128,7 +131,7 @@ export default {
                     // 使用以上方式判断前端返回,微信团队郑重提示：
                             // res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
                             
-                           this.$toast({
+                           self.$toast({
                                 message: '支付成功！',
                                 position: 'middle',
                                 iconClass: 'iconfont icon-tipssuccess',
@@ -136,11 +139,11 @@ export default {
                             });
 
                         var times = setTimeout(function () {
-                            self.$router.replace({path: '/wxpaySucceed', query: { id: data.rid }})
+                            self.$router.replace({path: '/wxpaySucceed', query: { rid: self.rid }})
                         }, 1000)
                             
                     } else {
-                        this.$toast({
+                        self.$toast({
                             message: '支付失败！',
                             position: 'middle',
                             duration: 2000

@@ -41,7 +41,8 @@ export default {
             TimeInterval: ['上午 8:00-12:00', '下午 13:00-18:00', '晚上 18:00-24:00'], 
             day_time: '',
             user_val: '',
-            txt_area: ''
+            txt_area: '',
+            rid: ''
         }
     },
     mounted() {
@@ -79,6 +80,7 @@ export default {
                 console.log(res)
                 if (res.code == 1) {
                     self.docMsg = res.data
+                    self.rid = res.data.rid
                     self.day_time = self.TimeInterval[(time - 1)]
                 }
             })
@@ -119,6 +121,7 @@ export default {
             }
             function onBridgeReady(data) {
                 console.log(data)
+               
                 WeixinJSBridge.invoke (
                     'getBrandWCPayRequest', {
                         debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
@@ -135,7 +138,7 @@ export default {
                     // 使用以上方式判断前端返回,微信团队郑重提示：
                             // res.err_msg将在用户支付成功后返回ok，但并不保证它绝对可靠。
                             
-                           this.$toast({
+                           self.$toast({
                                 message: '支付成功！',
                                 position: 'middle',
                                 iconClass: 'iconfont icon-tipssuccess',
@@ -143,11 +146,11 @@ export default {
                             });
 
                         var times = setTimeout(function () {
-                            self.$router.replace({path: '/wxpaySucceed', query: {id: data.rid }})
+                            self.$router.replace({path: '/wxpaySucceed', query: { rid: self.rid }})
                         }, 1000)
                             
                     } else {
-                        this.$toast({
+                        self.$toast({
                             message: '支付失败！',
                             position: 'middle',
                             duration: 2000

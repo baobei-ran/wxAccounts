@@ -130,10 +130,10 @@ export default {
         },  
         clickCancel: function (v) { // 取消预约
             console.log(v)
-            this.$router.push({path: '/subscribe/cancelSubscribe', query: { did: v.registration_id, day: v.registration_time, time: v.registration_timeslot }})
+            this.$router.push({path: '/cancelSubscribe', query: { rid: v.registration_id }})
         },
         clickDetail: function (id) { // 查看详情
-            this.$router.push({path: '/subscribe/subscribeDetail', query: {id: id}})
+            this.$router.push({path: '/subscribeDetail', query: { rid: id}})
         }
     }
 }
