@@ -18,7 +18,7 @@
                         <input type="text" v-model='IDcard' maxlength="18" placeholder="请输入身份证号码">
                     </div>
                 </div>
-                <div class="dels">
+                <div class="dels" v-if='type == 1 ? false : true'>
                     <mt-button @click.native="delClick">删除成员信息</mt-button>
                 </div>
             </div>
@@ -29,7 +29,7 @@
         <mt-popup style="width: 100%;"
             v-model="isGetrelative"
             position="bottom">
-            <div class="absoloute">
+            <div class="absoloute" >
                 <child-relative :types='type'  v-on:childByValue="childByValue" ></child-relative>
             </div>
         </mt-popup>
@@ -58,10 +58,15 @@ export default {
         }
     },
     created () {
+        console.log(this.$route.query)
         this.aid = this.$route.query.id
         this.type = this.$route.query.type
         this.userName = this.$route.query.name
         this.IDcard = this.$route.query.idcard
+        if (this.type == 1) {
+            this.hidshow = false
+            this.relation = '本人'
+        }
     },
     mounted() {
         // window.onresize监听页面高度的变化
@@ -140,6 +145,14 @@ export default {
             this.isGetrelative = v.hide
         },
         getRelative: function () {
+            if(this.type == 1) {
+                this.$toast({
+                    message: '本人不可修改',
+                    position: 'middle',
+                    duration: 2000
+                });
+                return;
+            }
             this.isGetrelative = true;
         },
         delClick: function () {  // 删除

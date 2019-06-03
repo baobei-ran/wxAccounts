@@ -80,6 +80,14 @@ export default {
             })
         },
         handerdoc: function () {
+            if(this.user_val == '') {
+                this.$toast({
+                    message: '请选择就诊人员',
+                    position: 'middle',
+                    duration: 2000
+                });
+                return;
+            }
             var self = this,
                 did = this.$route.query.did,
                 day = this.$route.query.dau,

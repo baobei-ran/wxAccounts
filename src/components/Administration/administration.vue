@@ -29,7 +29,7 @@ export default {
             flag: false
         }
     },
-    mounted () {
+    activated () {
         this.initdata()
     },
     methods: {

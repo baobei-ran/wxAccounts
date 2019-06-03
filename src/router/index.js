@@ -331,13 +331,13 @@ const router = new Router({
     // 就诊成员管理
     {
       path: '/administration',
-      meta: {title: '就诊成员管理'},
+      meta: {title: '就诊成员管理', keeepAlive: true},
       name: 'administration',
       component: Administration
     },
     {
       path: '/getAdministration',
-      meta: {title: '就诊成员列表'},
+      meta: {title: '就诊成员列表', keeepAlive: true},
       name: 'getAdministration',
       component: GetAdministration
     },

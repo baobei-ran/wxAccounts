@@ -172,25 +172,31 @@ export default {
         // 可约 和 约满
         self.docYue(Time)
       //已停诊
-      $.each(close, function (i, v) {
-        var d = new Date(v.close_days * 1000);
-        var tMonth = d.getMonth();
-        var tDate = d.getDate();
-        tMonth = self.DoHandleMonth(tMonth + 1);
-        tDate = self.DoHandleMonth(tDate);
-        var id = tMonth + "-" + tDate;
-        var index = $("#" + id).index();
-        if (v.close_time == 1 ) {
-          //上午
-          $("#sw>td").eq(index).addClass("tz");
-        } else if (v.close_time == 2 ) {
-          //下午
-          $("#xw>td").eq(index).addClass("tz");
-        } else if (v.close_time == 3 ) {
-          //晚上
-          $("#ws>td").eq(index).addClass("tz");
+      for (var k=0; k<this.TimeAll.length;k++) {
+        for (var c=0; c<close.length; c++) {
+            var d = new Date(close[c].close_days * 1000);
+            var tMonth = d.getMonth();
+            var tDate = d.getDate();
+            tMonth = self.DoHandleMonth(tMonth + 1);
+            tDate = self.DoHandleMonth(tDate);
+            var id = tMonth + "-" + tDate;
+            var index = $("#" + id).index();
+            if (close[c].close_time == 1 && id == this.TimeAll[k].id) {
+            //上午
+            $("#sw>td").eq(index).addClass("tz");
+            } else if (close[c].close_time == 2 && id == this.TimeAll[k].id) {
+            //下午
+            $("#xw>td").eq(index).addClass("tz");
+            } else if (close[c].close_time == 3 && id == this.TimeAll[k].id) {
+            //晚上
+            $("#ws>td").eq(index).addClass("tz");
+            }
         }
-      })
+      }
+      
+     
+        
+      
     
     },
     methods: {
@@ -264,7 +270,9 @@ export default {
                     }
                     this.docTimeMsg = res.data.msg
                     this.docClose = res.data.close
-                    dayNum = 7;
+                    dayNum = 14;
+                    var num = Number(new Date().getDay())
+                    dayNum = dayNum - num
                     for (var i=0; i < dayNum; i++) {
                         (function (n) {
                             selectAll.push(self.getDates(n))

@@ -80,12 +80,19 @@ export default {
                 console.log(res)
                 if (res.code == 1) {
                     self.docMsg = res.data
-                    self.rid = res.data.rid
                     self.day_time = self.TimeInterval[(time - 1)]
                 }
             })
         },
         handerdoctor: function () {  // 预约微信支付
+            if(this.user_val == '') {
+                this.$toast({
+                    message: '请选择就诊人员',
+                    position: 'middle',
+                    duration: 2000
+                });
+                return;
+            }
             var self = this,
                 order_code = this.$route.query.order_code,
                 obj = { cid: self.user_val.id , disease: self.txt_area, order_code:order_code };
@@ -93,6 +100,7 @@ export default {
             self.$http.post('/mobile/Wxregistration/registration', obj).then(res => {
                 console.log(res)
                 if (res.code == 1) {
+                    self.rid = res.data.rid
                     self.wxsjk(res.data)
                 } else {
                     this.$toast({

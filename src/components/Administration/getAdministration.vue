@@ -24,7 +24,7 @@ export default {
             dataList: []
         }
     },
-    mounted () {
+    activated() {
         this.initdata()
     },
     methods: {

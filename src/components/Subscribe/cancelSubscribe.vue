@@ -57,8 +57,8 @@ export default {
     name: 'cancelSubscribe',
     data () {
         return {
-            docmHeight: document.documentElement.clientHeight,  //默认屏幕高度
-            showHeight: document.documentElement.clientHeight,  //实时屏幕高度
+            docmHeight: "",  //默认屏幕高度
+            showHeight: "",  //实时屏幕高度
             hidshow: true,  //显示或者隐藏footer
             popupVisible: false,
             popupVal: [{id:1, name: '病情好转无需就诊' }, { id: 2, name: '无法按照预约时间到诊'}, {  id: 3, name: '已选择其他方式就诊' }, { id: 4, name: "其他"}],
@@ -73,11 +73,15 @@ export default {
     mounted() {
         // window.onresize监听页面高度的变化
         var self = this;
-        window.onresize = function() {
-            return( function (){
-                self.showHeight = document.body.clientHeight;
-            })()
-        }
+        setTimeout(function () {
+            self.docmHeight = document.documentElement.clientHeight
+            self.showHeight = document.documentElement.clientHeight
+            window.onresize = function() {
+                return( function () {
+                    self.showHeight = document.body.clientHeight;
+                })()
+            }
+        }, 30)
         this.initdata()
     },
     watch: {
@@ -101,6 +105,7 @@ export default {
             })
         },
         handleClick: function () {     // 取消提交
+            var self = this;
             if (this.li_name == '') {
                 this.$toast({
                     message: '请选择取消原因',
@@ -119,7 +124,7 @@ export default {
                         duration: 2000
                     });
                     var time = setTimeout(function () {
-                         this.$router.replace({path: '/subscribe/subscribeDetail', query: {id: this.$route.query.did}})
+                         self.$router.replace({path: '/subscribeDetail', query: {rid: self.$route.query.rid}})
                          clearTimeout(time)
                     }, 1000)
                 } else {

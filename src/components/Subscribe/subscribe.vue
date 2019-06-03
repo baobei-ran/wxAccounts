@@ -110,7 +110,7 @@ export default {
             self.$http.post('/mobile/Wxregistration/registration_list', obj).then(res => {
                 console.log(res)
                 if (res.code == 1) {
-                    self.yudocMsgList = res.data
+                    self.yudocMsgList = res.data.reverse()
                 } else {
                     self.yudocMsgList = []
                 }
