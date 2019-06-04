@@ -50,6 +50,7 @@ export default {
         }
     },
     mounted () {
+        console.log(this.$route.query)
         var user_uid = this.$route.query.uid
         if (user_uid) {
             this.uid = user_uid;

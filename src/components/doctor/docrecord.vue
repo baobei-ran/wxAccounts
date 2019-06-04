@@ -9,7 +9,7 @@
                 </dl>
                <div class="userMsg_box" v-for='(val, i) in msgList' :key='i'>
                     <div class="time"><span>{{ val.chat_time }}</span></div>
-                     <div class="doc" v-if='val.user1 == "doc_367"'>
+                     <div class="doc" v-if='val.user1 == "doc_"+did' >
                       <ul>
                           <li class="doc_img">
                               <img :src="$http.baseURL+val.uimg1" alt="">
@@ -35,7 +35,7 @@
                           </li>
                       </ul>
                   </div>
-                  <div class="myuser" v-if='val.user1 == "user_559"'>
+                  <div class="myuser" v-if='val.user1 == "user_"+uid'>
                       <ul>
                           <li class="msg" v-if='val.type == "txt"'>{{ val.content }}</li>
                           <li class="msg2" v-if='val.type == "img"'><img :src="$http.baseURL+val.content" alt=""></li>
@@ -64,8 +64,8 @@ export default {
         return {
             msgList: [],  // 数据
             uid: this.$cookie.get('userLogins'),
-            did: this.$route.query.id,              // 医生 id 
-            status: this.$route.query.status        // 咨询状态
+            did: this.$route.query.id,               // 医生 id 
+            status: this.$route.query.status,        // 咨询状态
         }
     },
     mounted () {

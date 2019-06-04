@@ -1,4 +1,5 @@
 import axios from 'axios';
+import qs from 'qs';
 import { Indicator } from 'mint-ui';
 // var baseURL = 'http://test99.yunyikang.cn'; // 测试
 var baseURL="https://www.yunyikang.cn";       // 正式
@@ -10,17 +11,17 @@ let http = axios.create({
   headers: {
     'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
   },
-  transformRequest: [function (data) {
-    let newData = '';
-    for (let k in data) {
-      if (data.hasOwnProperty(k) === true) {
-        newData += encodeURIComponent(k) + '=' + encodeURIComponent(data[k]) + '&';
-      }
-    }
-    newData = newData.substr(0, newData.length - 1);
-    // console.log(newData)
-    return newData;
-  }]
+  // transformRequest: [function (data) {
+  //   let newData = '';
+  //   for (let k in data) {
+  //     if (data.hasOwnProperty(k) === true) {
+  //       newData += encodeURIComponent(k) + '=' + encodeURIComponent(data[k]) + '&';
+  //     }
+  //   }
+  //   newData = newData.substr(0, newData.length - 1);
+  //   // console.log(newData)
+  //   return newData;
+  // }]
 });
 
 http.interceptors.request.use(function (config) {
@@ -28,6 +29,8 @@ http.interceptors.request.use(function (config) {
   //   text: '',
   //   spinnerType: 'fading-circle'
   // });
+  config.data = qs.stringify(config.data)
+  // console.log(config.data)
   return config;
 }, function (error) {
   // 对请求错误做些什么

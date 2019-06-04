@@ -155,7 +155,8 @@ export default {
             TimeAll: [],                            // 时间列表
             TimeInterval: ['上午 8:00-12:00', '下午 13:00-18:00', '晚上 18:00-24:00'], 
             docTimeMsg: [],                         // 医生排班
-            docClose: []                            // 医生停诊
+            docClose: [],                           // 医生停诊
+            ting_Time: '',                          // 停诊时间
         }
     },
     mounted() {
@@ -167,32 +168,32 @@ export default {
         var self = this;
         var Time = this.docTimeMsg
         var close = this.docClose
-        console.log(Time, close)
+        // console.log(Time, close)
         
         // 可约 和 约满
         self.docYue(Time)
       //已停诊
-      for (var k=0; k<this.TimeAll.length;k++) {
-        for (var c=0; c<close.length; c++) {
-            var d = new Date(close[c].close_days * 1000);
-            var tMonth = d.getMonth();
-            var tDate = d.getDate();
-            tMonth = self.DoHandleMonth(tMonth + 1);
-            tDate = self.DoHandleMonth(tDate);
-            var id = tMonth + "-" + tDate;
-            var index = $("#" + id).index();
-            if (close[c].close_time == 1 && id == this.TimeAll[k].id) {
-            //上午
-            $("#sw>td").eq(index).addClass("tz");
-            } else if (close[c].close_time == 2 && id == this.TimeAll[k].id) {
-            //下午
-            $("#xw>td").eq(index).addClass("tz");
-            } else if (close[c].close_time == 3 && id == this.TimeAll[k].id) {
-            //晚上
-            $("#ws>td").eq(index).addClass("tz");
-            }
-        }
-      }
+    //   for (var k=0; k<this.TimeAll.length;k++) {
+    //     for (var c=0; c<close.length; c++) {
+    //         var d = new Date(close[c].close_days * 1000);
+    //         var tMonth = d.getMonth();
+    //         var tDate = d.getDate();
+    //         tMonth = self.DoHandleMonth(tMonth + 1);
+    //         tDate = self.DoHandleMonth(tDate);
+    //         var id = tMonth + "-" + tDate;
+    //         var index = $("#" + id).index();
+    //         if (close[c].close_time == 1 && id == this.TimeAll[k].id) {
+    //         //上午
+    //         $("#sw>td").eq(index).addClass("tz");
+    //         } else if (close[c].close_time == 2 && id == this.TimeAll[k].id) {
+    //         //下午
+    //         $("#xw>td").eq(index).addClass("tz");
+    //         } else if (close[c].close_time == 3 && id == this.TimeAll[k].id) {
+    //         //晚上
+    //         $("#ws>td").eq(index).addClass("tz");
+    //         }
+    //     }
+    //   }
       
      
         
@@ -235,7 +236,7 @@ export default {
                 }
             }
         },
-        initdata () {
+        initdata () { // 获取医生信息
             var self = this;
             this.$http.post('/mobile/wxdoccenter/doctor_detail', {did:this.did, uid: this.uid}).then(res => {
                 // console.log(res)
@@ -268,6 +269,7 @@ export default {
                     } else {
                         self.code = false
                     }
+                    this.ting_Time = res.data.clost_time
                     this.docTimeMsg = res.data.msg
                     this.docClose = res.data.close
                     dayNum = 14;
@@ -353,6 +355,29 @@ export default {
         tableClick (e, k) {   // 对可预约 点击
             var _this = e.target;
             var self = this;
+            // if (this.ting_Time) {
+            //     // var today = new Date((this.ting_Time.start_time)*1000);
+            //     var today = new Date((1559664000)*1000);
+            //     var tMonth = this.DoHandleMonth(today.getMonth() + 1);
+            //     var tDate = this.DoHandleMonth(today.getDate());
+            //     console.log(tMonth+'.'+tDate)
+            //     var starts = tMonth+'.'+tDate
+            //     // var today_end = new Date((this.ting_Time.end_time)*1000);
+            //     var today_end = new Date((1559923200)*1000);
+            //     var tMonth1 = this.DoHandleMonth(today_end.getMonth() + 1);
+            //     var tDate1 = this.DoHandleMonth(today_end.getDate());
+            //     var ends = tMonth1+'.'+tDate1
+            //     console.log(tMonth1+'.'+tDate1)
+            //     console.log(k)
+            //     if(k.date >= starts && k.date <= ends) {
+            //         this.$toast({
+            //             message: '医生已设置停诊服务',
+            //             position: 'middle',
+            //             duration: 2000
+            //         });
+            //         return;
+            //     }
+            // }
             if (!hasClass(_this,'ky')) {
                 return;
             }
