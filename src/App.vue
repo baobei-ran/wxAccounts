@@ -56,6 +56,13 @@ select {
 button:active{
   -webkit-tap-highlight-color: transparent;
 }
+.mint-msgbox-btn {
+  font-size: 0.3rem;
+}
+
+input:disabled {
+  background-color: #FFF;
+}
 
 
 </style>

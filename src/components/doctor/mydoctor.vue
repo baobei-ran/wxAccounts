@@ -50,8 +50,17 @@ export default {
             limit: 15,
         }
     },
+    beforeCreate () {
+        this.$indicator.open({
+            text: '',
+            spinnerType: 'fading-circle'
+        });
+    },
     activated () {
         this.initdata()
+    },
+    destroyed () {
+        this.$indicator.close();
     },
     methods: {
         initdata () {
@@ -59,6 +68,7 @@ export default {
             var obj = {uid:this.uid, page: this.page, limit: this.limit}
             this.$http.post('/mobile/wxdoccenter/my_doctors', obj).then(res => {
                 console.log(res)
+                self.$indicator.close();
                 if (res.code == 1) {
                     var data = res.data, arr = [];
                     for (var i=0; i< data.length; i++) {

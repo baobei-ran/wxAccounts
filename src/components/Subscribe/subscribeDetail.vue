@@ -46,7 +46,7 @@
                         </li>
                         <li>
                             <span>病情描述</span>
-                            <span>{{ yudetail.disease }}</span>
+                            <span v-text='yudetail.disease?yudetail.disease:"暂无填写"'></span>
                         </li>
                         <li>
                             <span>预约单号</span>
@@ -74,6 +74,7 @@
             </div>
 
         </div>
+        
     </div>
 </template>
 
@@ -85,7 +86,9 @@ export default {
             yudetail: {},
             TimeInterval: ['上午 8:00-12:00', '下午 13:00-18:00', '晚上 18:00-24:00'], 
             times: '',
-            rid: ''
+            rid: '',
+            time: '',
+            orderTime: '',  // 存放定时器
         }
     },
     mounted () {
@@ -99,8 +102,8 @@ export default {
             self.$http.post('/mobile/Wxregistration/registration_detail', obj).then(res => {
                 console.log(res)
                 if (res.code == 1) {
-                    self.yudetail = res.data
-                    self.times = self.TimeInterval[(res.data.registration_timeslot - 1)]
+                    self.yudetail = res.data;
+                    self.times = self.TimeInterval[(res.data.registration_timeslot - 1)];
                 } else {
 
                 }
@@ -108,7 +111,7 @@ export default {
         },
         cancelClick: function () {  // 取消预约
             this.$router.push({path: '/cancelSubscribe', query: { rid: this.rid }})
-        }
+        },
     }
 }
 </script>
@@ -185,7 +188,7 @@ export default {
                     color: #808080;
                 }
             }
-
+            
             .section_con {
                 margin-top: rem(12);
                 padding:0 rem(15);
@@ -261,6 +264,7 @@ export default {
             }
         }
     }
+   
 }
 
 </style>

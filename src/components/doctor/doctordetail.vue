@@ -41,7 +41,7 @@
                              <li @click='doctordata'>
                                  <img src="../../common/img/icon_zxwz.png" alt="">
                                  <div>
-                                     <h5>在线问诊  
+                                     <h5>付费问诊  
                                          <!-- <span>￥ 50/次</span> -->
                                     </h5>
                                      <p>注：支付成功后可与医生实时沟通，24h小时有效</p>
@@ -140,7 +140,9 @@ export default {
     name: 'doctordetail',
     data () {
         return {
-            datalist: {},
+            datalist: {
+                true_name: '医生'
+            },
             show: true,                             // 显示医生简介
             btnShow: true,                          //  是否支付，来进行按钮切换操作
             lng: '',                                // 经度
@@ -159,6 +161,15 @@ export default {
             ting_Time: '',                          // 停诊时间
         }
     },
+    beforeCreate () {
+        this.$indicator.open({
+            text: '',
+            spinnerType: 'fading-circle'
+        });
+    },
+    beforeDestroy () {
+        this.$indicator.close();
+    },
     mounted() {
         this.did = this.$route.params.id
         console.log(this.$route.params)
@@ -169,9 +180,28 @@ export default {
         var Time = this.docTimeMsg
         var close = this.docClose
         // console.log(Time, close)
-        
         // 可约 和 约满
-        self.docYue(Time)
+        self.docYue(Time)  // 方法一
+    //     $.each(Time, function (i, v) {  // 方法二
+    //         var d = new Date(v.days * 1000);
+    //         var tMonth = d.getMonth();
+    //         var tDate = d.getDate();
+    //         tMonth = self.DoHandleMonth(tMonth + 1);
+    //         tDate = self.DoHandleMonth(tDate);
+    //         var id = tMonth + "-" + tDate;
+    //         var index = $("#" + id).index();
+    //         console.log(v)
+    //         if (v.time == 1) {
+    //         //上午
+    //         $("#sw>td").eq(index).addClass("ky");
+    //         } else if (v.time == 2) {
+    //         //下午
+    //          $("#xw>td").eq(index).addClass("ky");
+    //         } else if (v.time == 3) {
+    //         //晚上
+    //         $("#ws>td").eq(index).addClass("ky");
+    //         }
+    //   });
       //已停诊
     //   for (var k=0; k<this.TimeAll.length;k++) {
     //     for (var c=0; c<close.length; c++) {
@@ -203,36 +233,37 @@ export default {
     methods: {
         docYue (Time) {   // 遍历医生可约的数据
             var self = this;
-            for (var i=0; i< this.TimeAll.length; i++) {
-            for (var j=0; j<Time.length; j++) {
-                var d = new Date(Time[j].days * 1000);
-                var tMonth = d.getMonth();
-                var tDate = d.getDate();
-                tMonth = self.DoHandleMonth(tMonth + 1);
-                tDate = self.DoHandleMonth(tDate);
-                var id = tMonth + "-" + tDate;
-                var index = $("#" + id).index();
-                if (Time[j].time == 1 && id == this.TimeAll[i].id) {
-                    if (Time[j].alreadynum == Time[j].num) {
-                        $("#sw>td").eq(index).addClass("ym");
-                        return
+            var time_all = this.TimeAll;
+            for (var i=0; i< time_all.length; i++) {
+                for (var j=0; j<Time.length; j++) {
+                    var d = new Date(Time[j].days * 1000);
+                    var tMonth = d.getMonth();
+                    var tDate = d.getDate();
+                    tMonth = self.DoHandleMonth(tMonth + 1);
+                    tDate = self.DoHandleMonth(tDate);
+                    var id = tMonth + "-" + tDate;
+                    var index = $("#" + id).index();
+                    if (Time[j].time == 1 && time_all[i].id === id) {
+                        if (Time[j].alreadynum == Time[j].num) {
+                            $("#sw>td").eq(index).addClass("ym");
+                        } else {
+                             $("#sw>td").eq(index).addClass("ky");
+                        }
                     }
-                    $("#sw>td").eq(index).addClass("ky");
-                }
-                if (Time[j].time == 2 && id == this.TimeAll[i].id) {
-                    if (Time[j].alreadynum == Time[j].num) {
-                        $("#xw>td").eq(index).addClass("ym");
-                        return
-                    }
-                    $("#xw>td").eq(index).addClass("ky");
-                } 
-                if (Time[j].time == 3 && id == this.TimeAll[i].id) {
-                     if (Time[j].alreadynum == Time[j].num) {
-                        $("#ws>td").eq(index).addClass("ym");
-                        return
-                    }
-                    $("#ws>td").eq(index).addClass("ky");
-                } 
+                    else if (Time[j].time == 2 && id === time_all[i].id) {
+                        if (Time[j].alreadynum == Time[j].num) {
+                            $("#xw>td").eq(index).addClass("ym");
+                        } else {
+                             $("#xw>td").eq(index).addClass("ky");
+                        }
+                    } 
+                   else if (Time[j].time == 3 && id === time_all[i].id) {
+                        if (Time[j].alreadynum == Time[j].num) {
+                            $("#ws>td").eq(index).addClass("ym");
+                        } else {
+                            $("#ws>td").eq(index).addClass("ky");
+                        }
+                    } 
                 }
             }
         },
@@ -240,6 +271,7 @@ export default {
             var self = this;
             this.$http.post('/mobile/wxdoccenter/doctor_detail', {did:this.did, uid: this.uid}).then(res => {
                 // console.log(res)
+                self.$indicator.close();
                 if (res.code == 1) {
                     self.datalist = res.data
                     if (self.datalist.picture) {
@@ -350,7 +382,7 @@ export default {
             if (num < 10) {
                 return '0' + num;
             } 
-            return num
+            return '' + num
         },
         tableClick (e, k) {   // 对可预约 点击
             var _this = e.target;
@@ -381,6 +413,7 @@ export default {
             if (!hasClass(_this,'ky')) {
                 return;
             }
+            
             var num = _this.getAttribute('data-type');   // 获取 上 下 晚
             var day = _this.getAttribute('data-time');   // 获取 秒
             var type = this.TimeInterval[(num-1)];
@@ -404,25 +437,42 @@ export default {
             } else if (pz == 2) {
                 pzName = '专家门诊'
             }
+           
+                this.$messagebox.confirm('<p style="color:#333;">'+k.month+' '+k.week+' '+type+'<br/>'+pzName+' '+price+'元</p>', '预约信息').then(action => {
+                    self.$indicator.open({
+                        text: '',
+                        spinnerType: 'fading-circle'
+                    });
+                    var obj = { did: this.did, uid: this.uid, day: day, time: num }
+                    console.log(obj)
+                    this.$http.post('/mobile/Wxregistration/number_lock', obj).then(res => {
+                        console.log(res)
+                        self.$indicator.close();
+                        if (res.code == 1) {
+                            this.$router.push({ path: '/yuyuedoc', query: { did: self.did, day: day, time: num, order_code: res.order_code }})
+                        } else if (res.code == 6) {
+                            this.$toast({
+                                message: res.msg,
+                                position: 'middle',
+                                duration: 2000
+                            });
+                        var t = setTimeout(() => {
+                                this.$router.push({path: '/payDetails', query: { rid: res.rid }})
+                                clearTimeout(t)
+                            }, 1000)
+                        } else {
+                            this.$toast({
+                                message: res.msg,
+                                position: 'middle',
+                                duration: 2000
+                            });
+                        }
+                    })
+                    
+                }).catch(cancel => {})
             
-            this.$messagebox.confirm('<p style="color:#333;">'+k.month+' '+k.week+' '+type+'<br/>'+pzName+' '+price+'元</p>', '预约信息').then(action => {
-                var obj = { did: this.did, uid: this.uid, day: day, time: num }
-                console.log(obj)
-                this.$http.post('/mobile/Wxregistration/number_lock', obj).then(res => {
-                    console.log(res)
-                    if (res.code == 1) {
-                        this.$router.push({ path: '/yuyuedoc', query: { did: self.did, day: day, time: num, order_code: res.order_code }})
-                    } else {
-                        this.$toast({
-                            message: res.msg,
-                            position: 'middle',
-                            duration: 2000
-                        });
-                    }
-                })
-                
-            }).catch(cancel => {})
-               
+            
+            
             
         }
     }
@@ -757,7 +807,7 @@ function removeClass(elements,cName) {
                                 td:first-child {
                                     position: absolute;
                                     left: 0;
-                                    top:rem(36);
+                                    top:rem(37);
                                     background-color: #fff;
                                     border-bottom: 0;
                                 }
@@ -769,7 +819,7 @@ function removeClass(elements,cName) {
                                 td:first-child {
                                     position: absolute;
                                     left: 0;
-                                    top:rem(72);
+                                    top:rem(73);
                                     background-color: #fff;
                                     border-bottom: 0;
                                 }
@@ -781,7 +831,7 @@ function removeClass(elements,cName) {
                                 td:first-child {
                                     position: absolute;
                                     left: 0;
-                                    top:rem(108);
+                                    top:rem(109);
                                     background-color: #fff;
                                 }
                                 td:nth-child(2) {
@@ -793,7 +843,9 @@ function removeClass(elements,cName) {
                     &::-webkit-scrollbar {
                         display: none;
                     }
-                    }
+                    -ms-overflow-style: none;
+                    overflow: -moz-scrollbars-none;
+                }
 
                     .time_frame {
                         margin-top: rem(10);

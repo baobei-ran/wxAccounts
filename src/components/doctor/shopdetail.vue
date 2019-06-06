@@ -91,7 +91,7 @@
                 <div class="gui" v-if='datalist.type == 3?false:true'>
                     <h3>规格</h3>
                     <ul class="dis_f">
-                        <li :class="{'liactive':gTxt == datalist.specification }" @click='specification(datalist.specification)'>{{ datalist.specification }}</li> 
+                        <li :class="{'liactive':true }" @click='specification(datalist.specification)'>{{ datalist.specification }}</li> 
                     </ul>
                 </div>
                 <div class="num dis_f dis_sb">
@@ -174,16 +174,16 @@ export default {
         Returns () {
             this.$router.back()
         },
-        cerateOrder () {                   // 下单
+        cerateOrder () {     // 下单
             var self = this;
-            if (this.datalist.type !== 3 && this.gTxt == '') {
-                self.$toast({
-                    message: '请选择规格',
-                    position: 'middle',
-                    duration: 3000
-                });
-                    return false;
-            }
+            // if (this.datalist.type !== 3 && this.gTxt == '') {
+            //     self.$toast({
+            //         message: '请选择规格',
+            //         position: 'middle',
+            //         duration: 3000
+            //     });
+            //         return false;
+            // }
             this.$router.push({ path: '/doctororder', query: { id: this.$route.query.id, num: this.num }})
         },
         showModal () { // 开启 modal

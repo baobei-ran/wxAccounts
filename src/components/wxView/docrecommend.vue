@@ -61,7 +61,25 @@ export default {
         console.log(Val)
         if (Val) {
             this.user_val = Val
+        } else {
+            this.$http.post('/mobile/Wxpatient/index', {uid: this.uid}).then(function (res) {
+                console.log(res)
+                if (res.code == 1) {
+                    res.data.map(function (v) {
+                        if (v.type == 1) {
+                            self.user_val = v
+                        }
+                    })
+                }
+            })
         }
+    },
+    destroyed () {
+        var self = this;
+        var Vals = JSON.parse(self.$cookie.get('administrationVal'));
+            if(Vals && Vals.type !== 1) {
+                self.$cookie.delete('administrationVal');
+            }
     },
     methods: {
         initdata: function () {
@@ -84,6 +102,14 @@ export default {
             if(this.user_val == '') {
                 this.$toast({
                     message: '请选择就诊人员',
+                    position: 'middle',
+                    duration: 2000
+                });
+                return;
+            }
+            if(this.txt_area == '') {
+                this.$toast({
+                    message: '请填写病情描述',
                     position: 'middle',
                     duration: 2000
                 });

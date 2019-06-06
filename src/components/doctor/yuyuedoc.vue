@@ -3,6 +3,7 @@
     <div class="docrecommend dis_f flex_c">
         <div class="section flex1">
             <div class="section_box">
+                <p class="title">已为您锁定号源，请在15:00分钟内支付</p>
                 <ul class="user_msg">
                     <li>
                         <span>就诊人员：</span>
@@ -25,7 +26,7 @@
             </div>
         </div>
         <div class="footer">
-            <mt-button type="primary" @click.native='handerdoctor'>预约{{ docMsg.true_name }}医生</mt-button>
+            <mt-button type="primary" :disabled='disabled' @click.native='handerdoctor'>预约{{ docMsg.true_name }}医生</mt-button>
         </div>
     </div>
 </template>
@@ -42,23 +43,53 @@ export default {
             day_time: '',
             user_val: '',
             txt_area: '',
-            rid: ''
+            rid: '',
+            disabled: false
         }
     },
     mounted() {
-        console.log(this.$route.query)
+        // console.log(this.$route.query)
+        var self = this;
         this.initdata()
         var Val = JSON.parse(this.$cookie.get('administrationVal'));
         console.log(Val)
         if (Val) {
             this.user_val = Val
+        } else {
+            this.$http.post('/mobile/Wxpatient/index', {uid: this.uid}).then(function (res) {
+                console.log(res)
+                if (res.code == 1) {
+                    res.data.map(function (v) {
+                        if (v.type == 1) {
+                            self.user_val = v
+                            self.$cookie.set('administrationVal', JSON.stringify(v))
+                        }
+                    })
+                }
+            })
         }
        
     },
     beforeRouteLeave (to, from, next) {  // 离开页面事件，使用了组件导航守卫
+        console.log(this)
+        var self = this;
         if(to.name == 'doctordetail') {
             this.$messagebox.confirm('<p style="color: #333;">返回后当前号段不在为你保留<br />确定放弃吗?</p>', '').then(action => {
-                next()
+                self.$http.post('/mobile/Wxregistration/non_payment_cancel', {rid: self.$route.query.order_code, type: 2}).then(res => {
+                    console.log(res)
+                    if (res.code == 1) {
+                        next()
+                    } else {
+                        this.$toast({
+                            message: '订单无法取消',
+                            position: 'middle',
+                            duration: 2000
+                        });
+                        window.history.pushState( null, null, document.url)
+                        next(from.fullPath)
+                    }
+                })
+                
             }).catch(cancel => { 
                 window.history.pushState( null, null, document.url)
                 next(from.fullPath)
@@ -68,7 +99,15 @@ export default {
         }
         
     },
-    
+    destroyed () {
+        var self = this;
+        var Val = JSON.parse(self.$cookie.get('administrationVal'));
+        console.log(Val)
+            if(Val && Val.type !== 1) {
+                self.$cookie.delete('administrationVal');
+            }
+        this.$messagebox.close();
+    },
     methods: {
         initdata () {
             var self = this;
@@ -93,12 +132,25 @@ export default {
                 });
                 return;
             }
+            if(this.txt_area == '') {
+                this.$toast({
+                    message: '请填写病情描述',
+                    position: 'middle',
+                    duration: 2000
+                });
+                return;
+            }
             var self = this,
                 order_code = this.$route.query.order_code,
                 obj = { cid: self.user_val.id , disease: self.txt_area, order_code:order_code };
                console.log(obj)
+               self.disabled = true;
             self.$http.post('/mobile/Wxregistration/registration', obj).then(res => {
                 console.log(res)
+                var t = setTimeout(() => {
+                    self.disabled = false
+                    clearTimeout(t)
+                }, 2000)
                 if (res.code == 1) {
                     self.rid = res.data.rid
                     self.wxsjk(res.data)
@@ -154,6 +206,11 @@ export default {
                             });
 
                         var times = setTimeout(function () {
+                            var Val = JSON.parse(self.$cookie.get('administrationVal'));
+                            if(Val && Val.type !== 1) {
+                                self.$cookie.delete('administrationVal');
+                            }
+
                             self.$router.replace({path: '/wxpaySucceed', query: { rid: self.rid }})
                         }, 1000)
                             
@@ -187,6 +244,15 @@ export default {
         width: 100%;
         .section_box {
             width: 100%;
+            .title {
+                width: 100%;
+                background:rgba(240,159,136,.1);
+                color: #F09F88;
+                height: rem(39);
+                line-height: rem(39);
+                font-size: rem(12);
+                padding: 0 rem(15);
+            }
             .user_msg {
                 width: 100%;
                 padding-left: rem(15);
@@ -222,6 +288,7 @@ export default {
                         border: 1px solid #E0E0E0;
                         background-color: #F9F9F9;
                         padding: rem(11);
+                        font-size: rem(13);
                     }
                 }
             }

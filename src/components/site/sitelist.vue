@@ -43,6 +43,8 @@ export default {
         mounted () {
             console.log(this.$route)
             this.userId = this.$cookie.get('userLogins');
+        },
+        activated () {
             this.listdata()
         },
         methods: {

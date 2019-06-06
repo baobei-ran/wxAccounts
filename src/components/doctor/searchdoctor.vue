@@ -80,7 +80,7 @@
                                 患者数量 <span>{{ val.fw_doc }}</span>
                             </dt>
                             <dd>
-                                <span v-if='val.reversion_rate !== 0'>平均回复时长{{ val.reversion_rate }}</span> 
+                                <span v-if='val.reversion_rate !== 0'>平均回复时长<b>{{ val.reversion_rate }}</b></span> 
                             </dd>
                         </dl>
                     </div>
@@ -364,37 +364,39 @@ export default {
                 if (res.code == 1) {
                      res.data.map(val => {
                         if (val.reversion_rate != 0) {
-                            console.log(val.reversion_rate/30/60/90)
+                            console.log(val.reversion_rate)
                             var nian = (val.reversion_rate / 60 / 60 / 24 / 30 / 365).toFixed(2)
                             if (nian > 1) {
-                                val.reversion_rate = '小于'+ nian + '年'
+                                val.reversion_rate = '<'+ nian + '年'
                                 return;
                             }
                             var month = (val.reversion_rate / 60 / 60 / 24 / 30).toFixed(2)
                             if (month > 1) {
-                                val.reversion_rate = '小于'+ month + '月'
+                                val.reversion_rate = '<'+ month + '月'
                                 return;
                             }
                             var ri = (val.reversion_rate / 60 / 60 / 24).toFixed(2)
                             if (ri > 1) {
-                                val.reversion_rate = '小于'+ ri + '天'
+                                val.reversion_rate = '<'+ ri + '天'
                                 return;
                             }
                             var tis = (val.reversion_rate / 60 / 60).toFixed(2)
                             
                             if (tis >= 1) {
-                                val.reversion_rate = '小于'+ tis + '小时'
+                                val.reversion_rate = '<'+ tis + 'h'
                                 return;
                             }
                             var ti = Math.round(val.reversion_rate / 60)
                             
                             if (ti>0) {
-                                val.reversion_rate = '小于'+ ti + '分钟'
+                                val.reversion_rate = '<'+ ti + 'min'
+                            } else {
+                                val.reversion_rate = '<' + val.reversion_rate + 's'
                             }
                             
                             
                         } else {
-                            val.reversion_rate = val.reversion_rate
+                            val.reversion_rate = val.reversion_rate 
                         }
                         
                     })
@@ -788,7 +790,9 @@ export default {
                     color: #333;
                     min-width: rem(80);
                     > span {
-                        color: #F09F88;
+                        b {
+                            color: #F09F88;
+                        }
                     }
                 }
             }

@@ -11,7 +11,7 @@
                     </div>
                     <div class="user">
                         <label for="">姓名</label>
-                        <input type="text" v-model='userName'  maxlength="6" placeholder="请输入真实姓名">
+                        <input type="text" v-model='userName' maxlength="6" placeholder="请输入真实姓名">
                     </div>
                     <div class="user">
                         <label for="">身份证号</label>
@@ -54,7 +54,7 @@ export default {
             hidshow: true,  //显示或者隐藏footer
             isGetrelative: false,
             aid: '',
-            type: ''
+            type: '',   
         }
     },
     created () {
@@ -76,6 +76,9 @@ export default {
                 self.showHeight = document.body.clientHeight;
             })()
         }
+        
+            
+        
     },
     watch: {
         showHeight:function() {
@@ -149,7 +152,7 @@ export default {
                 this.$toast({
                     message: '本人不可修改',
                     position: 'middle',
-                    duration: 2000
+                    duration: 3000
                 });
                 return;
             }

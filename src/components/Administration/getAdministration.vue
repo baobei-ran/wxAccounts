@@ -5,7 +5,7 @@
             <ul>
                 <li v-for='(val,i) in dataList' :key='i'>
                     <span @click='setStronge(val)'>{{ val.real_name }}</span>
-                    <span @click='editClixk(val)'>编辑</span>
+                    <span class="edits" v-if='val.type !==1' @click='editClixk(val)'>编辑</span>
                 </li>
             </ul>
         </div>
@@ -69,8 +69,8 @@ export default {
             padding-left: rem(16);
             li {
                 width: 100%;
-                height: rem(44);
-                line-height: rem(44);
+                height: rem(60);
+                line-height: rem(60);
                 overflow: hidden;
                 border-bottom: 1px solid #E0E0E0;
                > span:first-child {
@@ -80,15 +80,15 @@ export default {
                     float: left;
                     width: 77%;
                 }
-                >span:last-child {
+               .edits {
                     float: right;
                     color: #469AF4;
                     border-left: 1px solid #E0E0E0;
-                    padding: 0 rem(12);
+                    padding: 0 rem(15);
                     text-align: center;
-                    height: rem(17);
-                    line-height: rem(17);
-                    margin-top: rem(13);
+                    height: rem(20);
+                    line-height: rem(20);
+                    margin-top: rem(23);
                 }
             }
         }

@@ -5,12 +5,12 @@
             <div class="section_box">
                 <dl class="doctor_title dis_f flex-vc">
                     <dt><img :src="$http.baseURL+cancel_info.picture" alt=""></dt>
-                    <dd>
+                    <dd class="flex1">
                         <p>
                             <span>就诊医生：</span><span>{{ cancel_info.true_name }}</span>
                         </p>
-                        <p>
-                            <span>就诊时间：</span><span>{{ cancel_info.registration_time | Times }} {{ times }}</span>
+                        <p class="dis_f">
+                            <span>就诊时间：</span><span>{{ cancel_info.registration_time | Times }} <br/> {{ times }}</span>
                         </p>
                     </dd>
                 </dl>
@@ -29,7 +29,7 @@
                             <span>取消说明</span>
                         </li>
                         <li class="cancel_txt cancel_txt2">
-                            <textarea maxlength="200" v-model='txt_area' placeholder="说明为选填项"></textarea>
+                            <textarea maxlength="200" v-model='txt_area' placeholder="请填写取消说明"></textarea>
                         </li>
                     </ul>
                 </div>
@@ -178,6 +178,7 @@ export default {
                     >img {
                         width: rem(54);
                         height: rem(54);
+                        max-height: rem(54);
                         -webkit-border-radius: 100%;
                         border-radius: 100%;
                     }
@@ -191,6 +192,12 @@ export default {
                     }
                     p:last-child {
                         margin-top: rem(5);
+                        span {
+                            display: block;
+                        }
+                        span:last-child {
+                            width: 60%;
+                        }
                     }
                 }
             }
@@ -200,8 +207,9 @@ export default {
                 margin-top: rem(12);
                 > ul {
                     width: 100%;
-                    padding: 0 rem(16);
+                    padding-left: rem(16);
                     li {
+                        padding-right: rem(16);
                         width: 100%;
                         height: rem(49);
                         line-height: rem(49);
