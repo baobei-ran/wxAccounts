@@ -16,6 +16,10 @@ module.exports = {
   entry: {
     app: ["babel-polyfill", "./src/main.js"]
   },
+  // externals: {
+  //   'mint-ui': 'MintUI',
+  //   'qs': 'qs'
+  // },
   output: {
     path: config.build.assetsRoot,
     filename: '[name].js',
