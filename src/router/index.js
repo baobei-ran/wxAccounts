@@ -15,7 +15,7 @@ const AuthenticationYes = resolve => require(['../components/user/authentication
 // import Finddoctor from '../components/doctor/finddoctor'  // (旧)我的医生
 
 import Mydoctor from '../components/doctor/mydoctor'  // 我的医生(1.1.0)
-import Docrecord from '../components/doctor/docrecord' // 咨询记录(1.1.0)
+const Docrecord = r => require.ensure([], () => r(require('../components/doctor/docrecord')), 'amr') // 咨询记录(1.1.0)
 
 
 import DoctorDetail from '../components/doctor/doctordetail'  // 医生详情
@@ -50,6 +50,7 @@ import Error404 from '../components/Errors/err404';
 import Subscribe from '../components/Subscribe/subscribe.vue'; 
 import CancelSubscribe from '../components/Subscribe/cancelSubscribe.vue';  // 取消预约
 import SubscribeDetail from '../components/Subscribe/subscribeDetail.vue';  // 预约记录详情
+import PayDetails from '../components/Subscribe/payDetails.vue';            // 待支付预约记录详情
 
 // 成员管理(1.1.0)
 const Administration = r => require.ensure([], () => r(require('../components/Administration/administration.vue')), 'administration');
@@ -59,7 +60,7 @@ const Editmember = r => require.ensure([], () => r(require('../components/Admini
 
 
 // 从微信公众号信息进行跳转进来的页面
-const Consultdoctor = resolve => require(['../components/wxView/consultdoctor'], resolve);  // 咨询页 医生详情的工作室
+const Consultdoctor = r => require.ensure([], () => r(require('../components/wxView/consultdoctor')), 'amr');  // 咨询页 医生详情的工作室
 const Activity = resolve => require(['../components/wxView/activity'], resolve);            // 图片活动展示
 import Docrecommend from '@/components/wxView/docrecommend';                                // 推荐预约医生(1.1.0)
 import DocSuspend from '@/components/wxView/docSuspend';                                    // 医生停诊通知(1.1.0)
@@ -274,7 +275,7 @@ const router = new Router({
     },
     {
       path: '/sitelist',
-      meta: { title: '收货地址管理'},
+      meta: { title: '收货地址管理', keeepAlive: true},
       component: SiteList
     },
     {
@@ -309,7 +310,7 @@ const router = new Router({
     // 预约门诊记录
     {
       path: '/subscribe',          // 列表
-      meta: {title: '预约记录', keeepAlive: true },
+      meta: {title: '预约记录', keeepAlive: true,  x:0, y:0 },
       name: 'subscribe',
       component: Subscribe
     },
@@ -325,19 +326,25 @@ const router = new Router({
       name: 'subscribeDetail',
       component: SubscribeDetail
     },
+    {
+      path: '/payDetails:rid?', // 预约详情
+      meta: {title: '预约信息'},
+      name: 'payDetails',
+      component: PayDetails
+    },
     
 
 
     // 就诊成员管理
     {
       path: '/administration',
-      meta: {title: '就诊成员管理'},
+      meta: {title: '就诊成员管理', keeepAlive: true},
       name: 'administration',
       component: Administration
     },
     {
       path: '/getAdministration',
-      meta: {title: '就诊成员列表'},
+      meta: {title: '就诊成员列表', keeepAlive: true},
       name: 'getAdministration',
       component: GetAdministration
     },

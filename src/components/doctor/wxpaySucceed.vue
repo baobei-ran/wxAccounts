@@ -16,7 +16,7 @@ export default {
     name: 'wxpaySucceed',
     data () {
         return {
-            rid: this.$router.query.rid
+            rid: this.$route.query.rid
         }
     },
     methods: {

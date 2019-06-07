@@ -56,12 +56,13 @@
 </template>
 
 <script>
-import { Indicator } from 'mint-ui';
 export default {
     data () {
         return {
             datalist: [],       // 数据
-            doctor: {},
+            doctor: {
+                true_name: '医生'
+            },
             lng: '116.297176',            // 经度
             lat: '39.825233',            // 纬度
             uid: this.$cookie.get('userLogins'),
@@ -74,7 +75,7 @@ export default {
         }
     },
     beforeCreate () {
-        Indicator.open({
+        this.$indicator.open({
             text: '',
             spinnerType: 'fading-circle'
         });
@@ -83,7 +84,7 @@ export default {
         
     },
     beforeDestroy () {
-        Indicator.close();
+        this.$indicator.close();
     },
     mounted () {
         var _this = this;
@@ -192,7 +193,7 @@ export default {
             this.$http.post('/mobile/Wxdoccenter/doccenter', obj).then(res => {     // 医生店铺信息
                 // console.log(res)
                 setTimeout(() => {
-                    Indicator.close();
+                    this.$indicator.close();
                 }, 100)
                 if (res.code == 1) {
                     _self.doctor = res.data

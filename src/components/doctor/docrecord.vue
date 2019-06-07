@@ -9,7 +9,7 @@
                 </dl>
                <div class="userMsg_box" v-for='(val, i) in msgList' :key='i'>
                     <div class="time"><span>{{ val.chat_time }}</span></div>
-                     <div class="doc" v-if='val.user1 == "doc_367"'>
+                     <div class="doc" v-if='val.user1 == "doc_"+did' >
                       <ul>
                           <li class="doc_img">
                               <img :src="$http.baseURL+val.uimg1" alt="">
@@ -31,16 +31,26 @@
                           </li>
                           <li class="imgs"  v-if='val.type == "img"'><img :src="$http.baseURL+val.content" alt=""></li>
                           <li class="audios"  v-if='val.type == "audio"'>
-
+                                <div>
+                                    <span class="doc_audio">
+                                        <b></b>
+                                    </span>
+                                    <span class="mar_time"></span>
+                                </div>
                           </li>
                       </ul>
                   </div>
-                  <div class="myuser" v-if='val.user1 == "user_559"'>
+                  <div class="myuser" v-if='val.user1 == "user_"+uid'>
                       <ul>
                           <li class="msg" v-if='val.type == "txt"'>{{ val.content }}</li>
                           <li class="msg2" v-if='val.type == "img"'><img :src="$http.baseURL+val.content" alt=""></li>
                           <li class="msg3" v-if='val.type == "audio"'>
-
+                              <div>
+                                    <span class="doc_audio user_audio" > 
+                                        <b></b>
+                                    </span>
+                                    <span class="mar_time user_time"></span>
+                                </div>
                           </li>
                           <li class="head">
                               <img :src="$http.baseURL+val.uimg1" alt="">
@@ -58,65 +68,21 @@
 </template>
 
 <script>
+var BenzAMRRecorder = require('benz-amr-recorder');
 export default {
     name: 'docrecord',
     data () {
         return {
             msgList: [],  // 数据
             uid: this.$cookie.get('userLogins'),
-            did: this.$route.query.id,              // 医生 id 
-            status: this.$route.query.status        // 咨询状态
+            did: this.$route.query.id,               // 医生 id 
+            status: this.$route.query.status,        // 咨询状态
         }
     },
     mounted () {
         this.initdata();
     },
     methods: {
-        // audio_mar: function (url) {   // 解析语音
-            // setTimeout(() => {
-                // var _self = this;
-                // var amr = new BenzAMRRecorder();
-                // var urls = this.$http.baseURL + url,
-                //     playTime;
-                // amr.initWithUrl(urls).then(function() {
-                //     playTime = _self.amr.getDuration().toFixed(0) + '\"';
-                // })
-                // amr.onPlay(function () {
-                //     console.log('开始播放');
-                    
-                // });
-                // amr.onEnded(function() {
-                //     console.log('播放完毕');
-                    
-                // })
-                // amr.onStop(function() {
-                //     console.log('停止播放');
-                    
-                // })
-                // amr.onAutoEnded(function () {
-                //     console.log('Event: autoEnded');
-                // });
-                // amr.onStartRecord(function () {
-                //     console.log('Event: startRecord');
-                // });
-                // amr.onFinishRecord(function () {
-                //     console.log('Event: finishRecord');
-                // });
-                // amr.onCancelRecord(function () {
-                //     console.log('Event: cancelRecord');
-                // });
-                // var Audio = document.getElementById('Audio');
-                // Audio.onclick = function () {
-                //     if (_self.amr.isPlaying()) {
-                //         console.log('停止播放');
-                //         _self.amr.stop();
-                //     } else {
-                //         console.log('播放');
-                //         _self.amr.play();
-                //     }
-                // }
-            // }, 100)
-        // },
         initdata: function () {
             var self = this, obj = { uid: this.uid, did: this.did };
             this.$http.post('/mobile/Wxregistration/chatting_records', obj).then(response => {
@@ -128,12 +94,67 @@ export default {
                         // self.funcReadImgInfo(".head");
                         self.funcReadImgInfo(".imgs");
                         self.funcReadImgInfo(".msg2");
-                    }, 100)
+                    }, 50)
                     this.$nextTick(() => {
                         // var container = this.$el.querySelector("#scrolls");
                         //     container.scrollTop = container.scrollHeight;
                         var msg = document.getElementById('scrolls');
                         msg.scrollTop = msg.scrollHeight            // 滚动高度
+                    // 解析语音
+                        var list_audio = self.msgList;
+                        var _self = this;
+                        var Audio = document.getElementsByClassName('doc_audio');
+                    for (var d=0; d<list_audio.length;d++) {
+                        if(list_audio[d].type == "audio") {
+                                for (var i=0; i< Audio.length; i++) {
+                                    for (var j =0; j< mar_time.length;j++) {
+                                        var amr = new BenzAMRRecorder();
+                                        var urls = this.$http.baseURL + list_audio[d].content;
+                                        var mar_time = document.getElementsByClassName('mar_time');
+                                        amr.initWithUrl(urls).then(function() {
+                                            mar_time[j].innerHTML = amr.getDuration().toFixed(0) + '\"';
+                                        })
+                                        Audio[i].onclick = function () {
+                                            var _this = this;
+                                            amr.onPlay(function () {
+                                                console.log('开始播放');
+                                                _this.children[0].className = 'honr'
+                                            });
+                                            amr.onEnded(function() {
+                                                console.log('播放完毕');
+                                                _this.children[0].className = ''
+                                            })
+                                            amr.onStop(function() {
+                                                console.log('停止播放');
+                                                _this.children[0].className = ''
+                                            })
+                                            amr.onAutoEnded(function () {
+                                                console.log('Event: autoEnded');
+                                            });
+                                            amr.onStartRecord(function () {
+                                                console.log('Event: startRecord');
+                                            });
+                                            amr.onFinishRecord(function () {
+                                                console.log('Event: finishRecord');
+                                            });
+                                            amr.onCancelRecord(function () {
+                                                console.log('Event: cancelRecord');
+                                            });
+                                            if (amr.isPlaying()) {
+                                                console.log('停止播放');
+                                                amr.stop();
+                                            } else {
+                                                console.log('播放');
+                                                amr.play();
+                                            }
+                                        }
+                                    }
+                                }
+                            }   
+                        }
+                        
+                        
+
                     })
                 }
             })
@@ -303,6 +324,35 @@ export default {
                           border-radius: 4px;
                       }
                   }
+                  li.audios {
+                      margin-left: rem(10);
+                     > div {
+                        display: -webkit-box;
+                        display: -ms-flexbox;
+                        display: flex;
+                        -webkit-align-items: center; 
+                        -ms-align-items: center;
+                        align-items: center;
+                        .doc_audio {
+                            display: block;
+                            width: rem(110);
+                            padding: rem(5) rem(16);
+                            margin-right: rem(5);
+                            margin-top: rem(5);
+                            background-color: #FFF;
+                            -webkit-border-radius: 4px;
+                            border-radius: 4px;
+                            >b {
+                                display: block;
+                                width: rem(22);
+                                height: rem(22);
+                                background: url('../../common/img/dian3.png') no-repeat center center;
+                                background-size: 100% 100%;
+                            }
+                        }
+
+                    }
+                  }
                   
                 }
             }
@@ -357,6 +407,40 @@ export default {
                             width: rem(60);
                         }
                    }
+                   .msg3 {
+                       margin-right: rem(10);
+                       >div {
+                           display: -webkit-box;
+                            display: -ms-flexbox;
+                            display: flex;
+                            -webkit-align-items: center; 
+                            -ms-align-items: center;
+                            align-items: center;
+                            -webkit-transform: rotate(180deg);
+                            transform: rotate(180deg);
+                            .user_audio {
+                                display: block;
+                                width: rem(110);
+                                padding: rem(5) rem(16);
+                                margin-right: rem(5);
+                                margin-bottom: rem(5);
+                                background-color: #FFF;
+                                -webkit-border-radius: 4px;
+                                border-radius: 4px;
+                                >b {
+                                    display: block;
+                                    width: rem(22);
+                                    height: rem(22);
+                                    background: url('../../common/img/dian3.png') no-repeat center center;
+                                    background-size: 100% 100%;
+                                }
+                            }
+                            .user_time {
+                                -webkit-transform: rotate(180deg);
+                                transform: rotate(180deg);
+                            }
+                       }
+                   }
                 }
             }
           }
@@ -379,6 +463,17 @@ export default {
             border-radius: 0px;
         }
     }
+}
+.honr {
+    -webkit-animation: amr_Backgrounds 1s infinite step-start;
+    -moz-animation: amr_Backgrounds 1s infinite step-start;
+    -o-animation: amr_Backgrounds 1s infinite step-start;
+    animation: amr_Backgrounds 1s infinite step-start;
+}
+@keyframes amr_Backgrounds {
+    33.33% {background: url('../../common/img/dian.png') no-repeat center center; background-size: 100% 100%; }
+    66.66% { background: url('../../common/img/dian2.png') no-repeat center center; background-size: 100% 100%;}
+    100% {background: url('../../common/img/dian3.png') no-repeat center center;background-size: 100% 100%;}
 }
 </style>
 

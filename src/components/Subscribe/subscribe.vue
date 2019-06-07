@@ -6,55 +6,79 @@
                     <li :class="{'ckblue':flag == 0}" @click='clickNav(0)'>全部</li>
                     <li :class="{'ckblue':flag == 1}" @click='clickNav(1)'>待就诊</li>
                     <li :class="{'ckblue':flag == 2}" @click='clickNav(2)'>已就诊</li>
-                    <li :class="{'ckblue':flag == 4}" @click='clickNav(4)'>退款</li>
+                    <li :class="{'ckblue':flag == 4}" @click='clickNav(4)'>已取消</li>
                 </ul>
         </div>
-        <div class="section flex1">
-            <div class="section_box">
+        <div class="section flex1" ref='scroll'>
+            <div class="section_box" >
                 <div class="empty" v-if='!yudocMsgList.length'>
                     <img src="../../common/img/pic_zwxgyyjl.png" alt="">
                     <p>暂无相关预约记录</p>
                 </div>
                 <div class="content_wrap" v-for='(val, i) in yudocMsgList' :key='i'>
-                    <!-- 待就诊 -->
+                     <!-- 待支付 -->
                     <div>
-                        <div class="commons await" v-if='val.registration_stat == 1'>
-                            <h4>{{ val.hospital_name }}<span>待就诊</span></h4>
+                        <div class="commons pays" v-if='val.registration_status == 1 && val.registration_stat == 1'>
+                            <h4>{{ val.hospital_name }}<span>待支付</span></h4>
                             <dl class="dis_f flex-vc">
                                 <dt><img :src="$http.baseURL + val.picture" alt=""></dt>
-                                <dd>
+                                <dd class="flex1">
                                     <p>
                                         <span>就诊医生：</span><span>{{ val.true_name }}</span>
                                     </p>
+                                    <p class="dis_f">
+                                        <span>就诊时间：</span><span>{{ val.registration_time | Times }} <br/> {{ TimeInterval[(val.registration_timeslot - 1)] }}</span>
+                                    </p>
+                                </dd>
+                            </dl>
+                            <div class="ckBtn2">
+                                <!-- <mt-button @click.native="clickPay(val)" >去支付</mt-button> -->
+                                <mt-button @click.native="payDetail(val.registration_id)">预约详情</mt-button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 待就诊 -->
+                    <div>
+                        <div class="commons await" v-if='val.registration_stat == 1 && val.registration_status == 2'>
+                            <h4>{{ val.hospital_name }}<span>待就诊</span></h4>
+                            <dl class="dis_f flex-vc">
+                                <dt><img :src="$http.baseURL + val.picture" alt=""></dt>
+                                <dd class="flex1">
                                     <p>
-                                        <span>就诊时间：</span><span>{{ val.registration_time | Times }} {{ TimeInterval[(val.registration_timeslot - 1)] }}</span>
+                                        <span>就诊医生：</span><span>{{ val.true_name }}</span>
+                                    </p>
+                                    <p class="dis_f">
+                                        <span>就诊时间：</span><span>{{ val.registration_time | Times }} <br/> {{ TimeInterval[(val.registration_timeslot - 1)] }}</span>
                                     </p>
                                 </dd>
                             </dl>
                             <div class="ckBtn">
                                 <mt-button @click.native="clickCancel(val)" >取消预约</mt-button>
-                                <mt-button @click.native="clickDetail(val.registration_id)">挂号详情</mt-button>
+                                <mt-button @click.native="clickDetail(val.registration_id)">预约详情</mt-button>
                             </div>
                         </div>
                     </div>
 
+                   
+                    
                     <!-- 已就诊 -->
                     <div>
                         <div class="commons alreadyOver" v-if='val.registration_stat == 2'>
                             <h4>{{ val.hospital_name }}<span>已就诊</span></h4>
                             <dl class="dis_f flex-vc">
                                 <dt><img :src="$http.baseURL + val.picture" alt=""></dt>
-                                <dd>
+                                <dd class="flex1">
                                     <p>
                                         <span>就诊医生：</span><span>{{ val.true_name }} </span>
                                     </p>
-                                    <p>
-                                        <span>就诊时间：</span><span>{{ val.registration_time | Times }} {{ TimeInterval[(val.registration_timeslot - 1)] }}</span>
+                                    <p class="dis_f">
+                                        <span>就诊时间：</span><span>{{ val.registration_time | Times }} <br/> {{ TimeInterval[(val.registration_timeslot - 1)] }}</span>
                                     </p>
                                 </dd>
                             </dl>
                             <div class="ckBtn">
-                                <mt-button @click.native="clickDetail(val.registration_id)">挂号详情</mt-button>
+                                <mt-button @click.native="clickDetail(val.registration_id)">预约详情</mt-button>
                             </div>
                         </div>
                     </div>
@@ -65,17 +89,17 @@
                             <h4>{{ val.hospital_name }}<span v-text=' val.registration_status == 3 ? "退款成功" : val.registration_status == 4 ? "退款失败" : val.registration_status == 5? "退款中" : "" '></span></h4>
                             <dl class="dis_f flex-vc">
                                 <dt><img :src="$http.baseURL + val.picture" alt=""></dt>
-                                <dd>
+                                <dd class="flex1">
                                     <p>
                                         <span>就诊医生：</span><span>{{ val.true_name }}</span>
                                     </p>
-                                    <p>
-                                        <span>就诊时间：</span><span>{{ val.registration_time | Times }} {{ TimeInterval[(val.registration_timeslot - 1)] }}</span>
+                                    <p class="dis_f">
+                                        <span>就诊时间：</span><span>{{ val.registration_time | Times }} <br/> {{ TimeInterval[(val.registration_timeslot - 1)] }}</span>
                                     </p>
                                 </dd>
                             </dl>
                             <div class="ckBtn">
-                                <mt-button @click.native="clickDetail(val.registration_id)">挂号详情</mt-button>
+                                <mt-button @click.native="clickDetail(val.registration_id)">预约详情</mt-button>
                             </div>
                         </div>
                     </div>
@@ -98,19 +122,47 @@ export default {
             page: 1,
             limit: 10,
             TimeInterval: ['上午 8:00-12:00', '下午 13:00-18:00', '晚上 18:00-24:00'], 
+            timerId: ''
         }
     },
-    mounted () {
+    beforeCreate () {
+        this.$indicator.open({
+            text: '',
+            spinnerType: 'fading-circle'
+        });
+    },
+    activated () {
         this.initdata ('')
+        this.$refs.scroll.scrollTop = this.$route.meta.y 
+        var _this = this;
+        this.$refs.scroll.addEventListener('scroll',_this.justifyPos,true )
+    },
+    deactivated () {
+        // 当组件销毁的时候，移除滚动行为监听, 清空定时器；
+        // 该方法是绑定到 window 身上，即使跳转到其他组件，仍然会监听页面的滚动行为
+        var _this = this;
+        this.$refs.scroll.removeEventListener('scroll', _this.justifyPos, true)
+        clearTimeout(this.timerId)
     },
     methods: {
+        justifyPos (e) {         // 获取滚动的位置信息
+                    // 节流；
+            if (this.timerId) clearTimeout(this.timerId)
+            this.timerId = setTimeout(() => {
+                // 获取页面滚动距离之后设置给当前路由的 元信息
+                // console.log(e.target.scrollTop)
+                var _this = this;
+                this.$route.meta.y = e.target.scrollTop
+            }, 300)
+        },
         initdata (num) {
             var self = this,
                 obj = {uid:this.uid, registration_stat: num, page: this.page, limit: this.limit}
             self.$http.post('/mobile/Wxregistration/registration_list', obj).then(res => {
                 console.log(res)
+                self.$indicator.close();
                 if (res.code == 1) {
-                    self.yudocMsgList = res.data
+                    self.yudocMsgList = res.data.reverse()
                 } else {
                     self.yudocMsgList = []
                 }
@@ -128,12 +180,16 @@ export default {
                 this.initdata (4)
             }
         },  
+        
         clickCancel: function (v) { // 取消预约
             console.log(v)
             this.$router.push({path: '/cancelSubscribe', query: { rid: v.registration_id }})
         },
         clickDetail: function (id) { // 查看详情
             this.$router.push({path: '/subscribeDetail', query: { rid: id}})
+        },
+        payDetail: function (id) {   // 待支付详情
+            this.$router.push({path: '/payDetails', query: { rid: id}})
         }
     }
 }
@@ -229,6 +285,7 @@ export default {
                             border-radius: 100%;
                             >img {
                                 width: rem(54);
+                                height: rem(54);
                                 display: block;
                                 -webkit-border-radius: 100%;
                                 border-radius: 100%;
@@ -243,6 +300,9 @@ export default {
                             }
                             p:last-child {
                                 margin-top: rem(5);
+                                span {
+                                    display: block;
+                                }
                             }
                         }
                     }
@@ -263,6 +323,7 @@ export default {
                             background-color: #fff;
                             border: 1px solid #808080;
                             -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+                            vertical-align: middle;
                         }
                         button:last-child {
                             margin-left: rem(15);
@@ -270,7 +331,34 @@ export default {
                     }
 
                 }
-                
+                .pays {
+                   >.ckBtn2 {
+                        width: 100%;
+                        height: rem(49);
+                        line-height: rem(49);
+                        text-align: right;
+                        background-color: #fff;
+                        padding: 0 rem(12); 
+                        > button {
+                            width: rem(72);
+                            height: rem(23);
+                            line-height: rem(23);
+                            padding: 0;
+                            color: #808080;
+                            font-size: rem(11);
+                            background-color: #fff;
+                            border: 1px solid #808080;
+                            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+                            vertical-align: middle;
+                        }
+                        // button:first-child {
+                        //     margin-right: rem(15);
+                        //     background-color: #F09F88;
+                        //     color: #FFF;
+                        //     border:0;
+                        // }
+                    }
+                }
                 .alreadyOver, .refund {
                     h4 {
                         > span {

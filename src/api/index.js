@@ -1,5 +1,6 @@
 import axios from 'axios';
-import { Indicator } from 'mint-ui';
+import qs from 'qs';
+// import { Indicator } from 'mint-ui';
 // var baseURL = 'http://test99.yunyikang.cn'; // 测试
 var baseURL="https://www.yunyikang.cn";       // 正式
 axios.defaults.retry = 3;           //  发起请求次数
@@ -11,15 +12,21 @@ let http = axios.create({
     'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
   },
   transformRequest: [function (data) {
-    let newData = '';
-    for (let k in data) {
-      if (data.hasOwnProperty(k) === true) {
-        newData += encodeURIComponent(k) + '=' + encodeURIComponent(data[k]) + '&';
-      }
+    // let newData = '';
+    // for (let k in data) {
+    //   if (data.hasOwnProperty(k) === true) {
+    //     newData += encodeURIComponent(k) + '=' + encodeURIComponent(data[k]) + '&';
+    //   }
+    // }
+    // newData = newData.substr(0, newData.length - 1);
+    // return newData;
+    if (typeof data === 'object') {
+        var str_data = qs.stringify(data)
+        console.log('1:'+str_data)
+        return str_data
     }
-    newData = newData.substr(0, newData.length - 1);
-    // console.log(newData)
-    return newData;
+    console.log('2:'+data)
+     return data
   }]
 });
 
@@ -43,6 +50,7 @@ http.interceptors.response.use(function (response) {
   return response;
 }, function (error) {
   var config = error.config;
+  console.log(config)
   if(!config || !config.retry) return Promise.reject(error);
   config.__retryCount = config.__retryCount || 0;
     if(config.__retryCount >= config.retry) {

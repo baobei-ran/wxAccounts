@@ -9,7 +9,7 @@
             <ul>
                 <li v-for='(val,i) in dataList' :key='i'>
                     <span>{{ val.real_name }}</span>
-                    <span @click='editClixk(val)'>编辑</span>
+                    <span class="edits" v-if='val.type !==1' @click='editClixk(val)'>编辑</span>
                 </li>
             </ul>
         </div>
@@ -29,7 +29,7 @@ export default {
             flag: false
         }
     },
-    mounted () {
+    activated () {
         this.initdata()
     },
     methods: {
@@ -88,23 +88,24 @@ export default {
             width: 100%;
             li {
                 width: 100%;
-                height: rem(44);
-                line-height: rem(44);
+                height: rem(58);
+                line-height: rem(58);
                 margin-left: rem(16);
                 padding-right: rem(16);
                 overflow: hidden;
                 border-bottom: 1px solid #E0E0E0;
                 span:first-child {
                     color:#212121;
+                    float: left;
                 }
-                >span:last-child {
+                .edits {
                     float: right;
                     color: #469AF4;
                     border-left: 1px solid #E0E0E0;
-                    padding: 0 rem(12);
-                    height: rem(17);
-                    line-height: rem(17);
-                    margin-top: rem(13);
+                    padding: 0 rem(15);
+                    height: rem(20);
+                    line-height: rem(20);
+                    margin-top: rem(23);
                 }
             }
         }

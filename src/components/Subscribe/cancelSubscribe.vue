@@ -5,12 +5,12 @@
             <div class="section_box">
                 <dl class="doctor_title dis_f flex-vc">
                     <dt><img :src="$http.baseURL+cancel_info.picture" alt=""></dt>
-                    <dd>
+                    <dd class="flex1">
                         <p>
                             <span>就诊医生：</span><span>{{ cancel_info.true_name }}</span>
                         </p>
-                        <p>
-                            <span>就诊时间：</span><span>{{ cancel_info.registration_time | Times }} {{ times }}</span>
+                        <p class="dis_f">
+                            <span>就诊时间：</span><span>{{ cancel_info.registration_time | Times }} <br/> {{ times }}</span>
                         </p>
                     </dd>
                 </dl>
@@ -29,7 +29,7 @@
                             <span>取消说明</span>
                         </li>
                         <li class="cancel_txt cancel_txt2">
-                            <textarea maxlength="200" v-model='txt_area' placeholder="说明为选填项"></textarea>
+                            <textarea maxlength="200" v-model='txt_area' placeholder="请填写取消说明"></textarea>
                         </li>
                     </ul>
                 </div>
@@ -57,8 +57,8 @@ export default {
     name: 'cancelSubscribe',
     data () {
         return {
-            docmHeight: document.documentElement.clientHeight,  //默认屏幕高度
-            showHeight: document.documentElement.clientHeight,  //实时屏幕高度
+            docmHeight: "",  //默认屏幕高度
+            showHeight: "",  //实时屏幕高度
             hidshow: true,  //显示或者隐藏footer
             popupVisible: false,
             popupVal: [{id:1, name: '病情好转无需就诊' }, { id: 2, name: '无法按照预约时间到诊'}, {  id: 3, name: '已选择其他方式就诊' }, { id: 4, name: "其他"}],
@@ -73,11 +73,15 @@ export default {
     mounted() {
         // window.onresize监听页面高度的变化
         var self = this;
-        window.onresize = function() {
-            return( function (){
-                self.showHeight = document.body.clientHeight;
-            })()
-        }
+        setTimeout(function () {
+            self.docmHeight = document.documentElement.clientHeight
+            self.showHeight = document.documentElement.clientHeight
+            window.onresize = function() {
+                return( function () {
+                    self.showHeight = document.body.clientHeight;
+                })()
+            }
+        }, 30)
         this.initdata()
     },
     watch: {
@@ -101,6 +105,7 @@ export default {
             })
         },
         handleClick: function () {     // 取消提交
+            var self = this;
             if (this.li_name == '') {
                 this.$toast({
                     message: '请选择取消原因',
@@ -119,7 +124,7 @@ export default {
                         duration: 2000
                     });
                     var time = setTimeout(function () {
-                         this.$router.replace({path: '/subscribe/subscribeDetail', query: {id: this.$route.query.did}})
+                         self.$router.replace({path: '/subscribeDetail', query: {rid: self.$route.query.rid}})
                          clearTimeout(time)
                     }, 1000)
                 } else {
@@ -173,6 +178,7 @@ export default {
                     >img {
                         width: rem(54);
                         height: rem(54);
+                        max-height: rem(54);
                         -webkit-border-radius: 100%;
                         border-radius: 100%;
                     }
@@ -186,6 +192,12 @@ export default {
                     }
                     p:last-child {
                         margin-top: rem(5);
+                        span {
+                            display: block;
+                        }
+                        span:last-child {
+                            width: 60%;
+                        }
                     }
                 }
             }
@@ -195,8 +207,9 @@ export default {
                 margin-top: rem(12);
                 > ul {
                     width: 100%;
-                    padding: 0 rem(16);
+                    padding-left: rem(16);
                     li {
+                        padding-right: rem(16);
                         width: 100%;
                         height: rem(49);
                         line-height: rem(49);

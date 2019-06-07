@@ -26,10 +26,6 @@ Vue.use(VueLazyload, {
   attempt: 1
 })
 
-import { Loadmore } from 'mint-ui';
-
-Vue.component(Loadmore.name, Loadmore);
-
 Vue.config.productionTip = false
 Vue.use(MintUI)
 var VueCookie = require('vue-cookie');
