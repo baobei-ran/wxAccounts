@@ -13,7 +13,7 @@
                 </div>
                 <div v-if='datalist.length'>
                     <div class="list">
-                        <ul v-for='(val,i) in datalist' @click='Clickdetail(val.did)'>
+                        <ul v-for='(val,i) in datalist' @click='Clickdetail(val.did)' :key='i'>
                             <li>
                                 <img :src="$http.baseURL+val.picture" alt="">
                                 <dl>
