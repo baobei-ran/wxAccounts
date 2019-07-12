@@ -3,7 +3,7 @@
     <div class="doctor dis_f flex-v">
         <div class="section flex1">
             <div>
-                <div class="kong" v-if='!datalist.length'>
+                <div class="kong" v-show='Status'>
                     <img src="../../common/img/pic_zwys.png" alt="">
                     <p>你当前暂未添加医生，<span @click='handleClick'>立即找医生</span></p>
                 </div>
@@ -45,6 +45,7 @@ export default {
     data () {
         return {
             datalist: [],
+            Status: false,  // 无数据显示
             uid: this.$cookie.get('userLogins'),
             page: 1,
             limit: 15,
@@ -78,6 +79,7 @@ export default {
                     }
                     self.datalist = arr
                 } else {
+                    self.Status = true;
                     self.datalist = []
                 }
             })

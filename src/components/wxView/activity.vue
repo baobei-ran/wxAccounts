@@ -2,12 +2,12 @@
     <!-- 图片展示 活动页 -->
     <div class="activity">
         <ul>
-            <li><img src="../../../static/image/415_01.jpg" alt=""></li>
-            <li><img src="../../../static/image/415_02.jpg" alt=""></li>
-            <li><img src="../../../static/image/415_03.jpg" alt=""></li>
-            <li><img src="../../../static/image/415_04.jpg" alt=""></li>
-            <li><img src="../../../static/image/415_05.jpg" alt=""></li>
-            <li><img src="../../../static/image/415_06.jpg" alt=""></li>
+            <li><img src="../../common/images/415_01.jpg" alt=""></li>
+            <li><img src="../../common/images/415_02.jpg" alt=""></li>
+            <li><img src="../../common/images/415_03.jpg" alt=""></li>
+            <li><img src="../../common/images/415_04.jpg" alt=""></li>
+            <li><img src="../../common/images/415_05.jpg" alt=""></li>
+            <li><img src="../../common/images/415_06.jpg" alt=""></li>
         </ul>
     </div>
 </template>

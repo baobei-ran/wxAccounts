@@ -26,9 +26,12 @@ import ShopDetail from '../components/doctor/shopdetail'  // 医生店铺商品�
 import Doctororder from '../components/doctor/doctororder'  // 商品下单
 
 
-const Dingdan = resolve => require(['../components/goods/dingdan'], resolve);   // 商品订单
+const Dingdan = resolve => require(['../components/goods/orderList'], resolve);   // 商品订单（1.2）
+import Orderdetails from "../components/goods/orderdetails";                      // 订单信息（1.2）
+
+// const Dingdan = resolve => require(['../components/goods/dingdan'], resolve);   // 商品订单
 import AddorderDetail from '../components/goods/goodsdetails/addorderdetail'   // 待支付订单详情
-import TakeorderDetail from '../components/goods/goodsdetails/takeorderdetail'   // 待收货订单详情
+import TakeorderDetail from '../components/goods/goodsdetails/orderbuyagain'   // 再次购买
 import SuccessOrder from '../components/goods/goodsdetails/successOrder'   // 已完成 和 已取消 的订单详情
 
 import OerderSite from '../components/site/oerdersite';                // 购买商品选择列表
@@ -37,13 +40,20 @@ const SiteList = resolve => require(['@/components/site/sitelist'],resolve);    
 const AddSite  = resolve => require(['@/components/site/addsite'],resolve);                 // 添加地址
 const EditSite = resolve => require(['@/components/site/editsite'],resolve);                 // 编辑地址
 
-const RecipeList = r => require.ensure([], () => r(require('@/components/doctor/recipeDetail/recipelist')), 'fang');  //  处方订单列表
-const RecipeMsg = r => require.ensure([], () => r(require('@/components/doctor/recipeDetail/recipeMsg')), 'fang');    //  处方信息
-const ImgDetails = r => require.ensure([], () => r(require('@/components/doctor/recipeDetail/imgdetails')), 'fang');  //  处方详情
+const RecipeList = r => require.ensure([], () => r(require('@/components/recipes/recipelist')), 'fang');  //  处方订单列表
+const RecipeMsg = r => require.ensure([], () => r(require('@/components/recipes/recipeMsg')), 'fang');    //  处方信息
+const ImgDetails = r => require.ensure([], () => r(require('@/components/recipes/imgdetails')), 'fang');  //  处方详情
+
+
+import RecipeAudit from '@/components/recipes/recipeAudit';       // 电子处方 药品药师审核页(1.2)
+import Recipeorder from '@/components/recipes/recipeorder';       // 电子处方 药品下单（1.2）
+import Drugpaysuccess from '@/components/recipes/drugpaysuccess'; // 电子处方 下单支付成功提示页（1.2）
+import Recipedrug from '../components/recipes/recipedrug.vue';    // 药店订单处方信息（1.2）
+import Drugdetail from '../components/recipes/drugdetail.vue';    // 处方药品的药品详情 （1.2.0）
 
 const SearchDoctor = resolve => require(['@/components/doctor/searchdoctor'], resolve);        //  更多医生
 const DoctorShopList = resolve => require(['@/components/doctor/doctorshoplist'], resolve);     // 更多医生店铺
-import Error404 from '../components/Errors/err404';
+import Error404 from '../components/errors/err404';
 
 
 // 预约门诊记录(1.1.0)
@@ -64,6 +74,9 @@ const Consultdoctor = r => require.ensure([], () => r(require('../components/wxV
 const Activity = resolve => require(['../components/wxView/activity'], resolve);            // 图片活动展示
 import Docrecommend from '@/components/wxView/docrecommend';                                // 推荐预约医生(1.1.0)
 import DocSuspend from '@/components/wxView/docSuspend';                                    // 医生停诊通知(1.1.0)
+import RecommendDrug from '@/components/wxView/recommendDrug';                              // 推荐药品 （1.2.0）
+import YaoRecipeorder from '@/components/goods/yao-recipeorder';                            // 推荐药品 药品下单页（1.2）
+
 
 Vue.use(Router) 
 
@@ -245,7 +258,7 @@ const router = new Router({
       meta: {
         title: '下单详情',
       },
-      name: 'takeorderdetail',
+      name: 'orderbuyagain',
       component: TakeorderDetail
     },
     {
@@ -256,7 +269,14 @@ const router = new Router({
       name: 'successOrder',
       component: SuccessOrder
     },
-    
+    {
+      path: '/orderdetails:id?',  // 药店购买的药品详情
+      meta: {
+        title: '查看订单',
+      },
+      name: 'orderdetails',
+      component: Orderdetails
+    },
     
                                         //  收货地址管理
     {
@@ -301,10 +321,40 @@ const router = new Router({
       component: RecipeMsg
     },
     {
+      path: '/recipedrug:id?',
+      meta: {title: '处方信息'},
+      name: 'recipedrug',
+      component: Recipedrug
+    },
+    {
       path: '/chufdetails:id?',
       meta: {title: '处方详情'},
       name: 'chufdetails',
       component: ImgDetails
+    },
+    {
+      path: '/recipeAudit:id?',
+      meta: {title: '电子处方'},
+      name: 'recipeAudit',
+      component: RecipeAudit 
+    },
+    {
+      path: '/recipeorder:id?',
+      meta: {title: '确认订单', keeepAlive: true},
+      name: 'recipeorder',
+      component: Recipeorder
+    },
+    {
+      path: '/drugpaysuccess:id?', // 支付成功页
+      meta: {title: '查看订单'},
+      name: 'drugpaysuccess',
+      component: Drugpaysuccess
+    },
+    {
+      path: '/drugdetail:id?',           // 处方药品 的药品详情
+      meta: {title: '药品详情', },  
+      name: 'drugdetail',
+      component: Drugdetail
     },
 
     // 预约门诊记录
@@ -374,6 +424,18 @@ const router = new Router({
       meta: {title: '停诊通知', },  
       name: 'docSuspend',
       component: DocSuspend
+    },
+    {
+      path: '/recommendDrug:id?',           // 推荐药品
+      meta: {title: '推荐药品', },  
+      name: 'recommendDrug',
+      component: RecommendDrug
+    },
+    {
+      path: '/yaorecipeorder:id?',         // 药品推荐 下单页
+      meta: {title: '确认订单'},
+      name: 'yaorecipeorder',
+      component: YaoRecipeorder
     },
 
     

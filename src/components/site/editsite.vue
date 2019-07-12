@@ -294,7 +294,7 @@ export default {
             },
             delsite () {    // 删除该地址
                 var _self = this;
-                MessageBox.confirm('确定删除此条吗?', '').then(action => {
+                MessageBox.confirm('<p style="color:#333;">确定删除此条吗?</p>', '').then(action => {
                     _self.$http.post('/mobile/Wxuser/useraddress_del', _self.$route.query).then(res => {
                         console.log(res)
                         if (res.code == 1) {

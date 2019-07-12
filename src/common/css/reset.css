@@ -140,3 +140,9 @@ html{
   display: none;
 }
 
+.F-r {
+  float: right;
+}
+.F-l {
+  float: left;
+}

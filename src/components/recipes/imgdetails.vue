@@ -1,10 +1,6 @@
 
 <template>
     <div class="imgDetails dis_f flex_d">
-        <!-- <div class="header">
-            <img @click='Return' src="../../../common/img/icon_fh.png" alt="">
-            <span>处方详情</span>
-        </div> -->
         <div class="section_box flex1" id='canvas_box'>
             <div class="section dis_f flex_i"  id='imgs'> 
                 <div class="img_box">
@@ -42,7 +38,10 @@
                         <div class="canvas_drug">
                             <p>Rp:</p>
                             <ol v-for='(val,i) in durg'>
-                                <li>{{ val.company }} {{val.name}} <span>*{{ val.num }}</span></li>
+                                <li class="dis_f"> 
+                                    <p>{{val.name}} <b v-show="val.gg">({{val.gg}})</b></p>
+                                    <span>*{{ val.num }}</span>
+                                </li>
                                 <li>用法：<b>{{ val.usage }}</b></li>
                             </ol>
                             <div class="tshi" id='seal'>
@@ -61,7 +60,7 @@
                     </div> 
                 </div>
                 <!-- <div class="btn">
-                    <a href="javascript:" @click='canvasImg'><img src="../../../common/img/icon_bc.png" alt="" />保存处方到相册</a>
+                    <a href="javascript:" @click='canvasImg'><img src="../../common/img/icon_bc.png" alt="" />保存处方到相册</a>
                 </div> -->
                 
             </div>
@@ -88,7 +87,6 @@ export default {
         });
     },
     mounted () {
-        console.log(this.$route)
         this.initdata();
         var self = this;
     },
@@ -114,9 +112,6 @@ export default {
                 }
             })
         },
-        Return () {
-            this.$router.go(-1)
-        },
          canvasImg () {
             var _this = this;
             var cntElem = document.getElementById('html');
@@ -124,7 +119,6 @@ export default {
             var shareContent = cntElem; //需要截图的包裹的（原生的）DOM 对象
             var width = shareContent.offsetWidth ; //获取dom 宽度
             var height = shareContent.offsetHeight; //获取dom 高度
-                height = Number(height) + 30
             var canvas = document.createElement("canvas"); //创建一个canvas节点
             // var scale = 4; //定义任意放大倍数 支持小数
             var scale = window.devicePixelRatio * 2;//获取设备的显示参数
@@ -148,7 +142,7 @@ export default {
                  var urls = canvas.toDataURL("image/png");
                  cntElem.style['display'] = 'none';
                 // cntElem.style['-webkit-transform'] = 'scale(0.5)';
-                var img = new Image()
+                var img = document.createElement('img')
                 img.src = urls
                 img.style['width'] = '100%';
                 img.style['background'] = '#fff';
@@ -175,33 +169,6 @@ export default {
     width: 100%;
     height: 100%;
     font-size: 16px;
-    .header {
-        display: -webkit-flex;
-        display: flex;
-        height: rem(40);
-        justify-content: center;
-        color: #212121;
-        position: relative;
-        box-shadow:0px 1px 0px 0px rgba(224,224,224,1);
-        padding-top: rem(0);
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-        img {
-            font-size: rem(30);
-            position: absolute;
-            left: rem(15);
-            top: rem(8);
-            line-height: 1;
-            font-size: rem(19);
-            width: rem(30);
-            padding: rem(5);
-        }
-        span {
-            padding-top: rem(15);
-            font-weight:400;
-            color: #212121;
-        }
-    }
     .section_box {
         overflow-y: scroll;
         background-color: #fff;
@@ -248,10 +215,12 @@ export default {
             width: 100%;
             height: 100%;
             .html_content {
+                position: absolute;
+                top:0;
+                left: -200%;
                 background: #fff;
                 width: 200%;
-                height: 100%;
-                // overflow: hidden;
+                min-height: 100%;
                 zoom: 1;
                 font-size: rem(14);
                 padding: rem(20) rem(20);
@@ -276,7 +245,7 @@ export default {
                 }
                 h2 {
                     font-size: rem(18);
-                    padding: rem(20);
+                    padding: 20px;
                     text-align: center;
                     font-weight: 550;
                     letter-spacing: rem(2);
@@ -284,7 +253,7 @@ export default {
                 .canvas_user {
                     width: 100%;
                     border-bottom:1px dashed #ccc;
-                    padding: rem(10) 0;
+                    padding: 10px 0;
                     ul {
                         display: box;              
                         display: -webkit-box;      
@@ -301,8 +270,8 @@ export default {
                         letter-spacing: rem(1);
                         li {
                             width: 33%;
-                            height: rem(30);
-                            line-height: rem(30);
+                            height: 25px;
+                            line-height: 25px;
                             font-size: rem(14);
                             letter-spacing: rem(1);
                         }
@@ -310,14 +279,14 @@ export default {
                 }
                 .canvas_drug {
                     width: 100%;
-                    padding: rem(20) 0;
+                    padding: 20px 0;
                     position: relative;
                     >p {
                         font-weight: 550;
                         font-size: rem(14);
                     }
                     >ol {
-                        margin-top: rem(20);
+                        margin-top: 10px;
                         font-size: rem(11);
                         li {
                             line-height: rem(30);
@@ -343,17 +312,16 @@ export default {
                 }
                 .msg {
                     text-align: center;
-                    font-size: rem(14);
-                    line-height: rem(14);
-                    padding-bottom: rem(30);    
+                    font-size: 14px;
+                    line-height: 20px;
+                    padding-bottom: 20px;    
                     letter-spacing: rem(1);
                 }
                 .check {
-                    margin-top: rem(30);
                     width: 100%;
                     font-size: rem(12);
-                    overflow: hidden;
-                    margin-bottom: rem(30);
+                    height: 80px;
+                    margin-bottom: 20px;
                 > ul {
                         display: box;              
                         display: -webkit-box;      
@@ -379,7 +347,6 @@ export default {
                                 max-width: 100px;
                                 max-height: 70px;
                                 display: block;
-                                vertical-align: bottom;
                                 margin-left: 10px;
                             }
                         }

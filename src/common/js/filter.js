@@ -4,7 +4,7 @@
 import Vue from 'vue'
 
 Vue.filter('filterTime', function(time) {
-    if (!time) {
+    if (!time || time == null || time == undefined) {
         return;
     }
     var date = new Date(time*1000)

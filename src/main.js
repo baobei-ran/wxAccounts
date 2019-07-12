@@ -14,7 +14,7 @@ import '@/common/js/filter'
 import "@/common/js/ios.js"
 import api from '@/api'
 import VueLazyload from 'vue-lazyload'
-import infiniteScroll from 'vue-infinite-scroll';
+import infiniteScroll from 'vue-infinite-scroll'
 import VueWechatTitle from 'vue-wechat-title'
 Vue.use(VueWechatTitle)
 

@@ -3,11 +3,11 @@
     <div class="subscribe dis_f flex_c">
         <div class="header">
             <ul class="header_nav dis_f dis_sb flex-vc">
-                    <li :class="{'ckblue':flag == 0}" @click='clickNav(0)'>全部</li>
-                    <li :class="{'ckblue':flag == 1}" @click='clickNav(1)'>待就诊</li>
-                    <li :class="{'ckblue':flag == 2}" @click='clickNav(2)'>已就诊</li>
-                    <li :class="{'ckblue':flag == 4}" @click='clickNav(4)'>已取消</li>
-                </ul>
+                <li :class="{'ckblue':flag == 0}" @click='clickNav(0)'>全部</li>
+                <li :class="{'ckblue':flag == 1}" @click='clickNav(1)'>待就诊</li>
+                <li :class="{'ckblue':flag == 2}" @click='clickNav(2)'>已就诊</li>
+                <li :class="{'ckblue':flag == 4}" @click='clickNav(4)'>已取消</li>
+            </ul>
         </div>
         <div class="section flex1" ref='scroll'>
             <div class="section_box" >
@@ -122,7 +122,7 @@ export default {
             page: 1,
             limit: 10,
             TimeInterval: ['上午 8:00-12:00', '下午 13:00-18:00', '晚上 18:00-24:00'], 
-            timerId: ''
+            timerId: '',
         }
     },
     beforeCreate () {
@@ -179,6 +179,7 @@ export default {
             } else {
                 this.initdata (4)
             }
+
         },  
         
         clickCancel: function (v) { // 取消预约
@@ -211,27 +212,45 @@ export default {
         -webkit-box-shadow:0px 1px 0px 0px rgba(224,224,224,1);
         box-shadow:0px 1px 0px 0px rgba(224,224,224,1);
         .header_nav {
+            width: 100%;
             padding: 0 rem(23);
             height: rem(44);
             >li {
                 font-size: rem(14);
-                height: 100%;
-                float: left;
-                padding: 0 rem(5);
+                padding:rem(14) rem(5);
                 text-align: center;
                 line-height: rem(44);
                 color: #666;
+                position: relative;
+                color: #000;
+                line-height: 1;
+                -webkit-transition: 0.1s all linear;
+                transition: 0.1s all linear;
+                cursor: pointer;
             }
-            li:after {
+            li::before {
                 content: " ";
-                display: table-cell;
-                clear: both;
-                visibility: hidden;
+                position: absolute;
+                top: 0;
+                left: 100%;
+                width: 0;
+                height: 100%;
+                border-bottom: 2px solid #469AF4;
+                -webkit-transition: 0.1s all linear;
+                transition: 0.1s all linear;
             }
             .ckblue {
-                color: #333;
-                border-bottom: 3px solid #5189F6;
+               color: #4A9CF3;
             }
+            .ckblue ~ li::before {
+                left: 0;
+            }
+            .ckblue::before {
+                width: 100%;
+                left: 0;
+                top: 0;
+            }
+            
         }
     }
     .section {

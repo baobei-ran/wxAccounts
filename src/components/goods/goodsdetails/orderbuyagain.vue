@@ -1,10 +1,6 @@
 <template>
-<!-- 再次购买下单 -->
-    <div class="doctororder">
-        <!-- <div class="header">
-            <img @click='Return' src="../../../common/img/icon_fh.png" alt="">
-            <span>下单详情</span>
-        </div> -->
+<!-- 再次购买下单(1.2) -->
+    <div class="orderbuyagain">
         <main class="content">
             <div class="content_box" > 
                 <div class="site" @click='outSites($event)' >
@@ -24,27 +20,16 @@
                             </li>
                         </ul>
                     </div>
-                    <!-- <ul @click='outSite' >
-                        <li class="user">
-                            <span>{{ orderdata.gname }}</span> <span>{{ orderdata.phone }}</span>
-                        </li>
-                        <li class="dizhi">
-                            {{ orderdata.address }}
-                        </li>
-                        <li class="right">
-                            <img src="../../../common/img/icon_enter.png" alt="">
-                        </li>
-                    </ul> -->
                 </div>
 
                 <div class="orderList">
                     <h4>{{ orderdata.sname }}的店铺 <img src="../../../common/img/icon_enter.png" alt=""></h4>
-                    <dl class="order_con">
-                        <dt><img :src="$http.baseURL+orderdata.img" alt=""></dt>
+                    <dl class="order_con" v-for="(val, i) in drugdata" :key='i' >
+                        <dt><img :src="$http.baseURL+val.img" alt=""></dt>
                         <dd>
-                            <h5>{{ orderdata.name }}</h5>
-                            <span>￥{{ orderdata.money }}</span>
-                            <p>x{{ orderdata.num }}</p>
+                            <h5>{{val.name }}</h5>
+                            <span>￥{{ val.money }}</span>
+                            <p>x{{ val.num }}</p>
                         </dd>
                     </dl>
                     <ul class="goods">
@@ -52,7 +37,7 @@
                             <span v-if='orderdata.type == 1'>快递</span>
                             <span v-if='orderdata.type == 2'>自提 </span>
                         </li>
-                        <li><span>商品总额</span><span>￥{{ orderdata.moneys }}</span></li>
+                        <li><span>商品总额</span><span>￥{{ orderdata.money }}</span></li>
                         <li><span>运费</span><span>￥{{ orderdata.postage }}</span></li>
                     </ul>
                     <div class="usermsg">
@@ -64,7 +49,7 @@
             </div>
         </main>
         <div class="footer" v-show="hidShow">
-            <div>总计：<span>￥{{ orderdata.moneys }}</span></div>
+            <div>总计：<span>￥{{ orderdata.money }}</span></div>
             <mt-button type="primary" @click.native='orderData'>提交订单</mt-button>
         </div>
     </div>
@@ -73,6 +58,7 @@
 <script>
 import { Toast } from 'mint-ui';
 export default {
+    name: 'orderbuyagain',
     data () {
         return {
             length: 0,  // 留言的数量
@@ -83,10 +69,10 @@ export default {
             docmHeight: document.documentElement.clientHeight, // 默认屏幕高度
             showHeight: document.documentElement.clientHeight, // 实时屏幕高度
             hidShow: true, // 显示或者隐藏footer
+            drugdata: [], // 药品数据
         }
     },
     mounted () {
-        console.log(this.$route)
         this.initsite()
         var vm = this
         // window.resize监听页面高度的变化
@@ -127,10 +113,11 @@ export default {
                 uid = this.$cookie.get('userLogins');
                 var id = this.$route.params.id
                 var self = this;
-                self.$http.post('/mobile/Wxorder/again_goods', { number: id}).then(res => {
+                self.$http.post('/mobile/wxorder/again_goods_two', { number: id}).then(res => {
                     console.log(res)
                     if (res.code == 1) {
-                        self.orderdata = res.data
+                        self.orderdata = res.data;
+                        self.drugdata = res.arr;
                     }
                 })
              
@@ -153,30 +140,6 @@ export default {
                     }
                 })  
            }
-
-
-
-            // this.$http.post('/mobile/Wxuser/useraddress_list', { uid: uid}).then(res => {
-            //     console.log(res)
-            //     if (res.code == 1) {
-            //         self.huan = res.data
-            //     }
-            // })  
-
-            // setTimeout(() => {
-            //     if (self.huan.length > 0) {
-            //         var userSite = JSON.parse(this.$cookie.get('userSite'))
-            //             self.huan.map(val => {
-            //                 if (userSite && userSite.id == val.id && userSite.uid == uid ) {
-            //                     this.site = userSite 
-            //                 } else if (val.status == 2) {
-            //                     this.site = val
-            //                 }
-            //             })
-                    
-            //    }
-            // }, 300)
-           
         },
         Return () {
             this.$router.go(-1)
@@ -189,11 +152,19 @@ export default {
             this.length = this.txt.length
         },
         orderData () {  // 提交下单
+            if (!this.site) {
+                Toast({
+                    message: '请选择地址',
+                    position: 'middle',
+                    duration: 2000
+                });
+                return;
+            }
             var self = this,
                 uid = this.$cookie.get('userLogins');
-            var obj = { addid: this.site.id, gid: this.orderdata.gid, type: this.orderdata.type, remark: this.txt, uid: uid, doc_sid: this.orderdata.doc_sid, num: this.orderdata.num };
+            var obj = { addid: this.site.id, remark: this.txt, uid: uid, doc_sid: this.orderdata.did, data: this.drugdata };
             console.log(obj)
-            self.$http.post('/mobile/Wxorder/sub_order', obj).then(res => {
+            self.$http.post('/mobile/wxorder/again_goods_add', obj).then(res => {
                 console.log(res)
                 if (res.code == 1) {
                     var userSite = JSON.parse(self.$cookie.get('userSite'));
@@ -267,21 +238,14 @@ export default {
                             self.$router.replace({name: 'addorderdetail', params: { id: data.number }})
                         }, 1000)
                     }
-                    
                 }); 
             };
-            
         },
-
         outSites (e) {    // 去选择地址
             console.log(e)
             var self = this;
             var id = this.$route.params.id
-            if (self.$router) {
-                self.$router.push({ path:'/setorder', query: { id: id }});
-            } else {
-                window.location.href = '/setorder?id='+ id
-            }
+            self.$router.push({ path:'/setorder', query: { id: id }});
             // this.$router.push({ name:'setorder', params: { id: this.$route.params.id }});
         },  
     }
@@ -292,7 +256,7 @@ export default {
 @function rem($px) {
     @return $px/ 50 + rem;
 }
-.doctororder {
+.orderbuyagain {
     width: 100%;
     height: 100%;
     -webkit-display: flex;
@@ -301,40 +265,13 @@ export default {
     -webkit-flex-direction: column;
     flex-direction: column;
     font-size: rem(16);
-    .header {
-        -webkit-display: flex;
-        display: flex;
-        height: rem(40);
-        justify-content: center;
-        color: #212121;
-        position: relative;
-        box-shadow:0px 1px 0px 0px rgba(224,224,224,.5);
-        padding-top: rem(0);
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-        font-size: rem(16);
-        background: #fff;
-        img {
-            font-size: rem(30);
-            position: absolute;
-            left: rem(15);
-            top: rem(10);
-            line-height: 1;
-            font-size: rem(19);
-            width: rem(28);
-            padding: rem(5);
-        }
-        span {
-            padding-top: rem(15);
-            font-weight:400;
-            color: #212121;
-        }
-    }
+    
     .content {
         width: 100%;
         -webkit-flex:1;
         flex:1;
-        overflow: auto;
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
         .content_box {
             padding: 0 rem(15);
             .site {
@@ -434,6 +371,7 @@ export default {
                 .order_con {
                     display: -webkit-flex;
                     display: flex;
+                    margin-top: rem(10);
                     dt {
                         >img {
                             display: block;

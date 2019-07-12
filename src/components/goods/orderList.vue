@@ -1,16 +1,12 @@
 <template>
-<!-- 商品订单 父级页面 -->
+<!-- 商品订单 -->
     <div class="ordergoods">
-        <!-- <div class="header">
-            <img @click='Returns' src="../../common/img/icon_fh.png" alt="">
-            <span>商品订单</span>
-        </div> -->
         <div class="navtab">
             <ul class="dis_f dis_sb flex-vc">
                 <li @click='tabs(1)' :class="{'action': tabId == 1}" >全部</li>
                 <li @click='tabs(2)' :class="{'action': tabId == 2}">待付款</li>
-                <li @click='tabs(3)' :class="{'action': tabId == 3}">待发货</li>
-                <li @click='tabs(4)' :class="{'action': tabId == 4}">待收货</li>
+                <li @click='tabs(3)' :class="{'action': tabId == 3}">待收货</li>
+                <li @click='tabs(4)' :class="{'action': tabId == 4}">已完成</li>
                 <li @click='tabs(5)' :class="{'action': tabId == 5}">已取消</li>
             </ul>
         </div>
@@ -27,121 +23,116 @@
         <div class="content" v-if='alllist.length'>   
             <!-- 待付款 -->
             <div class="add Mg-T" v-for='(val,i) in alllist' :key='i' v-if='val.status == 1'>
-                <h4>{{ val.sname }}医生的店铺
-                    <!-- <img src="../../../common/img/icon_enter.png" alt=""> -->
-                    <span>等待付款</span></h4>
+                <h4>
+                    <span v-show="val.tpye == 1">{{ val.type_name }}医生的店铺</span> 
+                    <span v-show="val.tpye == 2">{{ val.type_name }}</span>
+                    <span>等待付款</span>
+                </h4>
                 <div class="order_list" @click='paydetail(val)'>
                     <dl>
-                        <dt>
-                            <img :src="$http.baseURL+val.img" alt="">
+                        <dt class="dis_f flex_i">
+                            <img v-for="(item, j) in val.img" :key='j+"_1"' :src="$http.baseURL+item" alt="">
+                            <span v-show="val.allnum > 4" class="omit"></span>
                         </dt>
                         <dd>
-                            <h5>{{ val.name }}</h5>
                             <span>￥{{ val.money }}</span>
-                            <p>x{{ val.num }}</p>
+                            <p>共{{ val.allnum }}件商品</p>
+                            <b v-show="val.distribution == 2">门店自提</b>
                         </dd>
                     </dl>
                 </div>
-                <p>共{{ val.num }}件商品 实付款 <span>{{ val.money }}</span></p>
-                <div class="addbtn"><mt-button type="primary" @click.native='paydetail(val)'>去支付</mt-button></div>
+                <div class="addbtn">
+                    <mt-button type="primary" @click.native='paydetail(val)'>去支付</mt-button>
+                </div>
             </div>
-
+            
             <!-- 待发货 -->
-            <div class="take Mg-T" v-for='(val,i) in alllist' :key='i' v-if='val.status == 2 || val.status == 3'>
+            <!-- <div class="take Mg-T" v-for='(val,i) in alllist' :key='i+"_2"' v-if='val.status == 2 || val.status == 3 || val.status == 4'>
                 <h4>{{ val.sname }}医生的店铺
-                    <!-- <img src="../../../common/img/icon_enter.png" alt=""> -->
                     <span>等待发货</span></h4>
                 <div class="order_list" @click='outdetails(val)'>
                     <dl>
-                        <dt>
-                            <img :src="$http.baseURL+val.img" alt="">
+                        <dt class="dis_f flex_i">
+                            <img v-for="(item, j) in val.img" :key='j+"_22"' :src="$http.baseURL+item" alt="">
                         </dt>
                         <dd>
-                            <h5>{{ val.name }}</h5>
                             <span>￥{{ val.money }}</span>
-                            <p>x{{ val.num }}</p>
+                            <p>共{{ val.allnum }}件商品</p>
+                            <b v-show="val.distribution == 2">门店自提</b>
                         </dd>
                     </dl>
-                    <!-- <dl>
-                        <dt>
-                            <img src="../../../common/img/pic_sptp.png" alt="">
-                        </dt>
-                        <dd>
-                            <h5>999搞毛亏你还</h5>
-                            <span>￥22.00</span>
-                            <p>x1</p>
-                        </dd>
-                    </dl> -->
                 </div>
-                <p>共{{ val.num }}件商品 实付款 <span>{{ val.money }}</span></p>
                 <div class="addbtn"><mt-button @click.native='buy(val)'>再次购买</mt-button></div>
-            </div>
-
-            
+            </div> -->
 
             <!-- 待收货 -->
-
-            <div class="take Mg-T" v-for='(val,i) in alllist' :key='i' v-if='val.status == 4'>
-                <h4>{{ val.sname }}医生的店铺
-                    <!-- <img src="../../../common/img/icon_enter.png" alt=""> -->
-                    <span>待收货</span></h4>
+            <div class="take Mg-T" v-for='(val,i) in alllist' :key='i+"_3"' v-if='val.status == 2 || val.status == 3 || val.status == 4'>
+                <h4>
+                    <span v-show="val.tpye == 1">{{ val.type_name }}医生的店铺</span> 
+                    <span v-show="val.tpye == 2">{{ val.type_name }}</span>
+                    <span v-text="val.tpye == 1?'待收货':'待取货'"></span></h4>
                 <div class="order_list" @click='outdetails(val)'>
                     <dl>
-                        <dt>
-                            <img :src="$http.baseURL+val.img" alt="">
+                        <dt class="dis_f flex_i">
+                            <img v-for="(item, j) in val.img" :key='j+"_33"' :src="$http.baseURL+item" alt="" />
+                            <span v-show="val.allnum > 4" class="omit"></span>
                         </dt>
                         <dd>
-                            <h5>{{ val.name }}</h5>
                             <span>￥{{ val.money }}</span>
-                            <p>x{{ val.num }}</p>
+                            <p>共{{ val.allnum }}件商品</p>
+                            <b v-show="val.distribution == 2">门店自提</b>
                         </dd>
                     </dl>
                 </div>
-                <p>共{{ val.num }}件商品 实付款 <span>{{ val.money }}</span></p>
-                <div class="addbtn"><mt-button @click.native='buy(val)'>再次购买</mt-button><mt-button class="yes" @click.native='take(val)'>确认收货</mt-button></div>
+                <div class="addbtn" v-show="val.distribution == 1"><mt-button @click.native='buy(val)'>再次购买</mt-button><mt-button class="yes" @click.native='take(val)'>确认收货</mt-button></div>
             </div>
 
-    <!-- 已完成 -->
-            <div class="take Mg-T" v-for='(val,i) in alllist' :key='i' v-if='val.status == 5'>
-                <h4>{{ val.sname }}医生的店铺
-                    <!-- <img src="../../../common/img/icon_enter.png" alt=""> -->
+        <!-- 已完成 -->
+            <div class="take Mg-T" v-for='(val,i) in alllist' :key='i+"_4"' v-if='val.status == 5'>
+                <h4>
+                    <span v-show="val.tpye == 1">{{ val.type_name }}医生的店铺</span> 
+                    <span v-show="val.tpye == 2">{{ val.type_name }}</span>
                     <span>已完成</span></h4>
                 <div class="order_list" @click='outdetails(val)'>
                     <dl>
-                        <dt>
-                            <img :src="$http.baseURL+val.img" alt="">
+                        <dt class="dis_f flex_i">
+                            <img v-for="(item, j) in val.img" :key='j+"_44"' :src="$http.baseURL+item" alt="" />
+                            <span v-show="val.allnum > 4" class="omit"></span>
                         </dt>
                         <dd>
-                            <h5>{{ val.name }}</h5>
                             <span>￥{{ val.money }}</span>
-                            <p>x{{ val.num }}</p>
+                            <p>共{{ val.allnum }}件商品</p>
+                            <b v-show="val.distribution == 2">门店自提</b>
                         </dd>
                     </dl>
                 </div>
-                <p>共{{ val.num }}件商品 实付款 <span>{{ val.money }}</span></p>
-                <div class="addbtn"><mt-button @click.native='del(val)'>删除订单</mt-button><mt-button class="yes" @click.native='buy(val)'>再次购买</mt-button></div>
+                <div class="addbtn" v-show="val.distribution == 1">
+                    <!-- <mt-button @click.native='del(val)'>删除订单</mt-button> -->
+                    <mt-button class="yes" @click.native='buy(val)'>再次购买</mt-button></div>
             </div>
 
             <!-- 已取消 -->
-            <div class="take Mg-T" v-for='(val,i) in alllist' :key='i' v-if='val.status == 6'>
-                <h4>{{ val.sname }}医生的店铺
-                    <!-- <img src="../../../common/img/icon_enter.png" alt=""> -->
+            <div class="take Mg-T" v-for='(val,i) in alllist' :key='i+"_5"' v-if='val.status == 6'>
+                <h4>
+                    <span v-show="val.tpye == 1">{{ val.type_name }}医生的店铺</span> 
+                    <span v-show="val.tpye == 2">{{ val.type_name }}</span>
                     <span>已取消</span>
                 </h4>
                 <div class="order_list" @click='outdetails(val)'>
                     <dl>
-                        <dt>
-                            <img :src="$http.baseURL+val.img" alt="">
+                        <dt class="dis_f flex_i">
+                            <img v-for="(item, j) in val.img" :key='j+"_55"' :src="$http.baseURL+item" alt="">
+                            <span v-show="val.allnum > 4" class="omit"></span>
                         </dt>
                         <dd>
-                            <h5>{{ val.name }}</h5>
                             <span>￥{{ val.money }}</span>
-                            <p>x{{ val.num }}</p>
+                            <p>共{{ val.allnum }}件商品</p>
+                            <b v-show="val.distribution == 2">门店自提</b>
                         </dd>
                     </dl>
                 </div>
-                <p>共{{ val.num }}件商品 实付款 <span>{{ val.money }}</span></p>
-                <div class="addbtn"><mt-button @click.native='del(val)'>删除订单</mt-button><mt-button class="yes" @click.native='buy(val)'>再次购买</mt-button></div>
+                <div class="addbtn" v-show="val.distribution == 1">
+                    <mt-button class="yes" @click.native='buy(val)'>再次购买</mt-button></div>
             </div>
             
         </div>
@@ -163,10 +154,6 @@
 <script>
 import { MessageBox } from 'mint-ui';
 import { Toast } from 'mint-ui';
-import { Navbar, TabItem } from 'mint-ui';
-import Vue from 'vue'
-Vue.component(Navbar.name, Navbar);
-Vue.component(TabItem.name, TabItem);
 import empty from './goodslist/empty'
 export default {
     components: {
@@ -186,7 +173,6 @@ export default {
         },
         methods: {
             tabs (val) {
-                // console.log(val)
                 this.tabId = val
                 if (val == 1) {
                     this.type = ''
@@ -195,13 +181,13 @@ export default {
                     this.type = '1'
                     this.initdata(this.page, this.type)
                 } else if (val == 3) {
-                    this.type = '23'
+                    this.type = '2'
                     this.initdata(this.page, this.type)
                 } else if (val == 4) {
-                    this.type = '4'
+                    this.type = '3'
                     this.initdata(this.page, this.type)
                 } else if (val == 5) {
-                    this.type = '6'
+                    this.type = '4'
                     this.initdata(this.page, this.type)
                 }
             },
@@ -215,11 +201,16 @@ export default {
                 var self = this;
                 var uid = this.$cookie.get('userLogins')
                 console.log(type)
-                var obj = { uid: uid, type: type, page: page, num: this.limit }
-                self.$http.post('/mobile/Wxorder/order_list', obj).then(res => {
+                var obj = { uid: uid, status: type, page: page, num: this.limit }
+                self.$http.post('/mobile/wxorder/user_goods', obj).then(res => {
                     console.log(res)
                     if (res.code == 1) {
                         self.alllist = res.data
+                        self.alllist.map(val => { // 图片最多显示四张
+                            if(val.img.length > 5) {
+                                val.img.length = 4
+                            }
+                         })
                     } else {
                         self.alllist = []
                     }
@@ -252,11 +243,12 @@ export default {
 
             },
             buy (val) {   // 再次购买
-                this.$router.push({ name: 'takeorderdetail', params: { id:val.number} })    
+                console.log(val)
+                this.$router.push({ name: 'orderbuyagain', params: { id:val.number} })   
             },
             take(val) {  // 确认收货
                 var self = this;
-                MessageBox.confirm('确认收货吗?', '').then(action => {
+                MessageBox.confirm('<p style="color:#333;">确认收货吗?</p>', '').then(action => {
                     var obj = { number: val.number, type: 3}
                     self.$http.post('/mobile/Wxorder/set_order', obj).then(res => {
                         console.log(res)
@@ -281,11 +273,21 @@ export default {
             },
            
             paydetail(val) {    // 去支付就可以进入 待付款详情
-                this.$router.push({ name: 'addorderdetail', params: { id: val.number}})
+                if (val.distribution == 1) {
+                    this.$router.push({ name: 'addorderdetail', params: { id: val.number }})
+                } else {
+                    this.$router.push({ path: '/orderdetails', query: { id: val.number }}) // 药店自提详情
+                }
+                
             },
             outdetails (val) {    // 取消和已完成、待收货的查看详情
-                this.$router.push({ path: '/successOrder', query: { id: val.number}})
-            }
+                if (val.distribution == 1) {
+                    this.$router.push({ path: '/successOrder', query: { id: val.number}})
+                } else {
+                    this.$router.push({ path: '/orderdetails', query: { id: val.number }}) // 药店 自提详情
+                }
+                
+            },
         }
 }
 </script>
@@ -312,37 +314,7 @@ export default {
     -ms-flex-direction: column;
     -o-flex-direction: column;
     flex-direction: column;
-    .header {
-        display: -webkit-flex;
-        display: flex;
-        height: rem(40);
-        -webkit-justify-content: center;
-        -ms-justify-content: center;
-        -o-justify-content: center;
-        justify-content: center;
-        color: #212121;
-        position: relative;
-        box-shadow:0px 1px 0px 0px rgba(224,224,224,1);
-        padding-top: rem(0);
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-        background: #fff;
-        img {
-            font-size: rem(30);
-            position: absolute;
-            left: rem(15);
-            top: rem(10);
-            line-height: 1;
-            font-size: rem(19);
-            width: rem(28);
-            padding: rem(5);
-        }
-        span {
-            padding-top: rem(15);
-            font-weight:400;
-            color: #212121;
-        }
-    }
+    background: #F9F9F9;
     .navtab {
         padding-bottom: rem(2);
         background-color: #fff;
@@ -403,27 +375,22 @@ export default {
     }
     .content {
         width: 100%;
-        padding: 0 rem(15);
         .add {
             width: 100%;
-            box-shadow:0px rem(5) rem(10) 0px rgba(0, 0, 0, 0.1);
-            padding: rem(15);
             font-weight:400;
+            padding: rem(15);
             background-color: #fff;
+            margin-top: rem(10);
             h4 {
-                background: url('../../common/img/icon_dpu.png') no-repeat 0;
-                background-size: 8%;
-                padding-left: rem(28);
+            
                 line-height: rem(30);
                 font-size: rem(14);
                 color:#333;
                 overflow: hidden;
-                img {
-                    width: rem(25);
-                    height: auto;
-                    vertical-align: middle;
+                span:first-child {
+                    color: #333;
                 }
-                >span {
+                >span:last-child {
                     float: right;
                     color:#808080;
                     font-size: rem(12);
@@ -437,24 +404,38 @@ export default {
                     display: flex;
                     margin: rem(7.5) 0;
                         dt {
+                            width: 80%;
                             >img {
-                                display: block;
-                                width: rem(64);
+                                display: inline-block;
+                                width: rem(50);
+                                height: rem(50);
                                 margin-bottom: rem(2);
+                                margin-right: rem(3);
+                                border-radius:4px;
+                            }
+                            .omit {
+                                display: inline-block;
+                                width: rem(30);
+                                height: rem(30);
+                                background: url('../../common/img/icon_gdyp.png') no-repeat;
+                                background-size: cover;
                             }
                         }
                     dd {
-                        margin-left: rem(15);
+                        margin-left: rem(2);
                         font-size: rem(12);
                         color:#333;
-                        h5 {
-                            font-size: rem(14);
-                            margin-top: rem(2);
-                        }
+                        
                         >span {
                             color: #F09F88;
-                            margin: rem(10) 0;
                             display: block;
+                        }
+                        > p {
+                            padding: rem(5) 0;
+                        }
+                        >b {
+                            font-size: rem(10);
+                            color: #4A9CF3;
                         }
                     }
                 }
@@ -480,23 +461,18 @@ export default {
 
         .take {
             width: 100%;
-            box-shadow:0px 5px 10px 0px rgba(0, 0, 0, 0.1);
-            padding: rem(15);
             font-weight:400;
             background-color: #fff;
+            margin-top: rem(10);
+            padding: rem(15);
              h4 {
-                background: url('../../common/img/icon_dpu.png') no-repeat 0;
-                background-size: 8%;
-                padding-left: rem(28);
                 line-height: rem(30);
                 font-size: rem(14);
                 color:#333;
-                img {
-                    width: rem(25);
-                    height: auto;
-                    vertical-align: middle;
+                 span:first-child {
+                    color: #333;
                 }
-                >span {
+                >span:last-child {
                     float: right;
                     color:#808080;
                     font-size: rem(12);
@@ -510,24 +486,37 @@ export default {
                     display: flex;
                     margin: rem(7.5) 0;
                         dt {
+                            width: 80%;
                             >img {
-                                display: block;
-                                width: rem(64);
+                                display: inline-block;
+                                width: rem(50);
                                 margin-bottom: rem(2);
+                                margin-right: 8px;
+                                border-radius:4px;
+                            }
+                            .omit {
+                                display: inline-block;
+                                width: rem(30);
+                                height: rem(30);
+                                background: url('../../common/img/icon_gdyp.png') no-repeat;
+                                background-size: cover;
                             }
                         }
                     dd {
-                        margin-left: rem(15);
                         font-size: rem(12);
                         color:#333;
-                        h5 {
-                            font-size: rem(14);
-                            margin-top: rem(2);
-                        }
+                        text-align: center;
                         >span {
                             color: #F09F88;
-                            margin: rem(10) 0;
                             display: block;
+                            font-size: rem(12);
+                        }
+                        >p {
+                            padding: rem(5) 0;
+                        }
+                        > b {
+                            color: #4A9CF3;
+                            font-size: rem(10);
                         }
                     }
                 }

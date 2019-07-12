@@ -4,7 +4,6 @@
           <router-view v-if='$route.meta.keeepAlive'></router-view>
       </keep-alive>
       <router-view v-if='!$route.meta.keeepAlive'></router-view>
-      <!-- <router-view></router-view> -->
   </div>
 </template>
 
@@ -64,5 +63,13 @@ input:disabled {
   background-color: #FFF;
 }
 
+// 去电 input number 里面的上下箭头
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+}
+input[type=number]{
+  -moz-appearance: textfield;
+}
 
 </style>

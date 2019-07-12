@@ -2,10 +2,6 @@
     <!-- 医生店铺页 -->
     <div class="doctorshop dis_f flex_fc">
         <div v-wechat-title="doctor.true_name+'的店铺'"></div>
-         <!-- <div class="header">
-            <img @click='Return' src="../../common/img/icon_fh.png" alt="">
-            <span>{{ doctor.true_name }}的店铺</span>
-        </div>  -->
         <div class="section flex1">
             <div >
                 <div class="list">
@@ -183,9 +179,6 @@ export default {
         console.log(id)
             this.$router.push({ path: '/shopdetail', query: { id:id}})
         },
-        Return () {
-            this.$router.back()
-        },
         doctordata () {
             var _self = this;
             var obj = { lng: _self.lng, lat: _self.lat, uid: this.uid, did:this.did  }
@@ -265,37 +258,6 @@ export default {
     flex-direction: column;
     background: #FAFAFA;
     font-size: rem(14);
-    .header {
-        display: -webkit-flex;
-        display:-webkit-box;
-        display:-moz-box; 
-        display:-ms-flexbox; 
-        display: flex;
-        height: rem(40);
-        justify-content: center;
-        color: #212121;
-        position: relative;
-        box-shadow:0px 1px 0px 0px rgba(224,224,224,.5);
-        padding-top: rem(0);
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-        font-size: rem(16);
-        background: #fff;
-        > img {
-            font-size: rem(30);
-            position: absolute;
-            left: rem(15);
-            top: rem(10);
-            line-height: 1;
-            font-size: rem(19);
-            width: rem(20);
-        }
-        span {
-            padding-top: rem(15);
-            font-weight:400;
-            color: #212121;
-        }
-    }
     .section {
         width: 100%;
         font-size: rem(14);

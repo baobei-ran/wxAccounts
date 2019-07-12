@@ -1,11 +1,10 @@
 <template>
 <!-- 待支付订单详情 -->
     <div class="addorderdetail">
-        <!-- <div class="header">
-            <img @click='Return' src="../../../common/img/icon_fh.png" alt="">
-            <span>订单详情</span>
-        </div> -->
-        <main class="content">
+        <div class="header" v-show="status2">
+            <span>该订单不存在</span>
+        </div>
+        <main class="content" v-show="status">
             <div class="content_box"> 
                 <div class="site">
                     <div class="addOrder" v-if='paydata.status == 1'>
@@ -26,13 +25,13 @@
                 </div>
 
                 <div class="orderList">
-                    <h4>{{ paydata.sname }}的店铺 <img src="../../../common/img/icon_enter.png" alt=""></h4>
-                    <dl class="order_con">
-                        <dt><img :src="$http.baseURL+paydata.img" alt=""></dt>
+                    <h4><span v-text='paydata.sname?paydata.sname:"医生"'></span>的店铺 <img src="../../../common/img/icon_enter.png" alt=""></h4>
+                    <dl class="order_con" v-for="(val,i) in drugdata" :key='i'>
+                        <dt><img :src="$http.baseURL+val.img" alt=""></dt>
                         <dd>
-                            <h5>{{ paydata.gname }}</h5>
-                            <span>￥{{ paydata.money }}</span>
-                            <p>x{{ paydata.num }}</p>
+                            <h5>{{ val.name }}</h5>
+                            <span>￥{{ val.money }}</span>
+                            <p>x{{ val.num }}</p>
                         </dd>
                     </dl>
                     <ul class="goods">
@@ -68,11 +67,14 @@ import { Toast } from 'mint-ui';
 export default {
     data () {
         return {
+            status: false,
+            status2: false,
             paydata: '',
             timer: '',
             dizhi: '',
             orderTime: '',      // 订单倒计时的执行函数
             disabled: false,    // 按钮控制
+            drugdata: [],   
         }
     },
     mounted () {
@@ -85,10 +87,14 @@ export default {
             this.$http.post('/mobile/Wxorder/order_data', { number: this.$route.params.id}).then(res => {
                 console.log(res)
                 if (res.code == 1) {
+                    this.status = true
                     self.paydata = res.data
+                    self.drugdata = res.arr
                     if (res.data.status == 1) {
                         self.timerOrder(res.data.addtime, res.data.fw_time)     // 传递订单创建时间 和 服务器时间
                     }
+                } else {
+                    this.status2 = true
                 }
             })
         },
@@ -226,38 +232,19 @@ export default {
     flex-direction: column;
     font-size: rem(16);
     .header {
-        -webkit-display: flex;
-        display: flex;
-        height: rem(40);
-        justify-content: center;
-        color: #212121;
-        position: relative;
-        box-shadow:0px 1px 0px 0px rgba(224,224,224,.5);
-        padding-top: rem(0);
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-        font-size: rem(16);
-        background: #fff;
-        img {
-            font-size: rem(30);
-            position: absolute;
-            left: rem(15);
-            top: rem(10);
-            line-height: 1;
-            font-size: rem(19);
-            height: rem(18);
-        }
-        span {
-            padding-top: rem(14);
-            font-weight:400;
-            color: #212121;
-        }
+        width: 100%;
+        text-align: center;
+        font-size: rem(15);
+        height: rem(50);
+        line-height: rem(50);
+        color: orange;
     }
     .content {
         width: 100%;
         -webkit-flex:1;
         flex:1;
-        overflow: auto;
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
         .content_box {
             padding: 0 rem(15);
             .site {
@@ -277,6 +264,8 @@ export default {
                     padding-bottom: rem(15);
                     border-bottom: 1px solid #E6E6E6;
                     p > span {
+                        display: inline-block;
+                        min-width: rem(32);
                         color: #E93825;
                     }
                 }
@@ -330,8 +319,9 @@ export default {
                     }
                 }
                 .order_con {
-                    -webkit-display: flex;
+                    display: -webkit-flex;
                     display: flex;
+                    margin-top: rem(10);
                     dt {
                         >img {
                             display: block;

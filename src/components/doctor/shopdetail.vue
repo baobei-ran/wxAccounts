@@ -20,14 +20,14 @@
                 <h4>{{ datalist.name }}</h4>
                 <p><span>{{ datalist.sales_volume }}</span>人购买</p>
             </div>
-            <section class="detail_con bg_f" v-if='datalist.type == 1? true:false'>        <!--  1 药品 2 保健品 3 医疗器械 -->
+            <section class="detail_con Mg-T bg_f" v-if='datalist.type == 1? true:false'>        <!--  1 药品 2 保健品 3 医疗器械 -->
                 <ul>
-                    <li><span>商品类型：</span><span>{{ datalist.recipe }}</span></li>
+                    <li class="color_blue"><span>商品类型：</span><span>{{ datalist.recipe }}</span></li>
                     <li><span>商品剂型：</span><span>{{ datalist.type2 }}</span></li>
                     <li><span>商品用法：</span><span>{{ datalist.usetype }}</span></li>
                 </ul>
                 <ul>
-                    <li><span>规格：</span><span>{{ datalist.specification }}</span></li>
+                    <li class="color_blue"><span>规格：</span><span>{{ datalist.specification }}</span></li>
                     <li><span>成分：</span><span>{{ datalist.type2 }}</span></li>
                     <li><span>性状：</span><span>{{ datalist.usetype }}</span></li>
                     <li><span>功能主治：</span><span>{{ datalist.attending_functions }}</span></li>
@@ -71,7 +71,7 @@
                 <img v-for='(val,i) in imgs' :key='i' :src="$http.baseURL+val.img" alt="">
             </div>
        </div>
-        <div class="footer">
+        <div class="footer" v-show="footbtn">
                 <mt-button class="btnback" type="default"  @click.native='Returns'>店铺首页</mt-button>
                 <mt-button class="clickup" type="primary" @click.native="showModal">立即购买</mt-button>
         </div>
@@ -136,9 +136,15 @@ export default {
             pics: [],
             popupVisible: false,
             gTxt: '',                   // 规格
+            footbtn: true,
         }
     },
     mounted () {
+        if (this.$route.query.type && this.$route.query.type == 1) {
+            this.footbtn = false
+        } else {
+            this.footbtn = true
+        }
         var _this = this;
         var id = this.$route.query.id
         console.log(this.$route)
@@ -330,14 +336,16 @@ $w: 100%;
             }
         }
     }
-
+    .Mg-T {
+        margin-top: rem(10);
+    }
     .detail_con {
         font-size: 0.28rem;
-        padding: 0 0.20rem;
         overflow: hidden;
         ul {
             font-weight: 400;
             li {
+                padding: 0 0.23rem;
                 width: 100%;
                 margin: 0.2rem 0;
                 display: -webkit-box; 
@@ -358,9 +366,13 @@ $w: 100%;
                     color: #333;
                 }
             }
+            .color_blue {
+                padding: 0 0.2rem;
+                border-left: 3px solid #5189F6;
+            }
         }
         ul:first-child {
-            border-bottom: 1px solid rgba(224,224,224,1);
+            border-bottom: 1px solid #E0E0E0;
         }
     }
     .cont_img {

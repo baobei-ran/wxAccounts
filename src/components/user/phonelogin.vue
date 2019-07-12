@@ -93,7 +93,7 @@ export default {
                     console.log(res)
                     if (res.code == 1) {
                         if (res.auth == 1) {
-                             MessageBox.confirm('已成功绑定用户信息，返回公众号后点击左下方“我的医生”即可与医生在线沟通!', {showCancelButton: false, confirmButtonText: '确定并返回'}).then(action => {
+                            MessageBox.confirm('已成功绑定用户信息，返回公众号后点击左下方“我的医生”即可与医生在线沟通!', {showCancelButton: false, confirmButtonText: '确定并返回'}).then(action => {
                                 self.wx_clocs()
                             });
                             return;
@@ -336,11 +336,20 @@ export default {
         padding: 0;
         display: flex;
         align-items: center;
+        position: relative;
         input {
             width: 70%;
             height: 100%;
             display: block;
         }
+        input::-webkit-outer-spin-button,            
+        input::-webkit-inner-spin-button{                
+            -webkit-appearance: none !important;            
+        }
+        input[type=number]{
+            -moz-appearance:textfield;
+        }
+        
         span {
             position: absolute;
             right: rem(29);

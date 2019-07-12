@@ -2,10 +2,6 @@
 <!-- 订单详情 -->
 <!-- 已完成 和 已取消 和 待收货的 和 待发货-->
     <div class="addorderdetail">
-        <!-- <div class="header">
-            <img v-show='flag' @click='Return' src="../../../common/img/icon_fh.png" alt="">
-            <span>订单详情</span>
-        </div> -->
         <main class="content">
             <div class="content_box"> 
                 <div class="site">
@@ -37,15 +33,14 @@
                 </div>
 
                 <div class="orderList Mg-T5">
-                    <h4>{{ detaildata.sname }}的店铺 
-                        <!-- <img src="../../../common/img/icon_enter.png" alt=""> -->
+                    <h4><span v-text='detaildata.sname?detaildata.sname:"医生"'></span>的店铺
                     </h4>
-                    <dl class="order_con">
-                        <dt><img :src="$http.baseURL+detaildata.img" alt=""></dt>
+                    <dl class="order_con" v-for="(val,i) in drugdata">
+                        <dt><img :src="$http.baseURL+val.img" alt=""></dt>
                         <dd>
-                            <h5>{{ detaildata.gname }}</h5>
-                            <span>￥{{ detaildata.money }}</span>
-                            <p>x{{ detaildata.num }}</p>
+                            <h5>{{ val.name }}</h5>
+                            <span>￥{{ val.money }}</span>
+                            <p>x{{ val.num }}</p>
                         </dd>
                     </dl>
                     <ul class="goods">
@@ -138,7 +133,8 @@ export default {
         return {
             length: 0,  // 留言的数量
             detaildata: {},
-            flag: true
+            flag: true,
+            drugdata: []
         }
     },
     mounted () {
@@ -161,11 +157,12 @@ export default {
                 console.log(res)
                 if (res.code == 1) {
                     self.detaildata = res.data
+                    self.drugdata = res.arr
                 }
             })
         },
         createOrder () {    // 再次购买
-            this.$router.push({ name: 'takeorderdetail', params: { id: this.detaildata.number } }) 
+            this.$router.push({ name: 'orderbuyagain', params: { id: this.detaildata.number } })
         },
         orderData() {  // 确认收货
              var self = this;
@@ -212,40 +209,12 @@ export default {
     -webkit-flex-direction: column;
     flex-direction: column;
     font-size: rem(16);
-    .header {
-        -webkit-display: flex;
-        display: flex;
-        height: rem(40);
-        justify-content: center;
-        color: #212121;
-        position: relative;
-        box-shadow:0px 1px 0px 0px rgba(224,224,224,.5);
-        padding-top: rem(0);
-        -webkit-box-sizing: border-box;
-        box-sizing: border-box;
-        font-size: rem(16);
-        background: #fff;
-        img {
-            font-size: rem(30);
-            position: absolute;
-            left: rem(15);
-            top: rem(10);
-            line-height: 1;
-            font-size: rem(19);
-            height: rem(28);
-            padding: rem(5);
-        }
-        span {
-            padding-top: rem(15);
-            font-weight:400;
-            color: #212121;
-        }
-    }
     .content {
         width: 100%;
         -webkit-flex:1;
         flex:1;
-        overflow: auto;
+        overflow-y: scroll;
+        -webkit-overflow-scrolling: touch;
         .content_box {
             padding: 0 rem(15);
             .site {
@@ -315,8 +284,9 @@ export default {
                     }
                 }
                 .order_con {
-                    -webkit-display: flex;
+                    display: -webkit-flex;
                     display: flex;
+                    margin-top: rem(10);
                     dt {
                         >img {
                             display: block;
