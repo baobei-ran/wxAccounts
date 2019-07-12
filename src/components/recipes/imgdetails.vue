@@ -142,7 +142,8 @@ export default {
                  var urls = canvas.toDataURL("image/png");
                  cntElem.style['display'] = 'none';
                 // cntElem.style['-webkit-transform'] = 'scale(0.5)';
-                var img = document.createElement('img')
+                // var img = document.createElement('img')
+                var img = new Image();
                 img.src = urls
                 img.style['width'] = '100%';
                 img.style['background'] = '#fff';
@@ -215,9 +216,9 @@ export default {
             width: 100%;
             height: 100%;
             .html_content {
-                position: absolute;
-                top:0;
-                left: -200%;
+                // position: absolute;
+                // top:0;
+                // left: -200%;
                 background: #fff;
                 width: 200%;
                 min-height: 100%;
