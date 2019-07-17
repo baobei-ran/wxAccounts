@@ -242,11 +242,9 @@ export default {
             };
         },
         outSites (e) {    // 去选择地址
-            console.log(e)
             var self = this;
             var id = this.$route.params.id
             self.$router.push({ path:'/setorder', query: { id: id }});
-            // this.$router.push({ name:'setorder', params: { id: this.$route.params.id }});
         },  
     }
 }

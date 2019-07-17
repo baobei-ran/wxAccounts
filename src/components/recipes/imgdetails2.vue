@@ -54,7 +54,6 @@
                         <div class="check">
                             <ul>
                                 <li><span>处方医师：</span><img ref='doctorImg' src="" alt=""></li>
-                                <!-- <li><span>审核药师：</span><img src="" alt=""></li> -->
                             </ul>
                         </div>
                     </div> 
@@ -116,19 +115,18 @@ export default {
          canvasImg () {
             var _this = this;
             var cntElem = document.getElementById('html');
-            cntElem.style['-webkit-transform'] = 'scale(1)'
+            // cntElem.style['-webkit-transform'] = 'scale(1)'
             var shareContent = cntElem; //需要截图的包裹的（原生的）DOM 对象
             var width = shareContent.offsetWidth ; //获取dom 宽度
             var height = shareContent.offsetHeight; //获取dom 高度
             var canvas = document.createElement("canvas"); //创建一个canvas节点
-            // var scale = 4; //定义任意放大倍数 支持小数
-            var scale = window.devicePixelRatio * 2;//获取设备的显示参数
+            var scale = window.devicePixelRatio * 1.5;//获取设备的显示参数
             canvas.width = width * scale; //定义canvas 宽度 * 缩放
             canvas.height = height * scale; //定义canvas高度 *缩放
             // _this.$refs.doctorImg.crossOrigin = "Anonymous"; // 图片跨域
             canvas.getContext("2d").scale(scale, scale); //获取context,设置scale 
             var opts = {
-                // background:null,
+                background: null,
                 scale: scale, // 添加的scale 参数
                 canvas: canvas, //自定义 canvas
                 logging: false, //日志开关，便于查看html2canvas的内部执行流程
@@ -139,7 +137,7 @@ export default {
                 // taintTest: true,//是否在渲染前测试图片
             };
             html2canvas(shareContent, opts).then(function (canvas) {
-                var urls = canvas.toDataURL("image/jpg");
+                var urls = canvas.toDataURL("image/png");
                 //  cntElem.style['display'] = 'none';
                 // _this.locations = false;
                 // document.getElementById('canvas_box').style['background'] = '#000';
@@ -152,26 +150,16 @@ export default {
                 // pics.style['background'] = '#fff';
                 // document.getElementById('imgs').appendChild(pics);
                 var t = setTimeout(() => {
-                    document.getElementById('imgs').innerHTML = '<img src="'+urls+'" style="width: 100%;height:50%;background-color: #FFF;" alt="" />';
+                    document.getElementById('imgs').innerHTML = '<img src="'+urls+'" style="width: 100%;background-color: #FFF;" alt="" />';
                     document.getElementById('canvas_box').style['background'] = '#000';
                     Indicator.close();
                     clearTimeout(t)
                 }, 0)
-                // _this.downloadImage(urls);
             });
         },
-        downloadImage(url) {
-            // 创建一个 img 标签，把图片插入到 DOM 中
-            const parents = this.$refs.selfReport;
-            const createImg = document.createElement('img');
-            const insertEle = this.$refs.insetElement;
-            parents.insertBefore(createImg,parents.childNodes[0])
-            createImg.setAttribute('src', url)
-            createImg.style.width = '100%';
-            parents.style.backgroundColor = '#000';
-            createImg.setAttribute('class', 'report-figure');
-            Indicator.close();
-        },
+        
+       
+            
     },
     beforeDestroy () {
         Indicator.close();
@@ -243,18 +231,15 @@ export default {
                 font-size: rem(14);
                 padding: rem(20) rem(20);
                 -webkit-transform-origin-x: 0;    /*定义元素被置于x轴的何处*/
-                -webkit-transform: scale(0.5);   /*定义元素被缩放*/
+                // -webkit-transform: scale(0.5);   /*定义元素被缩放*/
                 .canvas_head {
                     width: 100%;
                     >ul {
-                        display: -webkit-box;      
-                        display: -moz-box;       
-                        display: -ms-flexbox;
-                        display: -webkit-box;
-                        display: -webkit-flex;
-                        display: flex;
+                        width: 100%;
+                        overflow: hidden;
                         li {
-                            width: 100%;
+                            width: 33%;
+                            float: left;
                             font-size: rem(10);
                             line-height: rem(30);
                             letter-spacing: rem(0.5);
@@ -274,21 +259,12 @@ export default {
                     border-bottom:1px dashed #ccc;
                     padding: 10px 0;
                     ul {
-                        display: -webkit-box;      
-                        display: -moz-box;       
-                        display: -ms-flexbox;
-                        display: -webkit-box;
-                        display: -webkit-flex;
-                        display: flex;
-                        -webkit-flex-wrap: wrap;
-                        -moz-flex-wrap: wrap;
-                        -ms-flex-wrap: wrap;
-                        -o-flex-wrap: wrap;
-                        flex-wrap: wrap;
+                        overflow: hidden;
                         font-size: rem(11);
                         letter-spacing: rem(1);
                         li {
                             width: 33%;
+                            float: left;
                             height: 25px;
                             line-height: 25px;
                             font-size: rem(14);
@@ -307,6 +283,7 @@ export default {
                     >ol {
                         margin-top: 10px;
                         font-size: rem(11);
+                        margin-left: 20px;
                         li {
                             line-height: rem(30);
                             font-size: rem(14);
@@ -342,29 +319,18 @@ export default {
                     height: 80px;
                     margin-bottom: 20px;
                 > ul {
-                        display: -webkit-box;      
-                        display: -moz-box;       
-                        display: -ms-flexbox;
-                        display: -webkit-flex;
-                        display: flex;
+                        width: 100%;
+                        overflow: hidden;
                         li {
                             width: 50%;
-                            display: -webkit-box;      
-                            display: -moz-box;       
-                            display: -ms-flexbox;
-                            display: -webkit-flex;
-                            display: flex;
-                            align-items: center;
-                            -webkit-align-items: center;
-                            -moz-align-items: center;
-                            -ms-align-items: center;
-                            -o-align-items: center;
+                            float: left;
                             font-size: rem(14);
                             > img {
                                 max-width: 100px;
                                 max-height: 70px;
-                                display: block;
+                                display: inline-block;
                                 margin-left: 10px;
+                                vertical-align: middle;
                             }
                         }
                     }

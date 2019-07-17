@@ -32,7 +32,7 @@
                     <dl>
                         <dt class="dis_f flex_i">
                             <img v-for="(item, j) in val.img" :key='j+"_1"' :src="$http.baseURL+item" alt="">
-                            <span v-show="val.allnum > 4" class="omit"></span>
+                            <span v-show="val.picnum > 4" class="omit"></span>
                         </dt>
                         <dd>
                             <span>￥{{ val.money }}</span>
@@ -75,7 +75,7 @@
                     <dl>
                         <dt class="dis_f flex_i">
                             <img v-for="(item, j) in val.img" :key='j+"_33"' :src="$http.baseURL+item" alt="" />
-                            <span v-show="val.allnum > 4" class="omit"></span>
+                            <span v-show="val.picnum > 4" class="omit"></span>
                         </dt>
                         <dd>
                             <span>￥{{ val.money }}</span>
@@ -97,7 +97,7 @@
                     <dl>
                         <dt class="dis_f flex_i">
                             <img v-for="(item, j) in val.img" :key='j+"_44"' :src="$http.baseURL+item" alt="" />
-                            <span v-show="val.allnum > 4" class="omit"></span>
+                            <span v-show="val.picnum > 4" class="omit"></span>
                         </dt>
                         <dd>
                             <span>￥{{ val.money }}</span>
@@ -122,7 +122,7 @@
                     <dl>
                         <dt class="dis_f flex_i">
                             <img v-for="(item, j) in val.img" :key='j+"_55"' :src="$http.baseURL+item" alt="">
-                            <span v-show="val.allnum > 4" class="omit"></span>
+                            <span v-show="val.picnum > 4" class="omit"></span>
                         </dt>
                         <dd>
                             <span>￥{{ val.money }}</span>
@@ -207,10 +207,12 @@ export default {
                     if (res.code == 1) {
                         self.alllist = res.data
                         self.alllist.map(val => { // 图片最多显示四张
+                            val.picnum = val.img.length
                             if(val.img.length > 5) {
                                 val.img.length = 4
                             }
                          })
+                        console.log(self.alllist)
                     } else {
                         self.alllist = []
                     }

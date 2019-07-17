@@ -42,7 +42,7 @@ const EditSite = resolve => require(['@/components/site/editsite'],resolve);    
 
 const RecipeList = r => require.ensure([], () => r(require('@/components/recipes/recipelist')), 'fang');  //  处方订单列表
 const RecipeMsg = r => require.ensure([], () => r(require('@/components/recipes/recipeMsg')), 'fang');    //  处方信息
-const ImgDetails = r => require.ensure([], () => r(require('@/components/recipes/imgdetails')), 'fang');  //  处方详情
+const ImgDetails = r => require.ensure([], () => r(require('@/components/recipes/imgdetails2')), 'fang');  //  处方详情
 
 
 import RecipeAudit from '@/components/recipes/recipeAudit';       // 电子处方 药品药师审核页(1.2)
