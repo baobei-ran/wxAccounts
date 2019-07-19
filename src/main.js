@@ -18,6 +18,10 @@ import infiniteScroll from 'vue-infinite-scroll'
 import VueWechatTitle from 'vue-wechat-title'
 Vue.use(VueWechatTitle)
 
+// 图片放大预览（暂时不用）
+// import vuePicturePreview from 'vue-picture-preview'
+// Vue.use(vuePicturePreview)
+
 Vue.use(infiniteScroll)
 Vue.use(VueLazyload, {
   preLoad: 1.3,

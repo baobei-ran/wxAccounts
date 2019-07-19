@@ -2,8 +2,8 @@ import axios from 'axios';
 import qs from 'qs';
 // var baseURL = document.location.origin;  // 获取 url 的域名
 // var baseURL = window.location.protocol+"//"+window.location.host; // 获取 url 的域名兼容ie
-// var baseURL = 'http://test99.yunyikang.cn'; // 测试
-var baseURL="https://www.yunyikang.cn";       // 正式
+var baseURL = 'http://test99.yunyikang.cn'; // 测试
+// var baseURL="https://www.yunyikang.cn";       // 正式
 axios.defaults.retry = 1;           //  发起请求次数
 axios.defaults.retryDelay = 1000;   //  每次请求时间
 let http = axios.create({

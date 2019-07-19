@@ -89,12 +89,13 @@ export default {
                 console.log(response)
                 if (response.code == 1) {
                     self.msgList = response.data
-                    setTimeout(() => {
+                    var t = setTimeout(() => {
                         // self.funcReadImgInfo(".doc_img");
                         // self.funcReadImgInfo(".head");
                         self.funcReadImgInfo(".imgs");
                         self.funcReadImgInfo(".msg2");
-                    }, 50)
+                        clearTimeout(t);
+                    }, 100)
                     this.$nextTick(() => {
                         // var container = this.$el.querySelector("#scrolls");
                         //     container.scrollTop = container.scrollHeight;

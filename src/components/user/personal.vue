@@ -18,6 +18,7 @@
                 <li @click='getAdministration'><img src="../../common/img/icon_jzcygl.png" alt=""> <span>就诊成员管理</span> <img class="Right" src="../../common/img/icon_enter.png" alt=""></li>
             </ul>
             <ul class="ul">
+                <li @click='getdzbl'><img src="../../common/img/icon_spdd.png" alt=""> <span>电子病历</span> <img class="Right" src="../../common/img/icon_enter.png" alt=""></li>
                 <li @click='getOrder'><img src="../../common/img/icon_spdd.png" alt=""> <span>商品订单</span> <img class="Right" src="../../common/img/icon_enter.png" alt=""></li>
                 <li @click='goSite'><img src="../../common/img/icon_shdz.png" alt=""> <span>收货地址管理</span> <img class="Right" src="../../common/img/icon_enter.png" alt=""></li>
             </ul>
@@ -106,6 +107,9 @@ export default {
         },
         getRecipe () {  // 处方订单
             this.out('/recipelist')
+        },
+        getdzbl () { // 电子病历
+            this.out('/emrecordlist')
         }
     }
 }

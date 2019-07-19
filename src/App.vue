@@ -4,6 +4,7 @@
           <router-view v-if='$route.meta.keeepAlive'></router-view>
       </keep-alive>
       <router-view v-if='!$route.meta.keeepAlive'></router-view>
+      <!-- <lg-preview></lg-preview> -->
   </div>
 </template>
 
@@ -59,7 +60,8 @@ button:active{
   font-size: 0.3rem;
 }
 
-input:disabled {
+input:disabled,
+.bg-white {
   background-color: #FFF;
 }
 
@@ -71,5 +73,4 @@ input::-webkit-inner-spin-button {
 input[type=number]{
   -moz-appearance: textfield;
 }
-
 </style>

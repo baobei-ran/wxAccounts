@@ -9,7 +9,7 @@
                 <div class="swiper-container">
                     <ul class="swiper-wrapper">
                         <li class="swiper-slide" style="float:left;" v-for='(val,i) in pics' :key='i'>
-                            <img :src="$http.baseURL+val.img" alt="">
+                            <img class="v-pics" :src="$http.baseURL+val.img" alt="">
                         </li>
                     </ul>
                     <ol class="swiper-pagination"></ol>
@@ -168,12 +168,19 @@ export default {
                                 
                             }) 
                         }
+                        var ua = navigator.userAgent.toLowerCase();//获取判断用的对象
+                        if (ua.match(/MicroMessenger/i) == "micromessenger") {
+                            _this.$nextTick(() => {
+                                _this.funcReadImgInfo('.v-pics');
+                            })
+                        }
                      })
                 })
             } else {
 
             }
         }).catch(err => { console.log(err)})
+        
         
     },
     methods: {
@@ -209,7 +216,24 @@ export default {
         },
         specification (n) {
             this.gTxt = n
-        }
+        },
+         /*调用微信预览图片的方法*/
+        funcReadImgInfo: function (dom) {
+            var imgs = [];
+            // var imgObj = $(".imgs img");//这里改成相应的对象
+            var imgObj = $(dom)
+            for(var i=0; i<imgObj.length; i++) {
+                imgs.push(imgObj.eq(i).attr('src'));
+                imgObj.eq(i).click(function() {
+                    console.log(this)
+                    var nowImgurl = $(this).attr('src');
+                        WeixinJSBridge.invoke("imagePreview",{
+                    "urls":imgs,
+                    "current":nowImgurl
+                });
+                });
+            }
+        },
     }
 }
 </script>

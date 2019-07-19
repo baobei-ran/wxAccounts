@@ -78,6 +78,12 @@ import RecommendDrug from '@/components/wxView/recommendDrug';                  
 import YaoRecipeorder from '@/components/goods/yao-recipeorder';                            // 推荐药品 药品下单页（1.2）
 
 
+import Emrecordlist from '../components/emrecord/emrecordlist.vue';   // 电子病历列表 (1.3)
+import Emrecorddetail from '../components/emrecord/emrecorddetail.vue'; // 电子病历详情 (1.3)
+import Emrdetails from '../components/emrecord/emrdetail2.vue'; // 电子病历详情 (1.3)
+import AddrecordsUserinfo from '../components/emrecord/addrecordsFile/addrecordsUserinfo.vue'; // 添加电子病历 (1.3)
+import AddrecordsUserClinic from '../components/emrecord/addrecordsFile/addrecordsUserClinic.vue'; // 添加电子病历2 (1.3)
+
 Vue.use(Router) 
 
 const router = new Router({
@@ -438,6 +444,37 @@ const router = new Router({
       component: YaoRecipeorder
     },
 
+      // 电子病历列表
+    {
+      path: '/emrecordlist',         // 电子病历列表
+      meta: {title: '电子病历'},
+      name: 'emrecordlist',
+      component: Emrecordlist
+    },
+    {
+      path: '/emrecorddetail:id?',         // 电子病历详情
+      meta: {title: '病历详情'},
+      name: 'emrecorddetail',
+      component: Emrecorddetail
+    },
+    {
+      path: '/emrdetails:id?',         // 电子病历详情
+      meta: {title: '病历详情'},
+      name: 'emrdetails',
+      component: Emrdetails
+    },
+    {
+      path: '/addrecordsUserinfo',         // 添加电子病历
+      meta: {title: '添加病历'},
+      name: 'addrecordsUserinfo',
+      component: AddrecordsUserinfo
+    },
+    {
+      path: '/addrecordsUserClinic',         // 添加电子病历
+      meta: {title: '添加病历'},
+      name: 'addrecordsUserClinic',
+      component: AddrecordsUserClinic
+    },
     
   ],
   // scrollBehavior (to, from, savedPosition) {
