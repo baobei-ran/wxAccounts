@@ -16,7 +16,7 @@ const AuthenticationYes = resolve => require(['../components/user/authentication
 
 import Mydoctor from '../components/doctor/mydoctor'  // 我的医生(1.1.0)
 const Docrecord = r => require.ensure([], () => r(require('../components/doctor/docrecord')), 'amr') // 咨询记录(1.1.0)
-
+// 10
 
 import DoctorDetail from '../components/doctor/doctordetail'  // 医生详情
 import Yuyuedoc from '../components/doctor/yuyuedoc'          // 预约医生信息(1.1.0)
@@ -33,6 +33,7 @@ import Orderdetails from "../components/goods/orderdetails";                    
 import AddorderDetail from '../components/goods/goodsdetails/addorderdetail'   // 待支付订单详情
 import TakeorderDetail from '../components/goods/goodsdetails/orderbuyagain'   // 再次购买
 import SuccessOrder from '../components/goods/goodsdetails/successOrder'   // 已完成 和 已取消 的订单详情
+// 21
 
 import OerderSite from '../components/site/oerdersite';                // 购买商品选择列表
 import SetOrder from '../components/site/setorder';                // 再次购买商品选择列表
@@ -50,7 +51,7 @@ import Recipeorder from '@/components/recipes/recipeorder';       // 电子处�
 import Drugpaysuccess from '@/components/recipes/drugpaysuccess'; // 电子处方 下单支付成功提示页（1.2）
 import Recipedrug from '../components/recipes/recipedrug.vue';    // 药店订单处方信息（1.2）
 import Drugdetail from '../components/recipes/drugdetail.vue';    // 处方药品的药品详情 （1.2.0）
-
+// 34
 const SearchDoctor = resolve => require(['@/components/doctor/searchdoctor'], resolve);        //  更多医生
 const DoctorShopList = resolve => require(['@/components/doctor/doctorshoplist'], resolve);     // 更多医生店铺
 import Error404 from '../components/errors/err404';
@@ -67,7 +68,7 @@ const Administration = r => require.ensure([], () => r(require('../components/Ad
 const GetAdministration = r => require.ensure([], () => r(require('../components/Administration/getAdministration.vue')), 'administration');  // 选择成员列表
 const Addmember = r => require.ensure([], () => r(require('../components/Administration/addmember.vue')), 'administration');     // 添加成员
 const Editmember = r => require.ensure([], () => r(require('../components/Administration/editmember.vue')), 'administration');   // 编辑成员信息
-
+// 45
 
 // 从微信公众号信息进行跳转进来的页面
 const Consultdoctor = r => require.ensure([], () => r(require('../components/wxView/consultdoctor')), 'amr');  // 咨询页 医生详情的工作室
@@ -83,7 +84,7 @@ import Emrecorddetail from '../components/emrecord/emrecorddetail.vue'; // 电�
 import Emrdetails from '../components/emrecord/emrdetail2.vue'; // 电子病历详情 (1.3)
 import AddrecordsUserinfo from '../components/emrecord/addrecordsFile/addrecordsUserinfo.vue'; // 添加电子病历 (1.3)
 import AddrecordsUserClinic from '../components/emrecord/addrecordsFile/addrecordsUserClinic.vue'; // 添加电子病历2 (1.3)
-
+// 56
 Vue.use(Router) 
 
 const router = new Router({
