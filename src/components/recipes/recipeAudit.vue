@@ -4,8 +4,8 @@
         <div class="section flex1">
             <div class="section_box">
                 <div class="recipe_haed">
-                    <div class="recipe_title" :style="recipeMsg.drug_autdit == 2 || recipeMsg.drug_autdit == 1 && recipeMsg.status == 2?border:''">
-                        <div class="my_audit" v-if='recipeMsg.drug_autdit !== 2' v-text="recipeMsg.drug_autdit == 0 && recipeMsg.status == 1?'等待药师审核':recipeMsg.drug_autdit == 1 && recipeMsg.status == 1 ?'药师审核已通过':''">等待药师审核</div>
+                    <div class="recipe_title" :style="recipeMsg.drug_autdit == 2 || recipeMsg.status == 2?border:''">
+                        <div class="my_audit" v-if='recipeMsg.drug_autdit !== 2 && recipeMsg.status ==1' v-text="recipeMsg.drug_autdit == 0 && recipeMsg.status == 1?'等待药师审核':recipeMsg.drug_autdit == 1 && recipeMsg.status == 1 ?'药师审核已通过':''">等待药师审核</div>
                         <div class="my_audit_orange" v-if="recipeMsg.drug_autdit == 0 && recipeMsg.status == 2">等待药师审核，处方已过期</div>
                         <div class="my_audit_orange" v-if='recipeMsg.drug_autdit == 2 && recipeMsg.status == 1'>药师审核拒绝</div>
                         <div class="my_audit_orange" v-if="recipeMsg.drug_autdit == 1 && recipeMsg.status == 2">处方已过期</div>
@@ -105,9 +105,25 @@ export default {
             })
         },
         handleClickBuy () { // 去购买
-            if (this.recipeMsg.drug_autdit == 0) {  // 未审核不能去购买
+            if (this.recipeMsg.drug_autdit == 0 && this.recipeMsg.status == 1) {  // 未审核不能去购买
                 this.$toast({
                     message: '药师审核通过后，即可购买药品',
+                    position: 'middle',
+                    duration: 3000
+                });
+                return ;
+            }
+            if (this.recipeMsg.drug_autdit == 0 && this.recipeMsg.status == 2) {  // 未审核过期
+                this.$toast({
+                    message: '处方已过期，请重新咨询医生，开具处方',
+                    position: 'middle',
+                    duration: 3000
+                });
+                return ;
+            }
+            if (this.recipeMsg.drug_autdit == 2) {  // 审核未通过
+                this.$toast({
+                    message: '药师审核未通过，请重新咨询医生，开具处方',
                     position: 'middle',
                     duration: 3000
                 });

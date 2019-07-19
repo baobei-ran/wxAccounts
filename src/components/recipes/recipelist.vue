@@ -88,13 +88,37 @@ export default {
                 startY: 0,
                 scrollbar: true,
                 click: true
-            }
+            },
+            timerId: '',  // 监听滚动定时器
         }
     },
     mounted() {
+        
+    },
+    activated () {
         this.initdata()
+        this.$refs.section.scrollTop = this.$route.meta.y 
+        var _this = this;
+        this.$refs.section.addEventListener('scroll',_this.justifyPos,true )
+        clearTimeout(this.timerId)
+    },
+    deactivated () {
+        // 当组件销毁的时候，移除滚动行为监听, 清空定时器；
+        // 该方法是绑定到 window 身上，即使跳转到其他组件，仍然会监听页面的滚动行为
+        var _this = this;
+        this.$refs.section.removeEventListener('scroll', _this.justifyPos, true)
     },
     methods: {
+        justifyPos (e) {         // 获取滚动的位置信息
+                    // 节流；
+            if (this.timerId) clearTimeout(this.timerId)
+            this.timerId = setTimeout(() => {
+                // 获取页面滚动距离之后设置给当前路由的 元信息
+                // console.log(e.target.scrollTop)
+                var _this = this;
+                this.$route.meta.y = e.target.scrollTop
+            }, 300)
+        },
         initdata () {
             var self = this;
             var uid = this.$cookie.get('userLogins')

@@ -318,7 +318,7 @@ const router = new Router({
                                       // 处方订单
     {
       path: '/recipelist',
-      meta: {title: '处方订单列表'},
+      meta: {title: '处方订单列表', keeepAlive: true, x:0, y:0},
       component: RecipeList
     },
     {
