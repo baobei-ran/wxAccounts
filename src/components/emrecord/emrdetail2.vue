@@ -1,67 +1,62 @@
 <template>
-    <!-- 详情 -->
+    <!-- 医生添加的详情 -->
     <div class="emrecorddetail">
-        <div class="emrecorddetail-box">
+        <div class="emrecorddetail-box" v-show='isView'>
             <div class="header br-rs">
-                <div class="emr-title"><span>创建时间：2019-07-23</span></div>
+                <div class="emr-title"><span>创建时间：{{ userinfo.addtime | moment }}</span></div>
                 <div class="emr-usermsg dis_f">
-                    <h2>李二牛</h2>
+                    <h2>{{ userinfo.name }}</h2>
                     <b>|</b>
-                    <span>男</span>
+                    <span v-text='userinfo.sex == 1? "男":"女"'></span>
                     <b>|</b>
-                    <span>25岁</span>
+                    <span>{{ userinfo.age }}岁</span>
                 </div>
             </div>
             <div class="user-msg br-rs">
                 <ul>
                     <li>
                         <h2>主诉</h2>
-                        <p><span>身高/体重</span><span>无</span></p>
-                        <p><span>疾病描述</span><span>无</span></p>
+                        <p v-html='userinfo.main'></p>
                     </li>
-                    <li>
+                    <li v-show="userinfo.dis">
                         <h2>现病史</h2>
-                        <p>感冒发烧流鼻涕、感冒发烧流鼻涕、感冒了</p>
+                        <p v-html="userinfo.dis"></p>
                     </li>
-                    <li>
+                    <li v-show="userinfo.past">
                         <h2>既往病史</h2>
-                        <p>先天性心脏病、心脏不好、营养不良</p>
+                        <p v-html="userinfo.past"></p>
                     </li>
                 </ul>
             </div>
-            <div class="user-msg br-rs">
+            <div class="user-msg br-rs" v-show="userinfo.text">
                 <h1>其他健康指标</h1>
-                <ul>
-                    <li><span>肝功能</span><span>无</span></li>
-                    <li><span>肾功能</span><span>偶尔吸烟/日平均吸烟量5支/开始吸烟年龄23岁</span></li>
-                    <li><span>药物过敏史</span><span>偶尔饮酒/未戒酒/日平均饮酒量半斤/开始饮酒年龄16岁</span></li>
-                    <li><span>备孕情况</span><span>先天性心脏病、心脏不好、营养不良</span></li>
-                    <li><span>吸烟情况</span><span>头孢类抗生素过敏</span></li>
-                    <li><span>饮酒情况</span><span>头孢类抗生素过敏</span></li>
-                </ul>
+                <div class="user-text" v-html="userinfo.text"></div>
             </div>
             <div class="user-msg br-rs">
                 <ul>
                     <li>
                         <h2>诊断</h2>
-                        <p>感冒发烧流鼻涕</p>
+                        <p v-html="userinfo.result"></p>
                     </li>
-                    <li>
+                    <li v-show="userinfo.doc_cure || userinfo.again_text">
                         <h2>医嘱小结</h2>
-                        <p><span>复诊时间</span><span>三天后</span></p>
-                        <p>注意多喝热水、早点睡不要熬夜。</p>
+                        <p><span>复诊时间</span><span>{{ userinfo.again_text }}</span></p>
+                        <p v-show="userinfo.doc_cure" v-html='userinfo.doc_cure'></p>
                     </li>
-                    <li id='drug-pic'>
-                        <img v-for='(val,i) in picdata' :key='i' @click="clickScalePic(i)" :src="val" alt="" />
+                    <li id='drug-pic' v-if="picdata.length">
+                        <img v-for='(val,i) in picdata' :key='i' @click="clickScalePic(i)" :src="$http.baseURL+val" alt="" />
                     </li>
                 </ul>
             </div>
             <div class="footer user-msg br-rs">
                 <ul>
-                    <li><span>医生</span><span>李二牛</span></li>
-                    <li><span>医院</span><span>山东省立医院</span></li>
+                    <li><span>医生</span><span>{{ userinfo.doc }}</span></li>
+                    <li><span>医院</span><span>{{ userinfo.hos }}</span></li>
                 </ul>
             </div>
+        </div>
+        <div class="emr-empty" v-show='isEmpty'>
+            无数据
         </div>
         <transition name="bounce">
             <div class="model-shade" v-show='isModel'>
@@ -80,14 +75,55 @@ export default {
     data () {
         return {
             isModel: false,
-            picdata: [require('../../common/img/pic_yptp.png'),'http://test99.yunyikang.cn/upload/doctor/15559967819130.jpg',require('../../common/img/pic_yptp.png')]
+            picdata: [],
+            userinfo: {},
+            isView: false,
+            isEmpty: false
         }
     },
+    beforeCreate() {
+        this.$indicator.open({
+                text: '',
+                spinnerType: 'fading-circle'
+            });
+    },
+    beforeDestroy () {
+        this.$indicator.close();
+    },
     mounted () {
-        
-       
+       this.initdata()
     },
     methods: {
+        initdata () {
+            var self = this;
+            var { id } = this.$route.query
+            this.$http.post('/mobile/Doch5/list_case_look', { id: id, type: 2 }).then(res => {
+                console.log(res)
+                self.$indicator.close();
+                
+                if (res.code == 1) {
+                    self.isView = true;
+                    self.userinfo = res.data;
+                    function replaceBr (data) {
+                        if (data) {
+                            data = data.replace(/\n/g, '<br />')
+                        }
+                        return data;
+                    }
+                    self.userinfo.main = replaceBr(self.userinfo.main);
+                    self.userinfo.dis = replaceBr(self.userinfo.dis);
+                    self.userinfo.past = replaceBr(self.userinfo.past);
+                    self.userinfo.text = replaceBr(self.userinfo.text);
+                    self.userinfo.result = replaceBr(self.userinfo.result);
+                    self.userinfo.doc_cure = replaceBr(self.userinfo.doc_cure);
+                    if (self.userinfo.pic) {
+                        self.picdata = self.userinfo.pic.split(',')
+                    }
+                } else {
+                    self.isEmpty = true
+                }
+            }).catch(err => console.log(err))
+        },
         modelShade (data) {
             this.isModel = data
         },
@@ -157,9 +193,9 @@ export default {
                 padding: 0 rem(30);
                 color: #808080;
                 h2 {
-                    font-size: rem(32);
+                    font-size: rem(28);
                     color: #212121;
-                    font-weight: 600;
+                    font-weight: 500;
                 }
                 >b {
                     margin: 0 rem(16);
@@ -176,6 +212,11 @@ export default {
                 color: #333;
                 font-weight: 600;
                 margin-bottom: rem(20);
+            }
+            .user-text {
+                color: #808080;
+                line-height: rem(40);
+                font-size: rem(24);
             }
             ul {
                 width: 100%;
@@ -218,6 +259,9 @@ export default {
                         margin: 0;
                     }
                 }
+                li:last-child {
+                    padding-bottom: 0;
+                }
             }
         }
        .footer {
@@ -234,6 +278,10 @@ export default {
         background: #000;
         width: 100%;
         height: 100%;
+    }
+    .emr-empty {
+        text-align: center;
+        margin-top: 30%;
     }
 }
 

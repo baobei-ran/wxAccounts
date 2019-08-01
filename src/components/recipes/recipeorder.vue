@@ -101,7 +101,7 @@
                    </dd>
                </dl>
                <ul>
-                   <li><span class="bg-img1">营业时间：</span><span>{{ drugstoredata.ktime }}--{{ drugstoredata.jtime }}</span></li>
+                   <li v-show="drugstoredata.ktime"><span class="bg-img1">营业时间：</span><span>{{ drugstoredata.ktime }}--{{ drugstoredata.jtime }}</span></li>
                    <li><span class="bg-img2">联系电话：</span><span>{{ drugstoredata.telephone }}</span></li>
                    <li><span class="bg-img3">药店地址：</span><span>{{ drugstoredata.dz }}</span></li>
                </ul>

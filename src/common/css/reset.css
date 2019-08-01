@@ -28,6 +28,7 @@ a, img {
 }
 input, textarea {
   outline: none;
+  caret-color:#333; 
 }
 
 html, body, div, span, applet, object, iframe,

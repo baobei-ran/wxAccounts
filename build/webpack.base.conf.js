@@ -50,7 +50,7 @@ module.exports = {
         test: /\.js$/,
         loader: 'babel-loader',
         include: [
-          resolve('src'),//表示在src目录下的js需要编译
+          resolve('src') //表示在src目录下的js需要编译
         ],
       },
       {

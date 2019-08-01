@@ -118,6 +118,50 @@ function apiAxios(method, url, params) {
   })
 }
 
+function timeGet(Url, data) { // 循环掉用的
+  var getTimes = axios.create({
+    baseURL: baseURL,
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded;charset=utf-8"
+    }
+  });
+  getTimes.interceptors.request.use(function (config) {
+    return config;
+  }, function (error) {
+    // 对请求错误做些什么
+    return Promise.reject(error);
+  });
+  return new Promise((response, reject) => {
+    getTimes.post(Url, data).then(res => {
+      response(res.data);
+    }).catch(error => {
+      reject(error)
+    });
+  })
+}
+
+function $upload(Url, data) {  // formdata
+  var instance = axios.create({
+    baseURL: baseURL,
+    headers: {
+      "Content-Type": "multipart/form-data"
+    }
+  });
+  instance.interceptors.request.use(function (config) {
+    return config;
+  }, function (error) {
+    // 对请求错误做些什么
+    return Promise.reject(error);
+  });
+  return new Promise((response, reject) => {
+    instance.post(Url, data).then(res => {
+      response(res.data);
+    }).catch(error => {
+      reject(error)
+    });
+  })
+}
+
 export default {
   get: function (url, params) {
     return apiAxios('GET', url, params)
@@ -125,11 +169,17 @@ export default {
   post: function (url, params) {
     return apiAxios('POST', url, params)
   },
+  formdata: function (url, datas) {
+    return $upload(url, datas)
+  },
   put: function (url, params) {
     return apiAxios('PUT', url, params)
   },
   delete: function (url, params) {
     return apiAxios('DELETE', url, params)
+  },
+  getPost: function (url, params) {
+    return timeGet(url, params)
   },
   baseURL: baseURL,
   all: function(arr, response) {

@@ -8,78 +8,89 @@
         </div>
         <div class="content-box">
             <div class="contents">
-                <div class="emr-data emr-wperfection">
+                <!-- 完善1 -->
+                <div class="emr-data emr-wperfection" v-for='(val, i) in datalist' :key='i+"_msg"' v-if='!val.stature && !val.weight'>
                     <div class="emr-usermsg dis_f">
-                        <h2>李二牛</h2>
+                        <h2>{{val.real_name }}</h2>
                         <b>|</b>
-                        <span>男</span>
+                        <span v-text='val.sex == 1?"男":"女"'></span>
                         <b>|</b>
-                        <span>25</span>
+                        <span>{{ val.age }}</span>
                     </div>
                     <div class="empty-pic">
                         <img src="../../common/img/pic_swws.png" alt="">
                         <p>尚未完善病历及健康信息</p>
                     </div>
                     <div class="emr-btn">
-                        <mt-button @click.native="handleClick(1)">完善资料</mt-button>
+                        <mt-button @click.native="handleClick(val)">完善资料</mt-button>
                     </div>
                 </div>
-                <div class="emr-data">
-                    <p class="user-pic"><img src="../../common/img/pic_wdys_ystx.png" alt=""></p>
-                    <div class="emr-usermsg dis_f">
-                        <h2>李二牛</h2>
-                        <b>|</b>
-                        <span>男</span>
-                        <b>|</b>
-                        <span>25</span>
+                <!-- 完善2 -->
+                <div class="emr-data" v-for='(val, i) in datalist' :key='i+"_case"' v-show="val.stature && val.weight">
+                    <div @click='outUserdetail(val.patient_id)'>
+                        <div class="user-pic">
+                            <img v-show="val.type == 1" :src="$http.baseURL+val.pic" alt="">
+                            <p v-show="val.type !== 1" class="dis_f dis_j flex_i">
+                                <span>{{ val.type == 2?'父母':val.type == 3?'夫妻':val.type == 4?'子女':val.type == 5?'子女':val.type == 6?'其他':val.type == 7?'兄弟姐妹':null }}</span>
+                            </p>
+                        </div>
+                        <div class="emr-usermsg dis_f">
+                            <h2>{{val.real_name }}</h2>
+                            <b>|</b>
+                            <span v-text='val.sex == 1?"男":"女"'></span>
+                            <b>|</b>
+                            <span>{{ val.age }}</span>
+                        </div>
+                        <ul class="emr-msg">
+                            <li><span>身高/体重</span><span>{{ val.stature }}cm/{{ val.weight }}kg</span></li>
+                            <li><span>病情描述</span><span>{{ val.remark }}</span></li>
+                            <li v-show="val.ago"><span>既往病史</span><span>{{ val.ago }}</span></li>
+                        </ul>
                     </div>
-                    <ul class="emr-msg">
-                        <li><span>身高/体重</span><span>183cm/70kg</span></li>
-                        <li><span>病情描述</span><span>感冒发烧流鼻涕嗓子痛全身痛，哪里都不舒服，浑身难受</span></li>
-                        <li><span>既往病史</span><span>遗传性高血压</span></li>
-                    </ul>
                     <div class="emr-btn">
-                        <mt-button @click.native="handleClick()">完善资料</mt-button>
+                        <mt-button @click.native="handleClick(val)">完善资料</mt-button>
                     </div>
                 </div>
-                <div class="emr-datalist" v-for="(val, i) in 4" :key='i'>
+                <!-- 医生添加的病历 -->
+                <div class="emr-datalist" v-for="(val, i) in caselist" :key='i'>
                     <h1>
                         <span></span>
-                        <span>2019-09-09 09:00</span>
+                        <span>{{ val.addtime | filterTime }}</span>
                     </h1>
-                    <div class="emr-datalist-box" @click='outdetail()'>
-                        <div class="emr-title"><span>李大妞ss医生添加的病历</span></div>
+                    <div class="emr-datalist-box" @click='outdetail(val.id)'>
+                        <div class="emr-title"><span>{{ val.doc }}医生添加的病历</span></div>
                         <div class="emr-data emr-data-content">
-                            <p class="user-pic"><img src="../../common/img/pic_wdys_ystx.png" alt=""></p>
+                            <p class="user-pic"><img :src="$http.baseURL+val.upic" alt="" /></p>
                             <div class="emr-usermsg dis_f">
-                                <h2>李二牛</h2>
+                                <h2>{{ val.name }}</h2>
                                 <b>|</b>
-                                <span>男</span>
+                                <span v-text='val.sex == 1?"男":"女"'></span>
                                 <b>|</b>
-                                <span>25</span>
+                                <span>{{ val.age }}</span>
                             </div>
                             <ul class="emr-msg">
-                                <li><span>患者主诉</span><span>感冒发烧流鼻涕嗓子痛全身痛，哪里都不舒服，浑身难受。</span></li>
-                                <li><span>诊断结果</span><span>感冒发烧流鼻涕嗓子痛全身痛，哪里都不舒服，浑身难受</span></li>
-                                <li><span>医嘱小结</span><span>遗传性高血压</span></li>
+                                <li><span>患者主诉</span><span>{{ val.main }}</span></li>
+                                <li><span>诊断结果</span><span>{{ val.result }}</span></li>
+                                <li><span>医嘱小结</span><span>{{ val.doc_cure }}</span></li>
                             </ul>
                             <div class="emr-foot-pic dis_f dis_end">
                                 <ul class="dis_f">
-                                    <li><img src="../../common/img/pic_yptp.png" alt=""></li>
-                                    <li><img src="../../common/img/pic_yptp.png" alt=""></li>
-                                    <li><img src="../../common/img/pic_yptp.png" alt=""></li>
+                                    <li v-for='(item, j) in val.pic' :key='j+"_pic"'><img :src="item" alt="" /></li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="data-empty" v-show="isStatus">
-                    <img src="../../common/img/pic_zwysfsbl.png" alt="">
-                    <p>暂无医生发送病历</p>
-                </div>
-                <div>
+                <!-- 选择关系没有的提示去添加 -->
+                <div v-show="isStatus2">
                     <empty />
                 </div>
+                <!-- 无医生添加的病历的提示 -->
+                <div class="data-empty" v-show="isStatus">
+                    <img src="../../common/img/pic_zwysfsbl.png" alt="">
+                    <p>暂无医生添加病历</p>
+                </div>
+                
             </div>
         </div>
 
@@ -104,22 +115,62 @@ export default {
     data () {
         return {
             popupVisibles: false,       // 选择关系人弹框
-            isStatus: false,            // 无数据源提示
+            isStatus: false,            // 医生的无数据源提示
+            isStatus2: false,           // 患者的无数据
             userinfo: '本人',               // 选择的信息
+            userType: 1,
+            page: 1,
+            limit: 10,
+            uid: this.$cookie.get('userLogins'),
+            datalist: [],
+            caselist: []
         }
     },
+    activated () {
+        this.initdata()
+    },
     methods: {
-        handleClick (id) {  // 完善资料
-            if (id == 1) {
-                this.$router.push({path:'/emrecorddetail', query: { id: id }})
-                return;
-            }
-            this.out('/addrecordsUserinfo')
-            // this.out('/addrecordsUserClinic')
+        initdata () {
+            var self = this,
+                obj = { uid: this.uid, type: this.userType, page: this.page, linit: this.limit  };
+            self.$http.post('/mobile/Wxemr/index', obj).then(res => {
+                console.log(res)
+                if (res.code == 1) {
+                    self.datalist = res.data.contacts;
+                    self.caselist = res.data.case;      // 医生的
+                    if (self.caselist.length <= 0 && self.datalist.length > 0 ) {
+                        self.isStatus = true
+                    } else {
+                        self.isStatus = false
+                    }
+                    if (self.datalist.length <= 0) {
+                        self.isStatus2 = true;
+                    } else {
+                        self.isStatus2 = false;
+                    }
+
+                    if (self.caselist.length > 0) {
+                        self.caselist.map(val => {
+                            if (val.pic) {
+                                val.pic = val.pic.split(',')
+                            }
+                        })
+                    }
+
+                }
+            }).catch(err => { console.log(err) })
         },
-        outdetail (id) { // 查看详情
-            this.$router.push({path:'/emrdetails', query: { id: id }})
-            // this.$router.push({path:'/emrecorddetail', query: { id: id }})
+        handleClick (v) {  // 完善资料
+            var objs = { cid: v.patient_id }
+            this.$router.push({path:'/addrecordsUserinfo', query: objs});
+        },
+        outUserdetail (id) { // 查看患者添加的详情
+            this.$router.push({path:'/emrecorddetail', query: { id: id }}) 
+        },
+        outdetail (id) { // 查看医生添加的详情
+            if (id) {
+                this.$router.push({path:'/emrdetails', query: { id: id }})
+            }
         },
         usermsg (v) {
             var self = this;
@@ -127,8 +178,12 @@ export default {
             var t = setTimeout(() => {
                 self.popupVisibles = v.box
                 clearTimeout(t)
-            }, 100)
-            console.log(v)
+            }, 100);
+            if (this.userType !== v.id) {
+                this.userType = v.id
+                this.initdata()
+            }
+           
         },
         electmsg () {
             this.popupVisibles = true
@@ -186,7 +241,25 @@ export default {
                     img {
                         width: rem(44);
                         height: rem(44);
+                        display: block;
                         border-radius: 100%;
+                    }
+                    >p {
+                        width: rem(44);
+                        height: rem(44);
+                        min-width: rem(44);
+                        text-align: center;
+                        background-color: #5189F6;
+                        color: #fff;
+                        font-size: rem(12);
+                        border: 1px solid #ccc;
+                        -webkit-border-radius: 100%;
+                        border-radius: 100%;
+                        > span {
+                            padding: rem(4);
+                            display: block;
+                            text-align: center;
+                        }
                     }
                 }
                 .emr-usermsg {
@@ -278,7 +351,7 @@ export default {
                     .emr-data-content {
                         margin-top: rem(0);
                         .user-pic {
-                            top: rem(0);
+                            top: 0;
                         }
                     }
                     .emr-foot-pic {

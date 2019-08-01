@@ -79,6 +79,9 @@ export default {
             status: this.$route.query.status,        // 咨询状态
         }
     },
+    beforeCreate () {
+        this.$indicator.close();
+    },
     mounted () {
         this.initdata();
     },

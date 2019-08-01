@@ -23,7 +23,7 @@
                 <div class="cancenCode" v-show="orderinfo.status == 5">
                     <h3><img src="../../common/img/icon_dfkyes.png" alt="" /><span>自提码已核销，订单已完成</span></h3>
                 </div>
-
+                <!-- 已取消 -->
                 <div class="cancenInfo" v-show="orderinfo.status == 6" >
                     <h3>已取消</h3>
                 </div>

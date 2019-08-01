@@ -122,8 +122,15 @@ export default {
             });
         },
         handerDetail (id, n) {  // 咨询记录
+            this.$indicator.open({
+                text: '',
+                spinnerType: 'fading-circle'
+            });
             this.$router.push({path:'/mydoctor/docrecord', query: { id: id, status: n}})
         }
+    },
+    beforeDestroy () {
+        this.$indicator.close();
     }
 }
 </script>

@@ -3,7 +3,7 @@
     <div class="relation">
         <h2>选择与本人关系</h2>
         <ul>
-            <li v-for="(item,i) in userdata" :key='i' @click="getrelation(item)" :class="{'actives':item.id == userid}">{{ item.name }}</li>
+            <li v-for="(item,i) in userlist" :key='i' @click="getrelation(item)" :class="{'actives':item.id == userid}">{{ item.name }}</li>
         </ul>
     </div>
 </template>
@@ -13,15 +13,25 @@ export default {
     data: function () {
         return {
             userid: 1,
-            userdata: [
-                {id:1,name: '本人'},
-                {id:2,name: '父母'},
-                {id:3,name: '兄弟姐妹'},
-                {id:4,name: '子女'},
-                {id:5,name: '配偶'},
-                {id:6,name: '其他'}
-            ]
+            // userdata: [
+            //     {id:1,name: '本人'},
+            //     {id:2,name: '父母'},
+            //     {id:3,name: '兄弟姐妹'},
+            //     {id:4,name: '子女'},
+            //     {id:5,name: '配偶'},
+            //     {id:6,name: '其他'}
+            // ]
+            userlist: []
         }
+    },
+    mounted () {
+        var self = this;
+        this.$http.post('/mobile/doch5/patient_type', null).then(res => {
+            // console.log(res)
+            if (res.code == 1) {
+                self.userlist = res.data
+            }
+        }).catch(err => {  console.log(err) })
     },
     methods: {
         getrelation(v) {

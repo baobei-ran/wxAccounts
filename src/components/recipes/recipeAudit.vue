@@ -62,8 +62,8 @@
                 </div>
             </div>
         </div>
-        <div v-show="recipeMsg.drug_autdit !== 2" :class="recipeMsg.drug_autdit == 1 && recipeMsg.status == 1 && recipeMsg.type == 0 ?'blue':''" class="footer">
-            <mt-button @click.native="handleClickBuy" v-text="recipeMsg.type == 0?'购买处方中的药品':'已购买处方中的药品'"></mt-button>
+        <div v-show="recipeMsg.drug_autdit !== 2" :class="recipeMsg.drug_autdit == 1 && recipeMsg.status == 1 && recipeMsg.type == 0 ?'blue': recipeMsg.drug_autdit == 0 && recipeMsg.status == 1 && recipeMsg.type == 0 ? 'blue' :''" class="footer">
+            <mt-button @click.native="handleClickBuy" :disabled='disabled' >{{ btnTxt }}</mt-button>
         </div>
     </div>
 </template>
@@ -76,7 +76,9 @@ export default {
             recipedrug: [],
             border: 'border: 1px solid #F09F88',
             recipeMsg: {},
-            id: this.$route.query.id
+            id: this.$route.query.id,
+            disabled: true,             // 按钮状态
+            btnTxt: '购买处方中的药品',
         }
     },
     beforeCreate () {
@@ -96,7 +98,15 @@ export default {
             this.$http.post('/mobile/doch5/user_recipe_detail', {id: this.id}).then(res => {
                 console.log(res)
                 if (res.code == 1) {
-                    self.recipeMsg = res.data
+                    self.disabled = false
+                    self.recipeMsg = res.data;
+                    if (self.recipeMsg.drug_autdit == 0 && self.recipeMsg.status == 1 && self.recipeMsg.type == 0) {
+                        self.btnTxt = '预约购买处方中的药品'
+                    } else if (self.recipeMsg.type == 1) {
+                        self.btnTxt = '已购买处方中的药品'
+                    } else {
+                        self.btnTxt = '购买处方中的药品'
+                    }
                     self.recipedrug = res.drug
                     if (this.recipeMsg.drug_autdit == 1 && res.data.status == 2) {
                         self.pastdue()
@@ -105,14 +115,14 @@ export default {
             })
         },
         handleClickBuy () { // 去购买
-            if (this.recipeMsg.drug_autdit == 0 && this.recipeMsg.status == 1) {  // 未审核不能去购买
-                this.$toast({
-                    message: '药师审核通过后，即可购买药品',
-                    position: 'middle',
-                    duration: 3000
-                });
-                return ;
-            }
+            // if (this.recipeMsg.drug_autdit == 0 && this.recipeMsg.status == 1) {  // 未审核不能去购买
+            //     this.$toast({
+            //         message: '药师审核通过后，即可购买药品',
+            //         position: 'middle',
+            //         duration: 3000
+            //     });
+            //     return ;
+            // }
             if (this.recipeMsg.drug_autdit == 0 && this.recipeMsg.status == 2) {  // 未审核过期
                 this.$toast({
                     message: '处方已过期，请重新咨询医生，开具处方',

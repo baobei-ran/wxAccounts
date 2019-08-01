@@ -54,3 +54,16 @@ Vue.filter('money', function(val) {
 
     return (((sign)?'':'-') + val + '.' + cents);   // 过滤金钱只保留两位小数
 })
+
+Vue.filter('moment', function(dates) { 
+    if (!dates || dates == null || dates == undefined) {
+        return;
+    }
+    var value = new Date(dates * 1000);
+    var year = value.getFullYear();
+    var month = value.getMonth() + 1;
+    month = month < 10 ? '0'+month : month;
+    var date = value.getDate();
+    date = date < 10? '0'+date : date;
+    return year+'-'+ month+'-'+date;
+})

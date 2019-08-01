@@ -78,13 +78,14 @@ import DocSuspend from '@/components/wxView/docSuspend';                        
 import RecommendDrug from '@/components/wxView/recommendDrug';                              // 推荐药品 （1.2.0）
 import YaoRecipeorder from '@/components/goods/yao-recipeorder';                            // 推荐药品 药品下单页（1.2）
 
-
+// 电子病历
 import Emrecordlist from '../components/emrecord/emrecordlist.vue';   // 电子病历列表 (1.3)
-import Emrecorddetail from '../components/emrecord/emrecorddetail.vue'; // 电子病历详情 (1.3)
-import Emrdetails from '../components/emrecord/emrdetail2.vue'; // 电子病历详情 (1.3)
+import Emrecorddetail from '../components/emrecord/emrecorddetail.vue'; // 患者 电子病历详情 (1.3)
+import Emrdetails from '../components/emrecord/emrdetail2.vue';         // 医生 电子病历详情 (1.3)
 import AddrecordsUserinfo from '../components/emrecord/addrecordsFile/addrecordsUserinfo.vue'; // 添加电子病历 (1.3)
 import AddrecordsUserClinic from '../components/emrecord/addrecordsFile/addrecordsUserClinic.vue'; // 添加电子病历2 (1.3)
 // 56
+
 Vue.use(Router) 
 
 const router = new Router({
@@ -170,7 +171,7 @@ const router = new Router({
       name: 'docrecord',
       component: Docrecord
     },
-
+    
 
 
     {
@@ -253,7 +254,7 @@ const router = new Router({
       component: Dingdan
     },
     {
-      path: '/addorderdetail/:id',  // 待付款详情
+      path: '/addorderdetail/:id',  // 医生店铺的待付款详情
       meta: {
         title: '订单详情',
       },
@@ -261,7 +262,7 @@ const router = new Router({
       component: AddorderDetail
     },
     {
-      path: '/takeorderdetail/:id', // 再次购买页
+      path: '/takeorderdetail/:id', // 医生店铺的再次购买页
       meta: {
         title: '下单详情',
       },
@@ -269,7 +270,7 @@ const router = new Router({
       component: TakeorderDetail
     },
     {
-      path: '/successOrder:id?',  // 取消和已完成 和  待收货详情 和 待发货
+      path: '/successOrder:id?',  // 医生店铺的取消和已完成 和  待收货详情 和 待发货
       meta: {
         title: '订单详情',
       },
@@ -448,30 +449,30 @@ const router = new Router({
       // 电子病历列表
     {
       path: '/emrecordlist',         // 电子病历列表
-      meta: {title: '电子病历'},
+      meta: {title: '电子病历', keeepAlive: true},
       name: 'emrecordlist',
       component: Emrecordlist
     },
     {
-      path: '/emrecorddetail:id?',         // 电子病历详情
+      path: '/emrecorddetail:id?',         // 患者自己添加的电子病历详情
       meta: {title: '病历详情'},
       name: 'emrecorddetail',
       component: Emrecorddetail
     },
     {
-      path: '/emrdetails:id?',         // 电子病历详情
+      path: '/emrdetails:id?',         // 医生添加的电子病历详情
       meta: {title: '病历详情'},
       name: 'emrdetails',
       component: Emrdetails
     },
     {
-      path: '/addrecordsUserinfo',         // 添加电子病历
+      path: '/addrecordsUserinfo:id?',         // 添加电子病历
       meta: {title: '添加病历'},
       name: 'addrecordsUserinfo',
       component: AddrecordsUserinfo
     },
     {
-      path: '/addrecordsUserClinic',         // 添加电子病历
+      path: '/addrecordsUserClinic:id?',         // 添加电子病历
       meta: {title: '添加病历'},
       name: 'addrecordsUserClinic',
       component: AddrecordsUserClinic

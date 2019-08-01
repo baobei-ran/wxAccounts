@@ -5,13 +5,13 @@
             <div class="contents">
                 <div class="contents-header dis_f dis_sb bg-white">
                     <div class="dis_f contents-header-left">
-                        <h2>李二牛</h2>
+                        <h2>{{ userInfo.name }}</h2>
                         <b>|</b>
-                        <span>男</span>
+                        <span v-text='userInfo.sex == 1?"男":"女"'></span>
                         <b>|</b>
-                        <span>25</span>
+                        <span>{{ userInfo.age }}</span>
                     </div>
-                    <div class="contents-header-right">本人</div>
+                    <div class="contents-header-right">{{ userInfo.userinfo }}</div>
                 </div>
                 <div class="contents-progress bg-white">
                     <ul class="dis_f">
@@ -27,20 +27,20 @@
                     <ul class="bg-white">
                         <li class="dis_f">
                             <span>就诊时间</span>
-                            <p @click='selectdete'><span>{{ dateTime }}</span><img src="../../../common/img/icon_xzrq.png" alt="" /></p>
+                            <p @click='selectdete'><span v-text='!dateTime?"请选择就诊时间":dateTime'></span><img src="../../../common/img/icon_xzrq.png" alt="" /></p>
                         </li>
-                        <li><span>就诊医院</span><input type="text" placeholder="请填写就诊医院"/></li>
-                        <li><span>就诊科室</span><input type="text" placeholder="请填写就诊科室"/></li>
-                        <li><span>就诊医生</span><input type="text" placeholder="请填写就诊医生姓名"/></li>
-                        <li><span>诊断结果</span><textarea placeholder="请填写诊断结果"></textarea></li>
+                        <li><span>就诊医院</span><input v-model="cure_hos" type="text" placeholder="请填写就诊医院"/></li>
+                        <li><span>就诊科室</span><input v-model="cure_dep" type="text" placeholder="请填写就诊科室"/></li>
+                        <li><span>就诊医生</span><input v-model="cure_doc" type="text" placeholder="请填写就诊医生姓名"/></li>
+                        <li><span>诊断结果</span><textarea v-model="cure_result" placeholder="请填写诊断结果"></textarea></li>
                     </ul>
                 </div>
                 <div class="add-pic-box bg-white">
                     <h2>上传医嘱<span>（不超过4张）</span></h2>
                     <div class="add-pic">
                         <ul class="dis_f">
-                            <li class="dis_f flex-vc flex-hc" v-for="(val,i) in filesbase64" :key='i+"_1"'><img :src="val" alt="" /><img class="pic-cancel" @click='cancelPic(i,$event)' src="../../../common/img/icon_sc2.png" alt=""></li>
-                            <li class="upfile" v-if="files.length < 4"><input type="file" @change='clickAddPic($event)' accept="image/*" id="files" /><label for="files"><img src="../../../common/img/pic_tjtp.png" alt="" /></label></li>
+                            <li class="dis_f flex-vc flex-hc" v-for="(val,i) in filesbase64" :key='i+"_1"'><img :src="val.pic" alt="" /><img class="pic-cancel" @click='cancelPic(val.id)' src="../../../common/img/icon_sc2.png" alt=""></li>
+                            <li class="upfile" v-if="filesbase64.length < 4"><input type="file" multiple accept="image/*" @change='clickAddPic($event)' id="files" /><label for="files"><img src="../../../common/img/pic_tjtp.png" alt="" /></label></li>
                         </ul>
                     </div>
                 </div>
@@ -48,8 +48,8 @@
                     <h2>上传处方<span>（不超过4张）</span></h2>
                     <div class="add-pic">
                         <ul class="dis_f">
-                            <li class="dis_f flex-vc flex-hc" v-for="(val,i) in filesbase642" :key='i+"_2"'><img :src="val" alt="" /><img class="pic-cancel" @click='cancelPic2(i)' src="../../../common/img/icon_sc2.png" alt=""></li>
-                            <li class="upfile" v-if="files2.length < 4"><input type="file" @change='clickAddPic2($event)' accept="image/*" id="files2" /><label for="files2"><img src="../../../common/img/pic_tjtp.png" alt="" /></label></li>
+                            <li class="dis_f flex-vc flex-hc" v-for="(val,i) in filesbase642" :key='i+"_2"'><img :src="val.pic" alt="" /><img class="pic-cancel" @click='cancelPic2(val.id)' src="../../../common/img/icon_sc2.png" alt=""></li>
+                            <li class="upfile" v-if="filesbase642.length < 4"><input type="file" @change='clickAddPic2($event)' accept="image/*" id="files2" /><label for="files2"><img src="../../../common/img/pic_tjtp.png" alt="" /></label></li>
                         </ul>
                     </div>
                 </div>
@@ -57,15 +57,15 @@
                     <h2>上传检验单图片<span>（不超过4张）</span></h2>
                     <div class="add-pic">
                         <ul class="dis_f">
-                            <li class="dis_f flex-vc flex-hc" v-for="(val,i) in filesbase643" :key='i+"_3"'><img :src="val" alt="" /><img class="pic-cancel" @click='cancelPic3(i)' src="../../../common/img/icon_sc2.png" alt=""></li>
-                            <li class="upfile" v-if="files3.length < 4"><input type="file" @change='clickAddPic3($event)' accept="image/*" id="files3" /><label for="files3"><img src="../../../common/img/pic_tjtp.png" alt="" /></label></li>
+                            <li class="dis_f flex-vc flex-hc" v-for="(val,i) in filesbase643" :key='i+"_3"'><img :src="val.pic" alt="" /><img class="pic-cancel" @click='cancelPic3(val.id)' src="../../../common/img/icon_sc2.png" alt=""></li>
+                            <li class="upfile" v-if="filesbase643.length < 4"><input type="file" @change='clickAddPic3($event)' accept="image/*" id="files3" /><label for="files3"><img src="../../../common/img/pic_tjtp.png" alt="" /></label></li>
                         </ul>
                     </div>
                 </div>
             </div>
         </div>
         <div class="footer" v-show="hidShow">
-            <mt-button @click.native="handleClickSubmit">完成</mt-button>
+            <mt-button :disabled='disabled' @click.native="handleClickSubmit">完成</mt-button>
         </div>
         <!-- 日期选择 -->
         <mt-datetime-picker
@@ -97,20 +97,51 @@ export default {
             filesbase643: [],       // 上传检验单图片的展示
             startDate: new Date(),  // 默认当前日期
             dateTime: '',               // 就诊时间
+            userInfo: {},            // 信息
+            cure_time: '',  // 提交的日期
+            cure_hos: '',   // 医院
+            cure_dep: '',   // 科室
+            cure_doc: '',   // 医生
+            cure_result: '', // 诊断结果
+            disabled: false,
+            delPic1: [],
+            delPic2: [],
+            delPic3: [],
         }
     },
     mounted () {
+        this.userInfo = this.$route.query;
         var self = this;
         window.onresize = () => {
             return (() => {
                 this.showHeight = document.body.clientHeight
             })()
         }
-        var value = new Date();
-        var year = value.getFullYear();
-        var month = value.getMonth() + 1;
-        var date = value.getDate();
-        this.dateTime = year+'年'+ month+'月'+date+'日';
+        this.getUserInfo()
+        // var value = new Date();
+        // var year = value.getFullYear();
+        // var month = value.getMonth() + 1;
+        // var date = value.getDate();
+        // this.dateTime = year+'年'+ month+'月'+date+'日';
+        var u = navigator.userAgent;
+        var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+        if (isiOS) {
+            document.body.addEventListener('touchmove', function (e) {
+                if(document.activeElement) {
+                    document.activeElement.blur();
+                }
+                var node = document.activeElement; //当前focus的dom元素
+                if (node) {
+                    if (node.nodeName == "TEXTAREA" || node.nodeName == 'INPUT') { //如果是input或textarea
+                        if (node.style.textShadow === '') {
+                            node.style.textShadow = 'rgba(0,0,0,0) 0 0 0'; //改变某个不可见样式，触发dom重绘
+                        } else {
+                            node.style.textShadow = '';
+                        }
+                    }
+                }
+            }, {passive: false})
+        }
     },
     watch: {
         showHeight: function () {
@@ -122,23 +153,120 @@ export default {
         },
     },
     methods: {
+        getUserInfo () {
+            var self = this;
+            self.$http.post('/mobile/Wxemr/health_information', { cid: this.userInfo.cid }).then(res => {
+                console.log(res)
+                if (res.code == 1) {
+                    if (res.data.cure_time) {
+                        self.handleConfirm(new Date(res.data.cure_time * 1000));
+                    }
+                    self.cure_hos = res.data.cure_hos?res.data.cure_hos:'';   // 医院
+                    self.cure_dep = res.data.cure_dep? res.data.cure_dep: '';  // 科室
+                    self.cure_doc = res.data.cure_doc? res.data.cure_doc: '';   // 医生
+                    self.cure_result = res.data.cure_result? res.data.cure_result: '' // 诊断结果
+                    
+                    if (res.data.doc_record_pic) {
+                        var yzPic = res.data.doc_record_pic.split(',');
+                        yzPic.map(val => {
+                            if (val) {
+                                var ids = (Math.random())+'e';
+                                var obt = { id: ids, pic: self.$http.baseURL+val, img: val }
+                                self.filesbase64.push(obt)
+                            }
+                        })
+                    }
+                    if (res.data.recipe_pic) {
+                        var cfPic = res.data.recipe_pic.split(',');
+                        cfPic.map(val => {
+                            if (val) {
+                                var ids2 = (Math.random())+'l';
+                                var obt2 = { id: ids2, pic: self.$http.baseURL+val, img: val }
+                                self.filesbase642.push(obt2)
+                            }
+                        })
+                    }
+                    if (res.data.test_pic) {
+                        var jydPic = res.data.test_pic.split(',')
+                        jydPic.map(val => {
+                            if (val) {
+                                var ids3 = (Math.random())+'m';
+                                var obt3 = { id: ids3, pic: self.$http.baseURL+val, img: val }
+                                self.filesbase643.push(obt3)
+                            }
+                        })
+                    }
+                    
+                }
+            }).catch(err => console.log(err))
+        },
         handleClickSubmit () { // 提交
-            if (this.files.length <= 0) {
-                this.$toast({
-                    message: '请选择上传医嘱图片',
-                    position: 'middle',
-                    duration: 2000
-                });
-                return;
-            }
-
+            
+            var self = this;
             this.$indicator.open({
-                text: '上传中...',
+                text: '提交中...',
                 spinnerType: 'fading-circle'
             });
-            setTimeout(() => {
-                this.$indicator.close();
-            }, 3000)
+            this.disabled = true;
+            var formData = new FormData();
+            var arrImg = [], arrImg2 = [], arrImg3 = [];
+            this.files.map(val => {
+                arrImg.push(val.f)
+                formData.append('pic1[]', val.f)
+            })
+            this.files2.map(val => {
+                arrImg2.push(val.f)
+                formData.append('pic2[]', val.f)
+            })
+            this.files3.map(val => {
+                arrImg3.push(val.f)
+                formData.append('pic3[]', val.f)
+            })
+            var delImg = '', delImg2 = '', delImg3 = '';
+            if (this.delPic1.length > 0) {
+                delImg = this.delPic1.join(',')
+            }
+            if (this.delPic2.length > 0) {
+                delImg2 = this.delPic2.join(',')
+            }
+            if (this.delPic3.length > 0) {
+                delImg3 = this.delPic3.join(',')
+            }
+            var upobj = { cid:this.userInfo.cid, cure_time: this. cure_time, cure_hos: this.cure_hos, cure_dep: this.cure_dep, cure_doc: 
+                            this.cure_doc, cure_result: this.cure_result,pic1: arrImg, pic2: arrImg2, pic3: arrImg3, del1: delImg, del2: delImg2, del3: delImg3  }
+            console.log(upobj)
+            formData.append('cid',this.userInfo.cid)
+            formData.append('cure_time', this.cure_time)
+            formData.append('cure_hos', this.cure_hos)
+            formData.append('cure_dep', this.cure_dep)
+            formData.append('cure_doc', this.cure_doc)
+            formData.append('cure_result', this.cure_result)
+            formData.append('del1', delImg)
+            formData.append('del2', delImg2)
+            formData.append('del3', delImg3);
+            self.$http.formdata('/mobile/Wxemr/add_information', formData).then(res => {
+                console.log(res)
+                if (res.code == 1 || res.code == 0) {
+                    self.$indicator.close();
+                    self.$toast({
+                        message: '提交成功！',
+                        position: 'middle',
+                        duration: 2000
+                    });
+                    var t = setTimeout(() => {
+                        self.$router.go(-1)
+                        clearTimeout(t)
+                    }, 1000)
+                } else {
+                    self.$indicator.close();
+                    self.disabled = false
+                    self.$toast({
+                        message: res.msg,
+                        position: 'middle',
+                        duration: 2000
+                    });
+                }
+            }).catch(err => { self.disabled = false; console.log(err); })
         },
         clickAddPic (e) { // 医嘱上传
             var self = this;
@@ -147,57 +275,97 @@ export default {
             }
             var files = e.target.files || e.dataTransfer.files;
             if (!files.length) return;
-            self.files.push(files[0]);
+            var id = (Math.random())+'y';
+            var o = { id: id, f:files[0] }
+            self.files.push(o);
             var reader = new FileReader();
             reader.onload = (e) => {
                 self.getBase64(e.target.result).then(file => {
-                    self.filesbase64.push(file)
+                    var obj1 = { id: id, pic: file }
+                    self.filesbase64.push(obj1)
                 })
             }
+            alert(files[0].name)
             reader.readAsDataURL(files[0])
             e.target.value = '';
         },
-        cancelPic(i,e) {  // 医嘱删除
-            e.stopPropagation(); // 阻止
-            this.files.splice(i, 1);
-            this.filesbase64.splice(i, 1);
+        cancelPic(id) {  // 医嘱删除
+            var self = this;
+            this.files = this.files.filter(val => {
+                return val.id !== id
+            })
+            this.filesbase64.map(vl => {
+                if (vl.id == id && vl.img) {
+                    self.delPic1.push(vl.img)
+                }
+            })
+            this.filesbase64 = this.filesbase64.filter(v => {
+                return v.id !== id
+            })
+            
         },
         clickAddPic2 (e) { // 处方上传
             var self = this;
             var files = e.target.files || e.dataTransfer.files;
             if (!files.length) return;
             var reader = new FileReader();
-            self.files2.push(files[0]);
+            var id2 = (Math.random())+'c';
+            var o2 = { id: id2, f:files[0] }
+            self.files2.push(o2);
             reader.onload = (e) => {
                 self.getBase64(e.target.result).then(file => {
-                    self.filesbase642.push(file)
+                    var obj2 = { id: id2, pic: file }
+                    self.filesbase642.push(obj2)
                 })
             }
+            alert(files[0].name)
             reader.readAsDataURL(files[0]);
             e.target.value = '';
         },
-        cancelPic2 (i) {  // 处方删除
-            this.files2.splice(i, 1);
-            this.filesbase642.splice(i, 1);
-            
+        cancelPic2 (id) {  // 处方删除
+            var self = this;
+            this.files2 = this.files2.filter(val => {
+                return val.id !== id
+            })
+            this.filesbase642.map(vl => {
+                if (vl.id == id && vl.img) {
+                    self.delPic2.push(vl.img)
+                }
+            })
+            this.filesbase642 = this.filesbase642.filter(v => {
+                return v.id !== id
+            })
         },
         clickAddPic3 (e) { // 检验单图片上传
             var self = this;
             var files = e.target.files || e.dataTransfer.files;
             if (!files.length) return;
+            var id3 = (Math.random())+'d';
             var reader = new FileReader();
-            self.files3.push(files[0]);
+            var o3 = { id: id3, f:files[0] }
+            self.files3.push(o3);
             reader.onload = (e) => {
                 self.getBase64(e.target.result).then(file => {
-                    self.filesbase643.push(file)
+                    var obj3 = { id: id3, pic: file }
+                    self.filesbase643.push(obj3)
                 })
             }
             reader.readAsDataURL(files[0]);
             e.target.value = '';
         },
-        cancelPic3 (i) {  // 检验单图片删除
-            this.files3.splice(i, 1);
-            this.filesbase643.splice(i, 1);
+        cancelPic3 (id) {  // 检验单图片删除
+            var self = this;
+            this.files3 = this.files3.filter(val => {
+                return val.id !== id
+            })
+            this.filesbase643.map(vl => {
+                if (vl.id == id && vl.img) {
+                    self.delPic3.push(vl.img)
+                }
+            })
+            this.filesbase643 = this.filesbase643.filter(v => {
+                return v.id !== id
+            })
             
         },
         selectdete () { // 弹起日期选择
@@ -207,7 +375,8 @@ export default {
             var year = value.getFullYear();
             var month = value.getMonth() + 1;
             var date = value.getDate();
-            this.dateTime = year+'年'+ month+'月'+date+'日'
+            this.dateTime = year+'年'+ month+'月'+date+'日';
+            this.cure_time = year+'-'+month+'-'+date
         },
          // 图片压缩并保存到files
         getBase64(url) {
@@ -247,6 +416,9 @@ export default {
             });
             return p
         },
+    },
+    beforeDestroy () {
+        this.$indicator.close();
     }
 }
 </script>
@@ -263,7 +435,7 @@ export default {
     .content-box {
         width: 100%;
         overflow-y: scroll;
-        -webkit-overflow-scrolling: touch;
+        // -webkit-overflow-scrolling: touch;
         .contents {
             width: 100%;
             margin-bottom: rem(20);
@@ -354,8 +526,11 @@ export default {
                         }
                         input {
                             width: 70%;
-                            padding: rem(10) 0;
+                            height: rem(40);
+                            line-height: rem(40);
                             border:0;
+                            font-size: rem(28);
+                            color: #333;
                         }
                         textarea {
                             display: block;
@@ -366,6 +541,7 @@ export default {
                             background-color: #F9F9F9;
                             padding: rem(20);
                             resize: none;
+                            font-size: rem(28);
                         }
                         > p {
                             span {

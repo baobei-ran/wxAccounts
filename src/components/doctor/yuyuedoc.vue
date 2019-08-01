@@ -71,7 +71,6 @@ export default {
        
     },
     beforeRouteLeave (to, from, next) {  // 离开页面事件，使用了组件导航守卫
-        console.log(this)
         var self = this;
         if(to.name == 'doctordetail') {
             this.$messagebox.confirm('<p style="color: #333;">返回后当前号段不在为你保留<br />确定放弃吗?</p>', '').then(action => {

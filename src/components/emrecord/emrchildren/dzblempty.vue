@@ -20,7 +20,7 @@ export default {
     },
     methods: {
         handleClickadd () {
-
+            this.out('/administration');
         }
     }
 }

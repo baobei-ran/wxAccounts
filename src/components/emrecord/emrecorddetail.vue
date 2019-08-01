@@ -1,63 +1,55 @@
 <template>
-    <!-- 详情 -->
+    <!-- 患者添加的详情 -->
     <div class="emrecorddetail">
-        <div class="emrecorddetail-box">
+        <div class="emrecorddetail-box" v-show='isView'>
             <div class="header br-rs">
-                <div class="emr-title"><span>李大妞ss医生添加的病历</span></div>
+                <div class="emr-title"><span>创建时间：{{ userinfo.case_atime | moment }}</span></div>
                 <div class="emr-usermsg dis_f">
-                    <h2>李二牛</h2>
+                    <h2>{{ userinfo.real_name }}</h2>
                     <b>|</b>
-                    <span>男</span>
+                    <span v-text='userinfo.sex == 1?"男":"女"'></span>
                     <b>|</b>
-                    <span>25</span>
+                    <span>{{userinfo.age}}</span>
                 </div>
-                <p><span>身高/体重</span><span>180cm/70kg</span></p>
+                <p><span>身高/体重</span><span>{{ userinfo.stature }}cm/{{ userinfo.weight }}kg</span></p>
             </div>
             <div class="user-msg br-rs">
                 <ul>
-                    <li><span>备孕情况</span><span>无</span></li>
-                    <li><span>吸烟情况</span><span>偶尔吸烟/日平均吸烟量5支/开始吸烟年龄23岁</span></li>
-                    <li><span>饮酒情况</span><span>偶尔饮酒/未戒酒/日平均饮酒量半斤/开始饮酒年龄16岁</span></li>
-                    <li><span>既往病史</span><span>先天性心脏病、心脏不好、营养不良</span></li>
-                    <li><span>药物过敏史</span><span>头孢类抗生素过敏</span></li>
-                    <li><span>病情描述</span><span>感冒发烧流鼻涕、感冒发烧流鼻涕、感冒了</span></li>
+                    <li v-show="userinfo.yun"><span>备孕情况</span><span>{{ userinfo.yun }}</span></li>
+                    <li v-show="userinfo.cigarette" class="dis_f"><span>吸烟情况</span>
+                        <span>{{ userinfo.cigarette == 1?'从不吸烟': userinfo.cigarette == 2? '已戒烟': userinfo.cigarette == 3?'吸烟':'' }}
+                            <b v-show='userinfo.cigarette == 3'>/日平均吸烟量{{ userinfo.cigarette_day }}支/开始吸烟年龄{{ userinfo.cigarette_age }}岁</b>
+                            </span></li>
+                    <li v-show="userinfo.liquor"><span>饮酒情况</span><span>{{ userinfo.liquor == 1? "从不饮酒": userinfo.liquor == 2? '偶尔饮酒': userinfo.liquor == 3? '经常饮酒':'' }}
+                        <b v-if='userinfo.liquor == 2 || userinfo.liquor == 3' >/日平均饮酒量{{ userinfo.liquor_day }}斤/开始饮酒年龄{{ userinfo.liquor_age }}岁</b></span></li>
+                    <li v-show="userinfo.ago"><span>既往病史</span><span >{{ userinfo.ago }}</span></li>
+                    <li v-show="userinfo.allergy"><span>药物过敏史</span><span>{{ userinfo.allergy }}</span></li>
+                    <li><span>病情描述</span><span>{{ userinfo.remark }}</span></li>
                 </ul>
             </div>
             <div class="user-msg br-rs">
                 <ul>
-                    <li><span>就诊时间</span><span>无</span></li>
-                    <li><span>就诊医院</span><span>偶尔吸烟/日平均吸烟量5支/开始吸烟年龄23岁</span></li>
-                    <li><span>就诊科室</span><span>偶尔饮酒/未戒酒/日平均饮酒量半斤/开始饮酒年龄16岁</span></li>
-                    <li><span>就诊医生</span><span>先天性心脏病、心脏不好、营养不良</span></li>
-                    <li><span>诊断结果</span><span>头孢类抗生素过敏</span></li>
-                    <li><span>医嘱图</span><span id='advice'>
-                            <img v-for='(val,i) in picdata' :key='i' @click='clickScalePic(i)' :src="val" alt="" />
+                    <li v-show="userinfo.cure_time"><span>就诊时间</span><span>{{ userinfo.cure_time | moment }}</span></li>
+                    <li v-show="userinfo.cure_hos"><span>就诊医院</span><span>{{ userinfo.cure_hos }}</span></li>
+                    <li v-show="userinfo.cure_dep"><span>就诊科室</span><span>{{ userinfo.cure_dep }}</span></li>
+                    <li v-show="userinfo.cure_doc"><span>就诊医生</span><span>{{ userinfo.cure_doc }}</span></li>
+                    <li v-show="userinfo.cure_result"><span>诊断结果</span><span>{{ userinfo.cure_result }}</span></li>
+                    <li v-show="picdata.length"><span>医嘱图</span><span id='advice'>
+                            <img v-for='(val,i) in picdata' @click='clickScalePic(i)' :key='i' :src="$http.baseURL+val" alt="" />
                         </span></li>
-                    <li><span>处方图片</span><span id='recipe'><img v-for='val in 2' src="../../common/img/pic_yptp.png" alt="" /></span></li>
-                    <li><span>检验单图片</span><span id='checkout'><img v-for='val in 4' src="../../common/img/pic_yptp.png" alt="" /></span></li>
+                    <li v-show="picdata2.length"><span>处方图片</span><span id='recipe'><img v-for='(val,i) in picdata2' @click='clickScalePic2(i)' :key='i+"_2"' :src="$http.baseURL+val" alt="" /></span></li>
+                    <li v-show="picdata3.length"><span>检验单图片</span><span id='checkout'><img v-for='(val,i) in picdata3' @click='clickScalePic3(i)' :key='i+"_3"' :src="$http.baseURL+val" alt="" /></span></li>
                 </ul>
             </div>
             <!--物流跟踪-->
-            <div class="seedata br-rs">
+            <div class="seedata br-rs" v-show="userdata.length">
                 <div class="track-list">
                     <ul>
-                        <li class="li-progress">
+                        <li class="li-progress" v-for='(val,j) in userdata' :key='j+"_msg"' >
                             <i class="node-icon"></i>
-                            <div><span>2018-09-09</span><span class="blue">电子处方</span></div>
-                            <p><span class="txt">医生</span><span class="time">李二牛</span></p>
-                            <p><span class="txt">医院</span><span class="time">山东省立医院</span></p>
-                        </li>
-                        <li class="li-progress">
-                            <i class="node-icon"></i>
-                            <div><span>2018-09-09</span><span class="orange">预约门诊</span></div>
-                            <p><span class="txt">医生</span><span class="time">李二牛</span></p>
-                            <p><span class="txt">医院</span><span class="time">山东省立医院</span></p>
-                        </li>
-                        <li class="li-progress">
-                            <i class="node-icon"></i>
-                            <div><span>2018-09-09</span><span class="blue">电子处方</span></div>
-                            <p><span class="txt">医生</span><span class="time">李二牛</span></p>
-                            <p><span class="txt">医院</span><span class="time">山东省立医院</span></p>
+                            <div><span>{{ val.addtime | moment }}</span><span class="blue" v-show="val.type == 1">电子处方</span><span v-show="val.type == 2" class="orange">预约门诊</span></div>
+                            <p><span class="txt">医生</span><span class="time">{{ val.doc }}</span></p>
+                            <p><span class="txt">医院</span><span class="time">{{ val.hos }}</span></p>
                         </li>
                     </ul>
                 </div>
@@ -80,11 +72,60 @@ export default {
     data () {
         return {
             isModel: false,
-            picdata: [require('../../common/img/img_dtzs.png'), require('../../common/img/pic_yptp.png'), 'http://test99.yunyikang.cn/upload/doctor/15559967819130.jpg'],
+            picdata: [],
+            picdata2: [],
+            picdata3: [],
+            userdata: '',
+            userinfo: '',
+            isView: false,
         }
     },
+    beforeCreate() {
+        this.$indicator.open({
+                text: '',
+                spinnerType: 'fading-circle'
+            });
+    },
+    beforeDestroy () {
+        this.$indicator.close();
+    },
     mounted () {
-        
+        var { id } = this.$route.query;
+        var self = this;
+        this.$http.post('/mobile/Doch5/list_case_look', { id: id, type: 1 }).then(res => {
+            console.log(res)
+            self.$indicator.close();
+            self.isView = true
+            if (res.code == 1) {
+                self.userdata = res.data;
+                self.userinfo = res.info;
+                if (self.userinfo.doc_record_pic) {
+                    var pic1 = self.userinfo.doc_record_pic.split(',');
+                    pic1.map(val => {
+                       if (val) {
+                            self.picdata.push(val)
+                       }
+                    })
+                    
+                }
+                if (self.userinfo.recipe_pic) {
+                    var pic2 = self.userinfo.recipe_pic.split(',');
+                    pic2.map(val => {
+                        if (val) {
+                            self.picdata2.push(val)
+                        }
+                    })
+                }
+                if (self.userinfo.test_pic) {
+                    var pic3 = self.userinfo.test_pic.split(',');
+                    pic3.map(val => {
+                        if (val) {
+                            self.picdata3.push(val)
+                        }
+                    })
+                }
+            }
+        }).catch(err => console.log(err))
     },
     methods: {
         modelShade (data) {
@@ -92,6 +133,14 @@ export default {
         },
         clickScalePic(i) {
             this.$refs.childs.modelScalePic(this.picdata, i);
+            this.isModel = true
+        },
+        clickScalePic2(i) {
+            this.$refs.childs.modelScalePic(this.picdata2, i);
+            this.isModel = true
+        },
+        clickScalePic3(i) {
+            this.$refs.childs.modelScalePic(this.picdata3, i);
             this.isModel = true
         }
     }
@@ -154,9 +203,9 @@ export default {
                 padding: 0 rem(30);
                 color: #808080;
                 h2 {
-                    font-size: rem(32);
+                    font-size: rem(28);
                     color: #212121;
-                    font-weight: 600;
+                    font-weight: 500;
                 }
                 >b {
                     margin: 0 rem(16);
@@ -177,7 +226,7 @@ export default {
             width: 100%;
             margin-top: rem(20);
             background-color: #fff;
-            padding: rem(29);
+            padding: 0 rem(29);
             ul {
                 width: 100%;
                 li {
@@ -188,12 +237,12 @@ export default {
                         line-height: rem(36);
                     }
                     span:first-child {
-                        width: 25%;
+                        width: 24%;
                         color: #808080;
                         vertical-align: top;
                     }
                     span:last-child {
-                        width: 74%;
+                        width: 76%;
                         color: #333;
                         img {
                             width: rem(88);

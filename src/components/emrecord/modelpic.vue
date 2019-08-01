@@ -2,9 +2,9 @@
     <!-- 图片预览组件 -->
     <div class="modelpic dis_f flex-vc" @click='clickModelShade'>
         <div class="swiper-container">
-            <div class="swiper-wrapper">
-                <div class="swiper-slide" v-for="pic in picdata">
-                    <img ref='imgs' :src="pic" alt="" />
+            <div class="swiper-wrapper dis_f flex-vc">
+                <div class="swiper-slide" v-for="(pic, i) in picdata" :key="i">
+                    <img ref='imgs' :src="$http.baseURL+pic" alt="" />
                 </div>
             </div>
         </div>
@@ -15,24 +15,29 @@
 export default {
     data () {
         return {
-            picdata: []
+            picdata: [],
+            swiper: '',
         }
-    },
-    mounted () {
     },
     methods: {
         clickModelShade () {
             this.$emit('modelShade', false);
-            this.picdata = [];
         },
         modelScalePic (data, i) {
             this.picdata = data;
-            if (data.length > 1) {
+            var self = this;
+            if (this.swiper) {
+                this.swiper = ''
+            }
+            if (this.picdata.length > 1) {
+                console.log(i)
                 this.$nextTick(() => {
-                    var swiper = new Swiper('.swiper-container', {
+                    self.swiper = new Swiper('.swiper-container', {
                         initialSlide: i?i:0,
                         loop: false,
                         autoplay: false,
+                        observer:true,              //修改swiper自己或子元素时，自动初始化swiper
+	                    observeParents:true,        //修改swiper的父元素时，自动初始化swiper
                     })
                 })
             }
@@ -42,6 +47,7 @@ export default {
 </script>
 <style lang="scss">
 .modelpic  {
+    height: 100%;
    >.swiper-container {
         width:100%;
         .swiper-wrapper {
@@ -49,6 +55,7 @@ export default {
                 text-align: center;
                 > img {
                    width: 100%;
+                   max-height: 400px;
                 }
             }
         }
