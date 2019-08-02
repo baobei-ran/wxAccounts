@@ -58,7 +58,7 @@
                     <div class="add-pic">
                         <ul class="dis_f">
                             <li class="dis_f flex-vc flex-hc" v-for="(val,i) in filesbase643" :key='i+"_3"'><img :src="val.pic" alt="" /><img class="pic-cancel" @click='cancelPic3(val.id)' src="../../../common/img/icon_sc2.png" alt=""></li>
-                            <li class="upfile" v-if="filesbase643.length < 4"><input type="file" @change='clickAddPic3($event)' accept="image/*" id="files3" /><label for="files3"><img src="../../../common/img/pic_tjtp.png" alt="" /></label></li>
+                            <li class="upfile" v-if="filesbase643.length < 4"><input type="file" @change='clickAddPics3($event)' accept="image/*" id="files3" /><label for="files3"><img src="../../../common/img/pic_tjtp.png" alt="" /></label></li>
                         </ul>
                     </div>
                 </div>
@@ -266,7 +266,15 @@ export default {
                         duration: 2000
                     });
                 }
-            }).catch(err => { self.disabled = false; console.log(err); })
+            }).catch(err => { 
+                self.disabled = false;
+                self.$indicator.close();
+                self.$toast({
+                    message: '服务器错误，请从新上传！',
+                    position: 'middle',
+                    duration: 2000
+                });
+             console.log(err); })
         },
         clickAddPic (e) { // 医嘱上传
             var self = this;
@@ -285,7 +293,6 @@ export default {
                     self.filesbase64.push(obj1)
                 })
             }
-            alert(files[0].name)
             reader.readAsDataURL(files[0])
             e.target.value = '';
         },
@@ -318,7 +325,6 @@ export default {
                     self.filesbase642.push(obj2)
                 })
             }
-            alert(files[0].name)
             reader.readAsDataURL(files[0]);
             e.target.value = '';
         },
@@ -336,7 +342,7 @@ export default {
                 return v.id !== id
             })
         },
-        clickAddPic3 (e) { // 检验单图片上传
+        clickAddPics3 (e) { // 检验单图片上传
             var self = this;
             var files = e.target.files || e.dataTransfer.files;
             if (!files.length) return;

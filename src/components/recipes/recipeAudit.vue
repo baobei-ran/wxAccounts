@@ -150,7 +150,7 @@ export default {
             if (this.recipeMsg.drug_autdit == 1 && this.recipeMsg.status == 2) {
                 return;
             }
-            this.$router.push({path: '/recipeorder', query: {id: this.id} })            
+            this.$router.push({path: '/recipeorder', query: {id: this.id, hid: this.recipeMsg.hid} })            
         },
         pastdue () {
             this.$messagebox.confirm('<p style="color:#333;">处方已过期<br />请重新咨询医生，开具处方</p>', {showCancelButton: false, confirmButtonText: '好的'}).then(action => {

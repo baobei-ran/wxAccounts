@@ -132,7 +132,7 @@ export default {
         this.initdata();
         // this.getSite();
         var self = this;
-        this.$http.post('/mobile/Wxpatient/hos_data', this.$route.query).then(res => {
+        this.$http.post('/mobile/Wxpatient/hos_data', { id: this.$route.query.hid }).then(res => {
             console.log(res)
             if (res.code == 1) {
                 self.drugstoredata = res.data
@@ -142,7 +142,7 @@ export default {
     methods: {
         initdata () {
             var self = this;
-            this.$http.post('/mobile/doch5/user_recipe_detail', this.$route.query).then(res => {
+            this.$http.post('/mobile/doch5/user_recipe_detail', { id: this.$route.query.id }).then(res => {
                 console.log(res)
                 if (res.code == 1) {
                     self.drugdata = res.drug

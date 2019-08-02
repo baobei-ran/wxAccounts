@@ -21,7 +21,7 @@
                             <b v-show='userinfo.cigarette == 3'>/日平均吸烟量{{ userinfo.cigarette_day }}支/开始吸烟年龄{{ userinfo.cigarette_age }}岁</b>
                             </span></li>
                     <li v-show="userinfo.liquor"><span>饮酒情况</span><span>{{ userinfo.liquor == 1? "从不饮酒": userinfo.liquor == 2? '偶尔饮酒': userinfo.liquor == 3? '经常饮酒':'' }}
-                        <b v-if='userinfo.liquor == 2 || userinfo.liquor == 3' >/日平均饮酒量{{ userinfo.liquor_day }}斤/开始饮酒年龄{{ userinfo.liquor_age }}岁</b></span></li>
+                        <b v-if='userinfo.liquor == 2 || userinfo.liquor == 3' >/日平均饮酒量{{ userinfo.liquor_day }}两/开始饮酒年龄{{ userinfo.liquor_age }}岁</b></span></li>
                     <li v-show="userinfo.ago"><span>既往病史</span><span >{{ userinfo.ago }}</span></li>
                     <li v-show="userinfo.allergy"><span>药物过敏史</span><span>{{ userinfo.allergy }}</span></li>
                     <li><span>病情描述</span><span>{{ userinfo.remark }}</span></li>
