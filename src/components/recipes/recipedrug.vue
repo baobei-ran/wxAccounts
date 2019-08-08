@@ -132,14 +132,11 @@ export default {
     name: 'recipedrug',
     data () {
         return {
-            recipedata: '',
+            recipedata: {},
             canvasdata: {},
             list: [],
             lists: []
         }
-    },
-    watch: {
-        '$route': 'getdetails'
     },
     mounted() {
         this.initdata()
