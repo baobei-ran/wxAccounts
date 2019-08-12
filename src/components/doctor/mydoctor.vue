@@ -126,7 +126,7 @@ export default {
                 text: '',
                 spinnerType: 'fading-circle'
             });
-            this.$router.push({path:'/mydoctor/docrecord', query: { id: id, status: n}})
+            this.$router.push({path:'/docrecord', query: { id: id, status: n}})
         }
     },
     beforeDestroy () {

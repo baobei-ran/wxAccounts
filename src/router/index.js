@@ -164,7 +164,7 @@ const router = new Router({
       component: Mydoctor
     },
     {
-      path: '/mydoctor/docrecord:id?',
+      path: '/docrecord:id?',  // 聊天记录
       meta: {
         title: '咨询记录',
       },
