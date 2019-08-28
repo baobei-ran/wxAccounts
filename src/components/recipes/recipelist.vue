@@ -17,7 +17,7 @@
                                     <dl>
                                         <dt>
                                             <span>{{ val.true_name }}</span>
-                                            <span class="fr" v-text="val.drug_autdit == 0?'待审核':val.drug_autdit == 1?'药师审核已通过':val.drug_autdit == 2?'药师审核已通过':''"></span>
+                                            <span class="fr" v-text="val.drug_autdit == 0?'待审核':val.drug_autdit == 1?'药师审核已通过':val.drug_autdit == 2?'药师审核未通过':''"></span>
                                         </dt>
                                         <dd>
                                             <b>{{ val.name }} | {{ val.department_name }}</b>
